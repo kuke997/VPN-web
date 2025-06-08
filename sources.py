@@ -297,29 +297,9 @@ def fetch_reliable_sources():
     print(f"\n从可靠订阅源获取到 {len(all_nodes)} 个节点")
     return all_nodes
 
-def save_nodes(nodes, filename="vpn_nodes.txt"):
-    """保存节点到文件"""
-    with open(filename, "w", encoding="utf-8") as f:
-        f.write("免费VPN节点列表\n")
-        f.write("=" * 50 + "\n\n")
-        
-        for i, node in enumerate(nodes, 1):
-            f.write(f"节点 #{i}\n")
-            f.write(f"来源: {node.get('source', '未知')}\n")
-            f.write(f"名称: {node.get('name', '未知')}\n")
-            f.write(f"类型: {node.get('type', '未知')}\n")
-            
-            if 'server' in node and 'port' in node:
-                f.write(f"地址: {node['server']}:{node['port']}\n")
-            elif 'config' in node:
-                f.write(f"配置: {node['config']}\n")
-            
-            f.write("-" * 50 + "\n")
-    
-    print(f"\n已保存 {len(nodes)} 个节点到 {filename}")
-
-def main():
-    print("开始获取免费VPN节点...")
+def fetch_all_sources():
+    """获取所有来源的节点 - 这是您需要的接口函数"""
+    print("开始获取所有来源的免费VPN节点...")
     
     # 获取 freefq.com 的节点
     freefq_nodes = crawl_freefq()
@@ -356,10 +336,31 @@ def main():
     for t, count in type_count.items():
         print(f"{t.upper()}: {count} 个")
     
-    # 保存结果
-    save_nodes(unique_nodes)
+    return unique_nodes
+
+def save_nodes(nodes, filename="vpn_nodes.txt"):
+    """保存节点到文件"""
+    with open(filename, "w", encoding="utf-8") as f:
+        f.write("免费VPN节点列表\n")
+        f.write("=" * 50 + "\n\n")
+        
+        for i, node in enumerate(nodes, 1):
+            f.write(f"节点 #{i}\n")
+            f.write(f"来源: {node.get('source', '未知')}\n")
+            f.write(f"名称: {node.get('name', '未知')}\n")
+            f.write(f"类型: {node.get('type', '未知')}\n")
+            
+            if 'server' in node and 'port' in node:
+                f.write(f"地址: {node['server']}:{node['port']}\n")
+            elif 'config' in node:
+                f.write(f"配置: {node['config']}\n")
+            
+            f.write("-" * 50 + "\n")
     
-    print("\n抓取完成!")
+    print(f"\n已保存 {len(nodes)} 个节点到 {filename}")
 
 if __name__ == "__main__":
-    main()
+    # 当直接运行此脚本时
+    nodes = fetch_all_sources()
+    save_nodes(nodes)
+    print("\n抓取完成!")
