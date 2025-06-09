@@ -9,6 +9,7 @@ import ssl
 import urllib3
 from requests.adapters import HTTPAdapter
 from requests.packages.urllib3.util.retry import Retry
+import base64
 
 # 禁用SSL警告
 urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
@@ -198,7 +199,6 @@ def parse_subscription(url, session=None):
         
         # 1. 尝试Base64解码
         try:
-            import base64
             # 检查内容是否是Base64编码
             if len(content) > 100 and '=' in content:
                 decoded = base64.b64decode(content).decode('utf-8')
@@ -223,153 +223,41 @@ def parse_subscription(url, session=None):
         return []
 
 def crawl_freefq():
-    """专门抓取 freefq.com 的节点"""
+    """专门抓取 freefq.com 的节点 - 使用API替代"""
     print("\n" + "="*50)
     print("开始抓取 freefq.com 免费节点")
     print("="*50)
     
-    base_url = "https://freefq.com/"
     session = get_session()
     all_nodes = []
     
     try:
-        # 获取首页内容
-        html, session = fetch_page(base_url, session)
-        soup = BeautifulSoup(html, 'html.parser')
+        # 使用freefq的GitHub API获取节点
+        api_url = "https://api.github.com/repos/freefq/free/contents/v2"
+        content, _ = fetch_page(api_url, session, verify_ssl=True)
         
-        # 查找所有文章链接 - 使用更通用的选择器
-        article_links = []
+        # 解析API响应
+        files = json.loads(content)
+        for file in files:
+            if file['name'].endswith('.txt'):
+                file_url = file['download_url']
+                print(f"处理文件: {file['name']}")
+                
+                # 获取文件内容
+                file_content, _ = fetch_page(file_url, session)
+                
+                # 解析节点
+                nodes = parse_subscription_content(file_content, file_url)
+                if nodes:
+                    all_nodes.extend(nodes)
+                    print(f"✅ 从 {file['name']} 解析出 {len(nodes)} 个节点")
         
-        # 尝试多种选择器
-        selectors = [
-            'article a[href]',  # 文章中的链接
-            '.post-title a[href]',  # 文章标题链接
-            '.entry-title a[href]',  # 另一种标题链接
-            'a[href*="/free-"]',  # 包含"/free-"的链接
-            'a[href*="/ssr"]',  # 包含"/ssr"的链接
-            'a[href*="/v2ray"]'  # 包含"/v2ray"的链接
-        ]
+        print(f"\n从 freefq.com 获取到 {len(all_nodes)} 个节点")
+        return all_nodes
         
-        for selector in selectors:
-            links = soup.select(selector)
-            for a in links:
-                href = a.get('href', '').strip()
-                if href:
-                    full_url = urljoin(base_url, href)
-                    if full_url not in article_links and "freefq.com" in full_url:
-                        article_links.append(full_url)
-        
-        # 如果没有找到文章链接，尝试直接抓取已知页面
-        if len(article_links) == 0:
-            known_pages = [
-                "https://freefq.com/free-ssr/",
-                "https://freefq.com/free-v2ray/",
-                "https://freefq.com/free-trojan/"
-            ]
-            article_links.extend(known_pages)
-        
-        print(f"找到 {len(article_links)} 篇节点文章")
-        
-        # 处理每篇文章
-        for i, article_url in enumerate(article_links):
-            print(f"\n处理文章 {i+1}/{len(article_links)}: {article_url}")
-            
-            try:
-                # 获取文章内容
-                article_html, session = fetch_page(article_url, session)
-                article_soup = BeautifulSoup(article_html, 'html.parser')
-                
-                # 查找文章正文 - 尝试多种选择器
-                content_div = None
-                content_selectors = [
-                    'div.entry-content',
-                    'div.post-content',
-                    'div.article-content',
-                    'div.content',
-                    'div.main-content',
-                    'article',
-                    'div.post'
-                ]
-                
-                for selector in content_selectors:
-                    content_div = article_soup.select_one(selector)
-                    if content_div:
-                        break
-                
-                if not content_div:
-                    print("⚠️ 未找到文章内容，使用整个页面")
-                    content_div = article_soup
-                
-                # 提取所有可能的订阅链接
-                subscription_links = extract_subscription_links(str(content_div), article_url)
-                print(f"发现 {len(subscription_links)} 个订阅链接")
-                
-                # 解析每个订阅链接
-                for j, sub_url in enumerate(subscription_links):
-                    print(f"  解析订阅 {j+1}/{len(subscription_links)}: {sub_url}")
-                    nodes = parse_subscription(sub_url, session)
-                    if nodes:
-                        all_nodes.extend(nodes)
-                        print(f"  添加了 {len(nodes)} 个节点")
-                
-                # 直接提取文章中的节点信息
-                print("尝试直接提取文章中的节点信息...")
-                text_content = content_div.get_text()
-                
-                # 增强节点提取逻辑
-                found_nodes = 0
-                
-                # 1. 提取IP:PORT格式的节点
-                ip_port_nodes = re.findall(r'(\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3})[:：\s]+(\d{2,5})', text_content)
-                for ip, port in ip_port_nodes:
-                    all_nodes.append({
-                        "name": f"{ip}:{port}",
-                        "type": "unknown",
-                        "server": ip,
-                        "port": port,
-                        "source": article_url
-                    })
-                found_nodes += len(ip_port_nodes)
-                
-                # 2. 提取特殊格式节点
-                special_nodes = re.findall(r'(vmess|ss|trojan)://[a-zA-Z0-9+/=._\-]+', text_content)
-                for node in special_nodes:
-                    all_nodes.append({
-                        "name": node.split('://')[0].upper() + "节点",
-                        "type": node.split('://')[0],
-                        "config": node,
-                        "source": article_url
-                    })
-                found_nodes += len(special_nodes)
-                
-                # 3. 提取Base64编码的节点
-                base64_nodes = re.findall(r'[A-Za-z0-9+/=]{30,}', text_content)
-                for b64 in base64_nodes:
-                    try:
-                        import base64
-                        decoded = base64.b64decode(b64).decode('utf-8')
-                        # 尝试从解码后的内容中提取节点
-                        decoded_nodes = parse_subscription_content(decoded, article_url)
-                        if decoded_nodes:
-                            all_nodes.extend(decoded_nodes)
-                            found_nodes += len(decoded_nodes)
-                    except:
-                        pass
-                
-                print(f"文章直接提取到 {found_nodes} 个节点")
-                
-                # 避免请求过快
-                time.sleep(1)
-                
-            except Exception as e:
-                print(f"⚠️ 处理文章失败: {e}")
-                continue
-    
     except Exception as e:
         print(f"⚠️ 抓取 freefq.com 失败: {e}")
-    
-    print(f"\n从 freefq.com 获取到 {len(all_nodes)} 个节点")
-    return all_nodes
+        return []
 
 def fetch_reliable_sources():
     """获取可靠的订阅源"""
@@ -380,7 +268,7 @@ def fetch_reliable_sources():
     session = get_session()
     all_nodes = []
     
-    # 更新可靠的订阅源列表
+    # 更新可靠的订阅源列表 - 使用当前有效的源
     reliable_sources = [
         {
             "name": "freefq-github",
@@ -403,8 +291,12 @@ def fetch_reliable_sources():
             "url": "https://web.archive.org/web/202310/https://clashnode.com/wp-content/uploads/2023/08/20230815.yaml"
         },
         {
-            "name": "free-yaml",
-            "url": "https://raw.githubusercontent.com/freefq/free/master/v2"
+            "name": "Leon406-All",
+            "url": "https://raw.githubusercontent.com/Leon406/SubCrawler/main/sub/all_base64.txt"
+        },
+        {
+            "name": "FreeNode",
+            "url": "https://raw.githubusercontent.com/ermaozi/get_subscribe/main/subscribe/clash.yml"
         }
     ]
     
