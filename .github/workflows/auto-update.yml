@@ -11,6 +11,11 @@ jobs:
     steps:
     - name: 克隆仓库
       uses: actions/checkout@v3
+      with:
+        # 必须设置persist-credentials为false
+        persist-credentials: false
+        # 必须设置fetch-depth为0以获取所有历史
+        fetch-depth: 0
 
     - name: 设置 Python
       uses: actions/setup-python@v4
@@ -28,18 +33,12 @@ jobs:
 
     - name: 提交并推送 nodes.json 更新到 GitHub
       env:
-        TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        # 使用GITHUB_TOKEN而不是secrets.GITHUB_TOKEN
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       run: |
         git config --global user.name 'github-actions'
         git config --global user.email 'github-actions@github.com'
         git add website/nodes.json
         git commit -m '🔄 Auto update nodes.json' || echo "No changes to commit"
-        git remote set-url origin https://x-access-token:${TOKEN}@github.com/${{ github.repository }}
-        git push
-
-    - name: 上传网站文件到 Hostinger（FTP）
-      env:
-        FTP_HOST: ${{ secrets.FTP_HOST }}
-        FTP_USER: ${{ secrets.FTP_USER }}
-        FTP_PASS: ${{ secrets.FTP_PASS }}
-      run: python ftp_upload.py
+        git remote set-url origin https://${{ github.actor }}:${{ secrets.GITHUB_TOKEN }}@github.com/${{ github.repository }}
+        git push origin HEAD:main
