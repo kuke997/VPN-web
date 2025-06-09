@@ -9,86 +9,143 @@ async function loadNodes() {
   }
 }
 
-function uniqueRegions(nodes) {
-  return [...new Set(nodes.map(n => n.region))];
+function getProtocolType(type) {
+  const types = {
+    "vmess": "VMess",
+    "ss": "Shadowsocks",
+    "trojan": "Trojan",
+    "unknown": "未知协议"
+  };
+  return types[type] || type;
 }
 
-function createFilterButtons(regions) {
-  const bar = document.getElementById('filter-bar');
-  if (!bar) {
-    console.error('找不到 filter-bar 容器');
-    return;
-  }
-  bar.innerHTML = ''; // 清空旧按钮
-  regions.forEach((r, i) => {
-    const btn = document.createElement('button');
-    btn.className = 'filter-btn' + (i === 0 ? ' active' : '');
-    btn.textContent = r;
-    btn.dataset.region = r;
-    btn.onclick = () => {
-      document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
-      btn.classList.add('active');
-      showRegion(r);
-    };
-    bar.appendChild(btn);
-  });
-}
-
-function createTableForRegion(region, nodes) {
+function createServerTable(nodes) {
   const table = document.createElement('table');
   table.className = 'server-table';
-  table.innerHTML = `
-    <thead><tr><th>城市</th><th>协议</th><th>数量</th><th>操作</th></tr></thead>
-    <tbody>
-      ${nodes.map(n => `
-        <tr>
-          <td>${n.city || '-'}</td>
-          <td>${n.protocol || '-'}</td>
-          <td>${n.count || '-'}</td>
-          <td><a class="download-link" href="${n.download_url || '#'}" target="_blank">下载配置</a></td>
-        </tr>`).join('')}
-    </tbody>`;
-  const container = document.createElement('div');
-  container.id = `region-${region}`;
-  container.appendChild(table);
-  return container;
+  
+  // 创建表头
+  const thead = document.createElement('thead');
+  thead.innerHTML = `
+    <tr>
+      <th>名称</th>
+      <th>类型</th>
+      <th>来源</th>
+      <th>操作</th>
+    </tr>
+  `;
+  table.appendChild(thead);
+  
+  // 创建表格主体
+  const tbody = document.createElement('tbody');
+  
+  nodes.forEach(node => {
+    const row = document.createElement('tr');
+    
+    // 名称列
+    const nameCell = document.createElement('td');
+    nameCell.textContent = node.name || '未知节点';
+    row.appendChild(nameCell);
+    
+    // 类型列
+    const typeCell = document.createElement('td');
+    typeCell.textContent = getProtocolType(node.type);
+    row.appendChild(typeCell);
+    
+    // 来源列
+    const sourceCell = document.createElement('td');
+    if (node.source) {
+      const sourceLink = document.createElement('a');
+      sourceLink.href = node.source;
+      sourceLink.target = '_blank';
+      sourceLink.textContent = '查看来源';
+      sourceCell.appendChild(sourceLink);
+    } else {
+      sourceCell.textContent = '未知来源';
+    }
+    row.appendChild(sourceCell);
+    
+    // 操作列
+    const actionCell = document.createElement('td');
+    
+    // 根据节点类型创建不同的操作
+    if (node.config) {
+      // 配置下载按钮
+      const downloadBtn = document.createElement('button');
+      downloadBtn.className = 'download-link';
+      downloadBtn.textContent = '下载配置';
+      downloadBtn.onclick = () => {
+        // 创建配置文件下载
+        const blob = new Blob([node.config], { type: 'text/plain' });
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = `${node.name.replace(/[^a-z0-9]/gi, '_')}.txt`;
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
+        URL.revokeObjectURL(url);
+      };
+      actionCell.appendChild(downloadBtn);
+    } else if (node.server && node.port) {
+      // 服务器地址按钮
+      const copyBtn = document.createElement('button');
+      copyBtn.className = 'download-link';
+      copyBtn.textContent = '复制地址';
+      copyBtn.onclick = () => {
+        navigator.clipboard.writeText(`${node.server}:${node.port}`);
+        copyBtn.textContent = '已复制!';
+        setTimeout(() => {
+          copyBtn.textContent = '复制地址';
+        }, 2000);
+      };
+      actionCell.appendChild(copyBtn);
+    } else {
+      actionCell.textContent = '无操作';
+    }
+    
+    row.appendChild(actionCell);
+    tbody.appendChild(row);
+  });
+  
+  table.appendChild(tbody);
+  return table;
 }
 
-let allNodes = [];
-let regions = [];
-
 async function render() {
-  allNodes = await loadNodes();
-  if (!allNodes.length) {
-    console.warn('nodes.json 为空或加载失败');
-    return;
-  }
-  regions = uniqueRegions(allNodes);
-  createFilterButtons(regions);
-
-  const list = document.getElementById('server-list');
-  if (!list) {
+  const nodes = await loadNodes();
+  
+  const listContainer = document.getElementById('server-list');
+  if (!listContainer) {
     console.error('找不到 server-list 容器');
     return;
   }
-  list.innerHTML = ''; // 清空旧内容
-
-  regions.forEach(r => {
-    const regionNodes = allNodes.filter(n => n.region === r);
-    const tableDiv = createTableForRegion(r, regionNodes);
-    tableDiv.style.display = r === regions[0] ? '' : 'none';
-    list.appendChild(tableDiv);
-  });
-}
-
-function showRegion(region) {
-  regions.forEach(r => {
-    const el = document.getElementById(`region-${r}`);
-    if (el) el.style.display = (r === region ? '' : 'none');
-  });
+  
+  // 清空容器
+  listContainer.innerHTML = '';
+  
+  if (nodes.length === 0) {
+    const message = document.createElement('p');
+    message.textContent = '没有找到可用节点，请稍后再试';
+    message.style.textAlign = 'center';
+    message.style.padding = '20px';
+    listContainer.appendChild(message);
+    return;
+  }
+  
+  // 创建节点表格
+  const table = createServerTable(nodes);
+  listContainer.appendChild(table);
+  
+  // 更新获取免费节点按钮
+  const ctaBtn = document.querySelector('.cta-btn');
+  if (ctaBtn) {
+    ctaBtn.textContent = `获取免费节点 (${nodes.length})`;
+    ctaBtn.onclick = () => {
+      // 滚动到节点列表
+      document.getElementById('server-list').scrollIntoView({ behavior: 'smooth' });
+    };
+  }
 }
 
 // 等 DOM 加载完成再执行
-document.addEventListener('DOMContentLoaded', () => {
-  render();
-});
+document.addEventListener('DOMContentLoaded', render);
