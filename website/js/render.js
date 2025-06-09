@@ -7,9 +7,23 @@ async function loadNodes() {
   }
   
   try {
-    const res = await fetch('/nodes.json', { cache: 'no-store' });
-    if (!res.ok) throw new Error(`HTTP错误! 状态码: ${res.status}`);
-    return await res.json();
+    // 添加时间戳防止缓存
+    const timestamp = new Date().getTime();
+    const res = await fetch(`/nodes.json?t=${timestamp}`, { cache: 'no-store' });
+    
+    if (!res.ok) {
+      throw new Error(`HTTP错误! 状态码: ${res.status}`);
+    }
+    
+    // 获取响应文本
+    const text = await res.text();
+    
+    // 调试：输出前500个字符
+    console.log('nodes.json 内容预览:', text.substring(0, 500));
+    
+    // 尝试解析JSON
+    const data = JSON.parse(text);
+    return data;
   } catch (error) {
     console.error('加载 nodes.json 出错：', error);
     
@@ -19,6 +33,7 @@ async function loadNodes() {
         <div class="error-message">
           <p>⚠️ 加载节点数据失败</p>
           <p>${error.message}</p>
+          <p>请检查控制台获取更多信息</p>
           <button onclick="location.reload()" style="margin-top:10px; background:#007bff; color:#fff; border:none; padding:8px 16px; border-radius:4px; cursor:pointer;">
             重新加载
           </button>
