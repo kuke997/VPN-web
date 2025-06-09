@@ -100,103 +100,26 @@ def extract_subscription_links(html, base_url):
     # 去重并返回
     return list(set(links))
 
-def parse_subscription(url, session=None):
-    """解析订阅链接内容"""
-    if not session:
-        session = get_session()
-    
-    print(f"解析订阅: {url}")
-    
-    try:
-        # 获取订阅内容 - 对于非GitHub链接禁用SSL验证
-        verify_ssl = "github" in url  # 仅对GitHub链接启用SSL验证
-        content, _ = fetch_page(url, session, verify_ssl=verify_ssl)
-        
-        # 尝试解析为YAML
-        try:
-            data = yaml.safe_load(content)
-            if data and isinstance(data, dict) and data.get('proxies'):
-                nodes = []
-                for proxy in data['proxies']:
-                    nodes.append({
-                        "name": proxy.get('name', 'Unknown'),
-                        "type": proxy.get('type', 'Unknown'),
-                        "server": proxy.get('server', 'Unknown'),
-                        "port": proxy.get('port', 'Unknown'),
-                        "source": url
-                    })
-                print(f"✅ 从YAML订阅解析出 {len(nodes)} 个节点")
-                return nodes
-        except yaml.YAMLError:
-            pass
-        
-        # 尝试解析为纯文本节点列表
-        nodes = []
-        
-        # VMess格式: vmess://...
-        vmess_matches = re.findall(r'vmess://[a-zA-Z0-9+/=]+', content)
-        for match in vmess_matches:
-            nodes.append({
-                "name": "VMess节点",
-                "type": "vmess",
-                "config": match,
-                "source": url
-            })
-        
-        # SS格式: ss://...
-        ss_matches = re.findall(r'ss://[a-zA-Z0-9+/=]+', content)
-        for match in ss_matches:
-            nodes.append({
-                "name": "Shadowsocks节点",
-                "type": "ss",
-                "config": match,
-                "source": url
-            })
-        
-        # Trojan格式: trojan://...
-        trojan_matches = re.findall(r'trojan://[a-zA-Z0-9+/=]+', content)
-        for match in trojan_matches:
-            nodes.append({
-                "name": "Trojan节点",
-                "type": "trojan",
-                "config": match,
-                "source": url
-            })
-        
-        # 传统IP:PORT格式
-        ip_port_matches = re.findall(r'(\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}):(\d{2,5})', content)
-        for ip, port in ip_port_matches:
-            nodes.append({
-                "name": f"{ip}:{port}",
-                "type": "unknown",
-                "server": ip,
-                "port": port,
-                "source": url
-            })
-        
-        # 尝试解码base64内容
-        if len(nodes) == 0 and len(content) > 100 and '=' in content:
-            try:
-                import base64
-                decoded = base64.b64decode(content).decode('utf-8')
-                # 递归解析解码后的内容
-                decoded_nodes = parse_subscription_content(decoded, url)
-                if decoded_nodes:
-                    nodes.extend(decoded_nodes)
-            except:
-                pass
-        
-        print(f"✅ 从文本订阅解析出 {len(nodes)} 个节点")
-        return nodes
-        
-    except Exception as e:
-        print(f"⚠️ 解析订阅失败: {e}")
-        return []
-
 def parse_subscription_content(content, source_url):
-    """解析订阅内容文本"""
+    """解析订阅内容文本 - 增强解析能力"""
     nodes = []
     
+    # 1. 解析YAML格式内容
+    try:
+        data = yaml.safe_load(content)
+        if data and isinstance(data, dict) and data.get('proxies'):
+            for proxy in data['proxies']:
+                nodes.append({
+                    "name": proxy.get('name', 'Unknown'),
+                    "type": proxy.get('type', 'Unknown'),
+                    "server": proxy.get('server', 'Unknown'),
+                    "port": proxy.get('port', 'Unknown'),
+                    "source": source_url
+                })
+    except:
+        pass
+    
+    # 2. 解析各种协议节点
     # VMess格式: vmess://...
     vmess_matches = re.findall(r'vmess://[a-zA-Z0-9+/=]+', content)
     for match in vmess_matches:
@@ -239,6 +162,65 @@ def parse_subscription_content(content, source_url):
         })
     
     return nodes
+
+def parse_subscription(url, session=None):
+    """解析订阅链接内容"""
+    if not session:
+        session = get_session()
+    
+    print(f"解析订阅: {url}")
+    
+    try:
+        # 获取订阅内容 - 对于非GitHub链接禁用SSL验证
+        verify_ssl = "github" in url  # 仅对GitHub链接启用SSL验证
+        content, _ = fetch_page(url, session, verify_ssl=verify_ssl)
+        
+        # 尝试解析为YAML
+        try:
+            data = yaml.safe_load(content)
+            if data and isinstance(data, dict) and data.get('proxies'):
+                nodes = []
+                for proxy in data['proxies']:
+                    nodes.append({
+                        "name": proxy.get('name', 'Unknown'),
+                        "type": proxy.get('type', 'Unknown'),
+                        "server": proxy.get('server', 'Unknown'),
+                        "port": proxy.get('port', 'Unknown'),
+                        "source": url
+                    })
+                print(f"✅ 从YAML订阅解析出 {len(nodes)} 个节点")
+                return nodes
+        except yaml.YAMLError:
+            pass
+        
+        # 尝试解析为纯文本节点列表
+        nodes = []
+        
+        # 1. 尝试Base64解码
+        try:
+            import base64
+            # 检查内容是否是Base64编码
+            if len(content) > 100 and '=' in content:
+                decoded = base64.b64decode(content).decode('utf-8')
+                decoded_nodes = parse_subscription_content(decoded, url)
+                if decoded_nodes:
+                    nodes.extend(decoded_nodes)
+                    print(f"✅ 从Base64解码内容解析出 {len(decoded_nodes)} 个节点")
+        except Exception as e:
+            # 如果Base64解码失败，继续尝试其他方式
+            pass
+        
+        # 2. 如果Base64解码没有获取到节点，则直接解析内容
+        if not nodes:
+            # 调用通用解析函数
+            nodes = parse_subscription_content(content, url)
+        
+        print(f"✅ 从文本订阅解析出 {len(nodes)} 个节点")
+        return nodes
+        
+    except Exception as e:
+        print(f"⚠️ 解析订阅失败: {e}")
+        return []
 
 def crawl_freefq():
     """专门抓取 freefq.com 的节点"""
@@ -305,7 +287,8 @@ def crawl_freefq():
                     'div.article-content',
                     'div.content',
                     'div.main-content',
-                    'article'
+                    'article',
+                    'div.post'
                 ]
                 
                 for selector in content_selectors:
@@ -333,7 +316,10 @@ def crawl_freefq():
                 print("尝试直接提取文章中的节点信息...")
                 text_content = content_div.get_text()
                 
-                # 提取IP:PORT格式的节点
+                # 增强节点提取逻辑
+                found_nodes = 0
+                
+                # 1. 提取IP:PORT格式的节点
                 ip_port_nodes = re.findall(r'(\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3})[:：\s]+(\d{2,5})', text_content)
                 for ip, port in ip_port_nodes:
                     all_nodes.append({
@@ -343,8 +329,9 @@ def crawl_freefq():
                         "port": port,
                         "source": article_url
                     })
+                found_nodes += len(ip_port_nodes)
                 
-                # 提取特殊格式节点
+                # 2. 提取特殊格式节点
                 special_nodes = re.findall(r'(vmess|ss|trojan)://[a-zA-Z0-9+/=._\-]+', text_content)
                 for node in special_nodes:
                     all_nodes.append({
@@ -353,8 +340,23 @@ def crawl_freefq():
                         "config": node,
                         "source": article_url
                     })
+                found_nodes += len(special_nodes)
                 
-                print(f"文章直接提取到 {len(ip_port_nodes) + len(special_nodes)} 个节点")
+                # 3. 提取Base64编码的节点
+                base64_nodes = re.findall(r'[A-Za-z0-9+/=]{30,}', text_content)
+                for b64 in base64_nodes:
+                    try:
+                        import base64
+                        decoded = base64.b64decode(b64).decode('utf-8')
+                        # 尝试从解码后的内容中提取节点
+                        decoded_nodes = parse_subscription_content(decoded, article_url)
+                        if decoded_nodes:
+                            all_nodes.extend(decoded_nodes)
+                            found_nodes += len(decoded_nodes)
+                    except:
+                        pass
+                
+                print(f"文章直接提取到 {found_nodes} 个节点")
                 
                 # 避免请求过快
                 time.sleep(1)
@@ -385,20 +387,24 @@ def fetch_reliable_sources():
             "url": "https://raw.githubusercontent.com/freefq/free/master/v2"
         },
         {
-            "name": "v2raydy-backup",
-            "url": "https://raw.githubusercontent.com/v2raydy/v2ray/main/README.md"
+            "name": "v2raydy-vless",
+            "url": "https://raw.githubusercontent.com/v2raydy/v2ray/main/sub/vless.yml"
         },
         {
             "name": "alanbobs999",
-            "url": "https://raw.githubusercontent.com/alanbobs999/TopFreeProxies/master/sub/sub_merge_clash.yaml"
+            "url": "https://raw.githubusercontent.com/alanbobs999/TopFreeProxies/master/sub/sub_merge.yaml"
         },
         {
-            "name": "pojiedi-backup",
-            "url": "https://raw.githubusercontent.com/pojiedi/pojiedi.github.io/master/README.md"
+            "name": "pojiedi",
+            "url": "https://raw.githubusercontent.com/pojiedi/pojiedi.github.io/master/-static-files-/clash/config.yaml"
         },
         {
-            "name": "clashnode-backup",
-            "url": "https://clashnode.com/f/freeclashyaml"
+            "name": "clashnode-archive",
+            "url": "https://web.archive.org/web/202310/https://clashnode.com/wp-content/uploads/2023/08/20230815.yaml"
+        },
+        {
+            "name": "free-yaml",
+            "url": "https://raw.githubusercontent.com/freefq/free/master/v2"
         }
     ]
     
