@@ -1,11 +1,35 @@
 async function loadNodes() {
+  // 显示加载状态
+  const loading = document.getElementById('loading');
+  if (loading) {
+    loading.style.display = 'block';
+    loading.querySelector('p').textContent = '正在加载节点数据，请稍候...';
+  }
+  
   try {
     const res = await fetch('/nodes.json', { cache: 'no-store' });
-    if (!res.ok) throw new Error(`HTTP error! status: ${res.status}`);
+    if (!res.ok) throw new Error(`HTTP错误! 状态码: ${res.status}`);
     return await res.json();
   } catch (error) {
     console.error('加载 nodes.json 出错：', error);
+    
+    // 更新加载状态为错误信息
+    if (loading) {
+      loading.innerHTML = `
+        <div class="error-message">
+          <p>⚠️ 加载节点数据失败</p>
+          <p>${error.message}</p>
+          <button onclick="location.reload()" style="margin-top:10px; background:#007bff; color:#fff; border:none; padding:8px 16px; border-radius:4px; cursor:pointer;">
+            重新加载
+          </button>
+        </div>
+      `;
+    }
+    
     return [];
+  } finally {
+    // 无论成功失败，最后都会隐藏加载状态
+    // 实际隐藏操作在render函数中完成
   }
 }
 
@@ -58,6 +82,7 @@ function createServerTable(nodes) {
       sourceLink.href = node.source;
       sourceLink.target = '_blank';
       sourceLink.textContent = '查看来源';
+      sourceLink.style.color = '#007bff';
       sourceCell.appendChild(sourceLink);
     } else {
       sourceCell.textContent = '未知来源';
@@ -92,11 +117,17 @@ function createServerTable(nodes) {
       copyBtn.className = 'download-link';
       copyBtn.textContent = '复制地址';
       copyBtn.onclick = () => {
-        navigator.clipboard.writeText(`${node.server}:${node.port}`);
-        copyBtn.textContent = '已复制!';
-        setTimeout(() => {
-          copyBtn.textContent = '复制地址';
-        }, 2000);
+        navigator.clipboard.writeText(`${node.server}:${node.port}`)
+          .then(() => {
+            copyBtn.textContent = '已复制!';
+            setTimeout(() => {
+              copyBtn.textContent = '复制地址';
+            }, 2000);
+          })
+          .catch(err => {
+            console.error('复制失败:', err);
+            copyBtn.textContent = '复制失败';
+          });
       };
       actionCell.appendChild(copyBtn);
     } else {
@@ -112,7 +143,14 @@ function createServerTable(nodes) {
 }
 
 async function render() {
+  // 确保加载状态可见
+  const loading = document.getElementById('loading');
+  if (loading) loading.style.display = 'block';
+  
   const nodes = await loadNodes();
+  
+  // 隐藏加载状态
+  if (loading) loading.style.display = 'none';
   
   const listContainer = document.getElementById('server-list');
   if (!listContainer) {
@@ -124,10 +162,15 @@ async function render() {
   listContainer.innerHTML = '';
   
   if (nodes.length === 0) {
-    const message = document.createElement('p');
-    message.textContent = '没有找到可用节点，请稍后再试';
-    message.style.textAlign = 'center';
-    message.style.padding = '20px';
+    const message = document.createElement('div');
+    message.className = 'error-message';
+    message.innerHTML = `
+      <p>⚠️ 没有找到可用节点</p>
+      <p>请稍后再试或联系管理员</p>
+      <button onclick="location.reload()" style="margin-top:10px; background:#007bff; color:#fff; border:none; padding:8px 16px; border-radius:4px; cursor:pointer;">
+        重新加载
+      </button>
+    `;
     listContainer.appendChild(message);
     return;
   }
@@ -137,7 +180,7 @@ async function render() {
   listContainer.appendChild(table);
   
   // 更新获取免费节点按钮
-  const ctaBtn = document.querySelector('.cta-btn');
+  const ctaBtn = document.getElementById('cta-btn');
   if (ctaBtn) {
     ctaBtn.textContent = `获取免费节点 (${nodes.length})`;
     ctaBtn.onclick = () => {
@@ -149,3 +192,8 @@ async function render() {
 
 // 等 DOM 加载完成再执行
 document.addEventListener('DOMContentLoaded', render);
+
+// 暴露重新加载函数给全局
+window.reloadNodes = function() {
+  render();
+};
