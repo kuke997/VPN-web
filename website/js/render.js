@@ -23,6 +23,15 @@ async function loadNodes() {
     
     // 尝试解析JSON
     const data = JSON.parse(text);
+    
+    // 调试信息
+    console.log("成功加载节点数据:", {
+      count: data.length,
+      firstNode: data[0] || null,
+      types: [...new Set(data.map(n => n.type))],
+      cities: [...new Set(data.map(n => n.city))]
+    });
+    
     return data;
   } catch (error) {
     console.error('加载 nodes.json 出错：', error);
@@ -51,9 +60,11 @@ async function loadNodes() {
 function getProtocolType(type) {
   const types = {
     "vmess": "VMess",
+    "vless": "VLESS",
     "ss": "Shadowsocks",
     "trojan": "Trojan",
-    "unknown": "未知协议"
+    "unknown": "未知协议",
+    "": "未知协议"  // 处理空类型
   };
   return types[type] || type;
 }
@@ -93,7 +104,8 @@ function createServerTable(nodes) {
     
     // 类型列
     const typeCell = document.createElement('td');
-    typeCell.textContent = getProtocolType(node.type);
+    const protocolType = getProtocolType(node.type || ''); // 确保有默认值
+    typeCell.textContent = protocolType;
     row.appendChild(typeCell);
     
     // 来源列
@@ -123,11 +135,23 @@ function createServerTable(nodes) {
         try {
           // 确保 config 是有效字符串
           if (typeof node.config === 'string' && node.config.trim() !== '') {
+            // 直接使用配置内容
             const blob = new Blob([node.config], { type: 'text/plain' });
             const url = URL.createObjectURL(blob);
             const a = document.createElement('a');
             a.href = url;
-            a.download = `${node.name.replace(/[^a-z0-9]/gi, '_')}.txt`;
+            
+            // 创建有意义的文件名
+            let fileName = node.name.replace(/[^a-z0-9]/gi, '_') || 'vpn_config';
+            fileName = fileName.substring(0, 30); // 限制文件名长度
+            
+            // 根据协议类型添加扩展名
+            if (node.type === 'vmess') fileName += '.vmess';
+            else if (node.type === 'ss') fileName += '.ss';
+            else if (node.type === 'trojan') fileName += '.trojan';
+            else fileName += '.txt';
+            
+            a.download = fileName;
             document.body.appendChild(a);
             a.click();
             document.body.removeChild(a);
