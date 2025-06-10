@@ -67,6 +67,7 @@ function createServerTable(nodes) {
   thead.innerHTML = `
     <tr>
       <th>名称</th>
+      <th>城市</th>
       <th>类型</th>
       <th>来源</th>
       <th>操作</th>
@@ -84,6 +85,11 @@ function createServerTable(nodes) {
     const nameCell = document.createElement('td');
     nameCell.textContent = node.name || '未知节点';
     row.appendChild(nameCell);
+    
+    // 城市列
+    const cityCell = document.createElement('td');
+    cityCell.textContent = node.city || '未知城市';
+    row.appendChild(cityCell);
     
     // 类型列
     const typeCell = document.createElement('td');
@@ -114,16 +120,26 @@ function createServerTable(nodes) {
       downloadBtn.className = 'download-link';
       downloadBtn.textContent = '下载配置';
       downloadBtn.onclick = () => {
-        // 创建配置文件下载
-        const blob = new Blob([node.config], { type: 'text/plain' });
-        const url = URL.createObjectURL(blob);
-        const a = document.createElement('a');
-        a.href = url;
-        a.download = `${node.name.replace(/[^a-z0-9]/gi, '_')}.txt`;
-        document.body.appendChild(a);
-        a.click();
-        document.body.removeChild(a);
-        URL.revokeObjectURL(url);
+        try {
+          // 确保 config 是有效字符串
+          if (typeof node.config === 'string' && node.config.trim() !== '') {
+            const blob = new Blob([node.config], { type: 'text/plain' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `${node.name.replace(/[^a-z0-9]/gi, '_')}.txt`;
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            URL.revokeObjectURL(url);
+          } else {
+            console.error('无效的配置内容', node);
+            alert('配置内容无效，无法下载');
+          }
+        } catch (e) {
+          console.error('下载失败:', e);
+          alert(`下载失败: ${e.message}`);
+        }
       };
       actionCell.appendChild(downloadBtn);
     } else if (node.server && node.port) {
