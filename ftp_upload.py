@@ -2,8 +2,6 @@ import ftplib
 import os
 import sys
 import time
-import requests
-import json
 
 ftp_host = os.getenv("FTP_HOST")
 ftp_user = os.getenv("FTP_USER")
