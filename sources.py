@@ -79,21 +79,41 @@ def fetch_page(url, session=None, verify_ssl=False):
     
     raise Exception(f"无法获取页面: {url}")
 
-def extract_city_from_url(url):
-    """从URL中提取城市信息"""
-    try:
-        # 尝试从URL中提取城市信息
-        city_match = re.search(r'([\u4e00-\u9fa5]+)(?=[^/]*?\.(?:yaml|yml|txt|conf|ini|v2ray|ssr?|sub|list))', url)
-        if city_match:
-            return city_match.group(1)
-            
-        # 尝试从国家代码中提取
-        country_match = re.search(r'[\U0001F1E6-\U0001F1FF]{2}', url)
-        if country_match:
-            return country_match.group(0) + "节点"
-            
-    except Exception:
-        pass
+def extract_city_from_name(name):
+    """从节点名称中提取城市信息"""
+    if not name:
+        return "未知城市"
+    
+    # 国家/地区映射
+    country_map = {
+        "CN": "中国", "US": "美国", "JP": "日本", "KR": "韩国", "SG": "新加坡",
+        "TW": "台湾", "HK": "香港", "UK": "英国", "DE": "德国", "FR": "法国",
+        "CA": "加拿大", "RU": "俄罗斯", "IN": "印度", "BR": "巴西", "AU": "澳大利亚"
+    }
+    
+    # 尝试匹配国家代码
+    for code, country in country_map.items():
+        if f"_{code}_" in name:
+            return country
+    
+    # 尝试匹配中文城市名
+    cities = ["香港", "台湾", "日本", "韩国", "美国", "新加坡", "英国", "德国", 
+             "法国", "俄罗斯", "加拿大", "印度", "巴西", "澳大利亚", "中国"]
+    for city in cities:
+        if city in name:
+            return city
+    
+    # 尝试匹配国家英文名
+    english_names = {
+        "China": "中国", "USA": "美国", "Japan": "日本", "Korea": "韩国", 
+        "Singapore": "新加坡", "Taiwan": "台湾", "HongKong": "香港", 
+        "UK": "英国", "Germany": "德国", "France": "法国", "Russia": "俄罗斯",
+        "Canada": "加拿大", "India": "印度", "Brazil": "巴西", "Australia": "澳大利亚"
+    }
+    for en_name, cn_name in english_names.items():
+        if en_name in name:
+            return cn_name
+    
     return "未知城市"
 
 def extract_subscription_links(html, base_url):
@@ -122,19 +142,19 @@ def extract_subscription_links(html, base_url):
 def parse_subscription_content(content, source_url):
     """解析订阅内容文本 - 增强解析能力"""
     nodes = []
-    city = extract_city_from_url(source_url)
     
     # 1. 解析YAML格式内容
     try:
         data = yaml.safe_load(content)
         if data and isinstance(data, dict) and data.get('proxies'):
             for proxy in data['proxies']:
+                name = proxy.get('name', '未知节点')
                 nodes.append({
-                    "name": proxy.get('name', '未知节点'),
+                    "name": name,
                     "type": proxy.get('type', 'unknown'),
                     "server": proxy.get('server', ''),
                     "port": str(proxy.get('port', '')),
-                    "city": city,
+                    "city": extract_city_from_name(name),
                     "source": source_url
                 })
     except:
@@ -144,33 +164,54 @@ def parse_subscription_content(content, source_url):
     # VMess格式: vmess://...
     vmess_matches = re.findall(r'vmess://[a-zA-Z0-9+/=]+', content)
     for match in vmess_matches:
+        # 尝试解码VMess配置获取名称
+        name = 'VMess节点'
+        try:
+            # 去除协议头，并进行base64解码
+            decoded_str = base64.b64decode(match.replace("vmess://", "")).decode('utf-8')
+            config = json.loads(decoded_str)
+            name = config.get('ps', name)
+        except:
+            pass
+        
         nodes.append({
-            "name": "VMess节点",
+            "name": name,
             "type": "vmess",
             "config": match,
-            "city": city,
+            "city": extract_city_from_name(name),
             "source": source_url
         })
     
     # SS格式: ss://...
     ss_matches = re.findall(r'ss://[a-zA-Z0-9+/=]+', content)
     for match in ss_matches:
+        name = 'Shadowsocks节点'
         nodes.append({
-            "name": "Shadowsocks节点",
+            "name": name,
             "type": "ss",
             "config": match,
-            "city": city,
+            "city": extract_city_from_name(name),
             "source": source_url
         })
     
     # Trojan格式: trojan://...
     trojan_matches = re.findall(r'trojan://[a-zA-Z0-9+/=]+', content)
     for match in trojan_matches:
+        name = 'Trojan节点'
+        # 尝试从配置中提取服务器
+        try:
+            # trojan://password@server:port?...
+            server_part = match.split('@')[1].split('?')[0]
+            server = server_part.split(':')[0]
+            name = f"Trojan节点 ({server})"
+        except:
+            pass
+        
         nodes.append({
-            "name": "Trojan节点",
+            "name": name,
             "type": "trojan",
             "config": match,
-            "city": city,
+            "city": extract_city_from_name(name),
             "source": source_url
         })
     
@@ -182,7 +223,7 @@ def parse_subscription_content(content, source_url):
             "type": "unknown",
             "server": ip,
             "port": port,
-            "city": city,
+            "city": "未知城市",  # IP地址无法直接获取城市
             "source": source_url
         })
     
@@ -205,14 +246,14 @@ def parse_subscription(url, session=None):
             data = yaml.safe_load(content)
             if data and isinstance(data, dict) and data.get('proxies'):
                 nodes = []
-                city = extract_city_from_url(url)
                 for proxy in data['proxies']:
+                    name = proxy.get('name', '未知节点')
                     nodes.append({
-                        "name": proxy.get('name', '未知节点'),
+                        "name": name,
                         "type": proxy.get('type', 'unknown'),
                         "server": proxy.get('server', ''),
                         "port": str(proxy.get('port', '')),
-                        "city": city,
+                        "city": extract_city_from_name(name),
                         "source": url
                     })
                 print(f"✅ 从YAML订阅解析出 {len(nodes)} 个节点")
@@ -366,8 +407,11 @@ def fetch_all_sources():
     
     # 确保所有节点都有城市字段
     for node in unique_nodes:
-        if 'city' not in node or not node['city']:
-            node['city'] = extract_city_from_url(node.get('source', ''))
+        if 'city' not in node or not node['city'] or node['city'] == '未知城市':
+            # 尝试从名称中再提取一次
+            city = extract_city_from_name(node.get('name', ''))
+            if city != '未知城市':
+                node['city'] = city
     
     print("\n" + "="*50)
     print("最终结果统计")
@@ -398,7 +442,7 @@ def save_nodes(nodes, filename="vpn_nodes.txt"):
             f.write(f"来源: {node.get('source', '未知')}\n")
             f.write(f"名称: {node.get('name', '未知')}\n")
             f.write(f"类型: {node.get('type', '未知')}\n")
-            f.write(f"城市: {node.get('city', '未知')}\n")
+            f.write(f"城市: {node.get('city', '未知城市')}\n")
             
             if 'server' in node and 'port' in node:
                 f.write(f"地址: {node['server']}:{node['port']}\n")
