@@ -1,6 +1,7 @@
 import requests
 import re
 import yaml
+import json
 from bs4 import BeautifulSoup
 from urllib.parse import urljoin, urlparse
 import time
@@ -78,6 +79,23 @@ def fetch_page(url, session=None, verify_ssl=False):
     
     raise Exception(f"无法获取页面: {url}")
 
+def extract_city_from_url(url):
+    """从URL中提取城市信息"""
+    try:
+        # 尝试从URL中提取城市信息
+        city_match = re.search(r'([\u4e00-\u9fa5]+)(?=[^/]*?\.(?:yaml|yml|txt|conf|ini|v2ray|ssr?|sub|list))', url)
+        if city_match:
+            return city_match.group(1)
+            
+        # 尝试从国家代码中提取
+        country_match = re.search(r'[\U0001F1E6-\U0001F1FF]{2}', url)
+        if country_match:
+            return country_match.group(0) + "节点"
+            
+    except Exception:
+        pass
+    return "未知城市"
+
 def extract_subscription_links(html, base_url):
     """从HTML中提取订阅链接"""
     soup = BeautifulSoup(html, 'html.parser')
@@ -104,6 +122,7 @@ def extract_subscription_links(html, base_url):
 def parse_subscription_content(content, source_url):
     """解析订阅内容文本 - 增强解析能力"""
     nodes = []
+    city = extract_city_from_url(source_url)
     
     # 1. 解析YAML格式内容
     try:
@@ -111,10 +130,11 @@ def parse_subscription_content(content, source_url):
         if data and isinstance(data, dict) and data.get('proxies'):
             for proxy in data['proxies']:
                 nodes.append({
-                    "name": proxy.get('name', 'Unknown'),
-                    "type": proxy.get('type', 'Unknown'),
-                    "server": proxy.get('server', 'Unknown'),
-                    "port": proxy.get('port', 'Unknown'),
+                    "name": proxy.get('name', '未知节点'),
+                    "type": proxy.get('type', 'unknown'),
+                    "server": proxy.get('server', ''),
+                    "port": str(proxy.get('port', '')),
+                    "city": city,
                     "source": source_url
                 })
     except:
@@ -128,6 +148,7 @@ def parse_subscription_content(content, source_url):
             "name": "VMess节点",
             "type": "vmess",
             "config": match,
+            "city": city,
             "source": source_url
         })
     
@@ -138,6 +159,7 @@ def parse_subscription_content(content, source_url):
             "name": "Shadowsocks节点",
             "type": "ss",
             "config": match,
+            "city": city,
             "source": source_url
         })
     
@@ -148,6 +170,7 @@ def parse_subscription_content(content, source_url):
             "name": "Trojan节点",
             "type": "trojan",
             "config": match,
+            "city": city,
             "source": source_url
         })
     
@@ -159,6 +182,7 @@ def parse_subscription_content(content, source_url):
             "type": "unknown",
             "server": ip,
             "port": port,
+            "city": city,
             "source": source_url
         })
     
@@ -181,12 +205,14 @@ def parse_subscription(url, session=None):
             data = yaml.safe_load(content)
             if data and isinstance(data, dict) and data.get('proxies'):
                 nodes = []
+                city = extract_city_from_url(url)
                 for proxy in data['proxies']:
                     nodes.append({
-                        "name": proxy.get('name', 'Unknown'),
-                        "type": proxy.get('type', 'Unknown'),
-                        "server": proxy.get('server', 'Unknown'),
-                        "port": proxy.get('port', 'Unknown'),
+                        "name": proxy.get('name', '未知节点'),
+                        "type": proxy.get('type', 'unknown'),
+                        "server": proxy.get('server', ''),
+                        "port": str(proxy.get('port', '')),
+                        "city": city,
                         "source": url
                     })
                 print(f"✅ 从YAML订阅解析出 {len(nodes)} 个节点")
@@ -338,6 +364,11 @@ def fetch_all_sources():
             seen.add(identifier)
             unique_nodes.append(node)
     
+    # 确保所有节点都有城市字段
+    for node in unique_nodes:
+        if 'city' not in node or not node['city']:
+            node['city'] = extract_city_from_url(node.get('source', ''))
+    
     print("\n" + "="*50)
     print("最终结果统计")
     print("="*50)
@@ -367,6 +398,7 @@ def save_nodes(nodes, filename="vpn_nodes.txt"):
             f.write(f"来源: {node.get('source', '未知')}\n")
             f.write(f"名称: {node.get('name', '未知')}\n")
             f.write(f"类型: {node.get('type', '未知')}\n")
+            f.write(f"城市: {node.get('city', '未知')}\n")
             
             if 'server' in node and 'port' in node:
                 f.write(f"地址: {node['server']}:{node['port']}\n")
