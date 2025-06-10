@@ -59,3 +59,18 @@ jobs:
         FTP_USER: ${{ secrets.FTP_USER }}
         FTP_PASS: ${{ secrets.FTP_PASS }}
       run: python ftp_upload.py
+      
+    - name: 清除 Cloudflare 缓存
+      env:
+        CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+        ZONE_ID: ${{ secrets.CLOUDFLARE_ZONE_ID }}
+      run: |
+        if [ -n "$CLOUDFLARE_API_TOKEN" ] && [ -n "$ZONE_ID" ]; then
+          echo "清除 Cloudflare 缓存..."
+          curl -X POST "https://api.cloudflare.com/client/v4/zones/${ZONE_ID}/purge_cache" \
+            -H "Authorization: Bearer ${CLOUDFLARE_API_TOKEN}" \
+            -H "Content-Type: application/json" \
+            --data '{"files":["https://cloakaccess.com/nodes.json"]}'
+        else
+          echo "跳过 Cloudflare 缓存清除，缺少必要环境变量"
+        fi
