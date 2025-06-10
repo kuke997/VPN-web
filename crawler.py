@@ -19,17 +19,32 @@ def main():
         print("⚠️ 未获取到任何节点，退出。")
         sys.exit(1)
 
+    # 数据清洗：确保字段一致性
+    cleaned_nodes = []
+    for node in nodes:
+        # 统一字段命名
+        if 'address' in node and 'server' not in node:
+            node['server'] = node.pop('address')
+        if 'protocol' in node and 'type' not in node:
+            node['type'] = node.pop('protocol')
+        
+        # 确保必要字段存在
+        node.setdefault('city', '未知城市')
+        node.setdefault('type', 'unknown')
+        node.setdefault('source', '未知来源')
+        
+        # 特殊处理：转换IP:PORT格式
+        if not node.get('config') and node.get('server') and node.get('port'):
+            node['name'] = node.get('name') or f"{node['server']}:{node['port']}"
+        
+        cleaned_nodes.append(node)
+    
     os.makedirs("output", exist_ok=True)
     output_path = os.path.join("output", "nodes.json")
     
-    # 保存前确保数据有效
-    if not isinstance(nodes, list):
-        print(f"⚠️ 节点数据格式错误: {type(nodes)}")
-        nodes = []
-    
     # 保存节点数据
     with open(output_path, "w", encoding="utf-8") as f:
-        json.dump(nodes, f, ensure_ascii=False, indent=2)
+        json.dump(cleaned_nodes, f, ensure_ascii=False, indent=2)
     
     # 检查文件是否成功写入
     if os.path.exists(output_path):
@@ -50,7 +65,7 @@ def main():
         sys.exit(1)
     
     elapsed = time.time() - start_time
-    print(f"✅ 共 {len(nodes)} 条节点，耗时 {elapsed:.2f} 秒")
+    print(f"✅ 共 {len(cleaned_nodes)} 条节点，耗时 {elapsed:.2f} 秒")
 
 if __name__ == "__main__":
     main()
