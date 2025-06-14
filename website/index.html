@@ -1,1259 +1,987 @@
 <!DOCTYPE html>
 <html lang="zh-CN">
 <head>
-  <meta charset="UTF-8">
-  <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>CloakAccess - 免费VPN节点服务</title>
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-  <style>
-    :root {
-      --primary: #2e86de;
-      --secondary: #10ac84;
-      --dark: #1e272e;
-      --darker: #1a2228;
-      --light: #f5f6fa;
-      --gray: #808e9b;
-      --success: #0be881;
-      --warning: #ffdd59;
-      --danger: #ff5e57;
-    }
-    
-    * {
-      margin: 0;
-      padding: 0;
-      box-sizing: border-box;
-      font-family: 'Segoe UI', 'SF Pro Display', -apple-system, BlinkMacSystemFont, sans-serif;
-    }
-    
-    body {
-      background: linear-gradient(135deg, var(--darker) 0%, #1c2b36 100%);
-      color: var(--light);
-      line-height: 1.6;
-      min-height: 100vh;
-    }
-    
-    .container {
-      max-width: 1200px;
-      margin: 0 auto;
-      padding: 0 20px;
-    }
-    
-    /* 头部样式 */
-    header {
-      background: linear-gradient(135deg, var(--dark), var(--darker));
-      padding: 15px 0;
-      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
-      position: sticky;
-      top: 0;
-      z-index: 100;
-    }
-    
-    .header-content {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-    }
-    
-    .logo {
-      display: flex;
-      align-items: center;
-      gap: 12px;
-    }
-    
-    .logo-icon {
-      font-size: 28px;
-      color: var(--primary);
-    }
-    
-    .logo-text {
-      font-size: 24px;
-      font-weight: 700;
-      background: linear-gradient(90deg, var(--primary), var(--secondary));
-      -webkit-background-clip: text;
-      background-clip: text;
-      -webkit-text-fill-color: transparent;
-    }
-    
-    .nav-links {
-      display: flex;
-      gap: 30px;
-    }
-    
-    .nav-links a {
-      color: var(--light);
-      text-decoration: none;
-      font-weight: 500;
-      font-size: 16px;
-      transition: color 0.3s;
-      position: relative;
-    }
-    
-    .nav-links a:hover {
-      color: var(--primary);
-    }
-    
-    .nav-links a::after {
-      content: '';
-      position: absolute;
-      bottom: -5px;
-      left: 0;
-      width: 0;
-      height: 2px;
-      background: var(--primary);
-      transition: width 0.3s;
-    }
-    
-    .nav-links a:hover::after {
-      width: 100%;
-    }
-    
-    /* 英雄区域 */
-    .hero {
-      background: linear-gradient(135deg, #1a2228 0%, #2c3e50 100%);
-      padding: 100px 0;
-      text-align: center;
-      position: relative;
-      overflow: hidden;
-    }
-    
-    .hero::before {
-      content: '';
-      position: absolute;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      background: 
-        radial-gradient(circle at 20% 30%, rgba(46, 134, 222, 0.15) 0%, transparent 40%),
-        radial-gradient(circle at 80% 70%, rgba(16, 172, 132, 0.15) 0%, transparent 40%);
-      z-index: 1;
-    }
-    
-    .hero-content {
-      position: relative;
-      z-index: 2;
-    }
-    
-    .hero h1 {
-      font-size: 3.5rem;
-      margin-bottom: 20px;
-      background: linear-gradient(90deg, var(--primary), var(--secondary));
-      -webkit-background-clip: text;
-      background-clip: text;
-      -webkit-text-fill-color: transparent;
-      text-shadow: 0 2px 10px rgba(0,0,0,0.2);
-    }
-    
-    .hero p {
-      font-size: 1.4rem;
-      max-width: 800px;
-      margin: 0 auto 30px;
-      color: #dcdde1;
-    }
-    
-    .cta-buttons {
-      display: flex;
-      justify-content: center;
-      gap: 20px;
-      margin-top: 40px;
-    }
-    
-    .btn {
-      padding: 16px 40px;
-      border-radius: 50px;
-      font-weight: 600;
-      font-size: 1.1rem;
-      cursor: pointer;
-      transition: all 0.3s;
-      border: none;
-      outline: none;
-      display: inline-flex;
-      align-items: center;
-      gap: 10px;
-    }
-    
-    .btn-primary {
-      background: linear-gradient(90deg, var(--primary), var(--secondary));
-      color: white;
-      box-shadow: 0 4px 15px rgba(46, 134, 222, 0.4);
-    }
-    
-    .btn-primary:hover {
-      transform: translateY(-3px);
-      box-shadow: 0 6px 20px rgba(46, 134, 222, 0.6);
-    }
-    
-    .btn-secondary {
-      background: rgba(255, 255, 255, 0.1);
-      backdrop-filter: blur(10px);
-      color: white;
-      border: 1px solid rgba(255, 255, 255, 0.2);
-    }
-    
-    .btn-secondary:hover {
-      background: rgba(255, 255, 255, 0.2);
-    }
-    
-    /* 筛选区域 */
-    .filters {
-      background: rgba(30, 39, 46, 0.8);
-      padding: 25px 0;
-      backdrop-filter: blur(10px);
-      border-bottom: 1px solid rgba(255, 255, 255, 0.05);
-    }
-    
-    .filter-row {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-    }
-    
-    .filter-group {
-      display: flex;
-      gap: 15px;
-      flex-wrap: wrap;
-    }
-    
-    .filter-btn {
-      padding: 12px 24px;
-      background: rgba(255, 255, 255, 0.08);
-      border-radius: 50px;
-      color: var(--light);
-      font-size: 16px;
-      cursor: pointer;
-      transition: all 0.3s;
-      border: 1px solid rgba(255, 255, 255, 0.1);
-    }
-    
-    .filter-btn:hover, .filter-btn.active {
-      background: var(--primary);
-      border-color: var(--primary);
-    }
-    
-    .search-box {
-      position: relative;
-      width: 300px;
-    }
-    
-    .search-box input {
-      width: 100%;
-      padding: 14px 20px 14px 50px;
-      border-radius: 50px;
-      background: rgba(0, 0, 0, 0.3);
-      border: 1px solid rgba(255, 255, 255, 0.1);
-      color: white;
-      font-size: 16px;
-      transition: all 0.3s;
-    }
-    
-    .search-box input:focus {
-      border-color: var(--primary);
-      box-shadow: 0 0 0 3px rgba(46, 134, 222, 0.3);
-      outline: none;
-    }
-    
-    .search-box i {
-      position: absolute;
-      left: 20px;
-      top: 50%;
-      transform: translateY(-50%);
-      color: var(--gray);
-      font-size: 18px;
-    }
-    
-    /* 节点卡片区域 */
-    .nodes-container {
-      padding: 60px 0;
-    }
-    
-    .section-title {
-      text-align: center;
-      font-size: 2.5rem;
-      margin-bottom: 40px;
-      color: white;
-      position: relative;
-    }
-    
-    .section-title::after {
-      content: '';
-      position: absolute;
-      bottom: -15px;
-      left: 50%;
-      transform: translateX(-50%);
-      width: 80px;
-      height: 4px;
-      background: linear-gradient(90deg, var(--primary), var(--secondary));
-      border-radius: 2px;
-    }
-    
-    .stats {
-      display: flex;
-      justify-content: space-between;
-      margin-bottom: 40px;
-      padding: 20px;
-      background: rgba(0, 0, 0, 0.2);
-      border-radius: 12px;
-      border: 1px solid rgba(255, 255, 255, 0.05);
-    }
-    
-    .stat-item {
-      text-align: center;
-      flex: 1;
-    }
-    
-    .stat-value {
-      font-size: 2.2rem;
-      font-weight: 700;
-      color: var(--primary);
-      margin-bottom: 5px;
-    }
-    
-    .stat-label {
-      font-size: 1rem;
-      color: var(--gray);
-      letter-spacing: 1px;
-    }
-    
-    .nodes-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
-      gap: 30px;
-    }
-    
-    .node-card {
-      background: linear-gradient(145deg, #222d36, #1a2228);
-      border-radius: 15px;
-      overflow: hidden;
-      box-shadow: 0 10px 20px rgba(0, 0, 0, 0.3);
-      transition: transform 0.3s, box-shadow 0.3s;
-      border: 1px solid rgba(255, 255, 255, 0.05);
-    }
-    
-    .node-card:hover {
-      transform: translateY(-10px);
-      box-shadow: 0 15px 30px rgba(0, 0, 0, 0.4);
-      border-color: rgba(46, 134, 222, 0.3);
-    }
-    
-    .card-header {
-      padding: 25px;
-      background: rgba(0, 0, 0, 0.2);
-      border-bottom: 1px solid rgba(255, 255, 255, 0.05);
-    }
-    
-    .node-name {
-      font-size: 1.4rem;
-      font-weight: 600;
-      margin-bottom: 10px;
-      display: flex;
-      align-items: center;
-      gap: 10px;
-    }
-    
-    .node-name i {
-      color: var(--primary);
-    }
-    
-    .node-type {
-      display: inline-block;
-      padding: 6px 15px;
-      border-radius: 20px;
-      font-size: 14px;
-      font-weight: 600;
-      background: rgba(46, 134, 222, 0.2);
-      color: var(--primary);
-    }
-    
-    .card-body {
-      padding: 25px;
-    }
-    
-    .node-info {
-      display: flex;
-      margin-bottom: 20px;
-    }
-    
-    .info-item {
-      flex: 1;
-      text-align: center;
-      padding: 10px;
-    }
-    
-    .info-label {
-      font-size: 14px;
-      color: var(--gray);
-      margin-bottom: 8px;
-    }
-    
-    .info-value {
-      font-size: 18px;
-      font-weight: 600;
-    }
-    
-    .info-value.country {
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      gap: 10px;
-    }
-    
-    .flag {
-      width: 28px;
-      height: 28px;
-      border-radius: 50%;
-      background: #eee;
-      display: inline-flex;
-      align-items: center;
-      justify-content: center;
-      overflow: hidden;
-      font-size: 16px;
-    }
-    
-    .divider {
-      height: 50px;
-      width: 1px;
-      background: rgba(255, 255, 255, 0.1);
-      margin: 0 15px;
-      align-self: center;
-    }
-    
-    .card-footer {
-      padding: 20px;
-      background: rgba(0, 0, 0, 0.2);
-      display: flex;
-      justify-content: space-between;
-      gap: 15px;
-    }
-    
-    .action-btn {
-      padding: 12px 25px;
-      border-radius: 8px;
-      font-weight: 500;
-      font-size: 16px;
-      cursor: pointer;
-      transition: all 0.3s;
-      border: none;
-      display: flex;
-      align-items: center;
-      gap: 10px;
-      flex: 1;
-      justify-content: center;
-    }
-    
-    .btn-download {
-      background: linear-gradient(90deg, var(--primary), #1e90ff);
-      color: white;
-    }
-    
-    .btn-copy {
-      background: rgba(255, 255, 255, 0.1);
-      color: white;
-    }
-    
-    .btn-download:hover {
-      background: linear-gradient(90deg, #1e90ff, var(--primary));
-      transform: translateY(-2px);
-    }
-    
-    .btn-copy:hover {
-      background: rgba(255, 255, 255, 0.2);
-      transform: translateY(-2px);
-    }
-    
-    /* 特性区域 */
-    .features {
-      padding: 80px 0;
-      background: linear-gradient(135deg, #1a2228 0%, #222d36 100%);
-    }
-    
-    .features-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-      gap: 35px;
-    }
-    
-    .feature-card {
-      background: rgba(30, 39, 46, 0.6);
-      border-radius: 15px;
-      padding: 40px 30px;
-      text-align: center;
-      transition: transform 0.3s, box-shadow 0.3s;
-      border: 1px solid rgba(255, 255, 255, 0.05);
-    }
-    
-    .feature-card:hover {
-      transform: translateY(-10px);
-      background: rgba(30, 39, 46, 0.8);
-      box-shadow: 0 15px 30px rgba(0, 0, 0, 0.3);
-    }
-    
-    .feature-icon {
-      font-size: 54px;
-      color: var(--primary);
-      margin-bottom: 25px;
-      transition: transform 0.3s;
-    }
-    
-    .feature-card:hover .feature-icon {
-      transform: scale(1.1);
-    }
-    
-    .feature-title {
-      font-size: 1.8rem;
-      margin-bottom: 20px;
-      color: white;
-    }
-    
-    .feature-desc {
-      color: #b2bec3;
-      font-size: 1.1rem;
-      line-height: 1.7;
-    }
-    
-    /* 页脚 */
-    footer {
-      background: var(--dark);
-      padding: 70px 0 30px;
-      border-top: 1px solid rgba(255, 255, 255, 0.05);
-    }
-    
-    .footer-content {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-      gap: 50px;
-      margin-bottom: 50px;
-    }
-    
-    .footer-column h3 {
-      font-size: 1.6rem;
-      margin-bottom: 25px;
-      position: relative;
-      padding-bottom: 15px;
-    }
-    
-    .footer-column h3::after {
-      content: '';
-      position: absolute;
-      bottom: 0;
-      left: 0;
-      width: 50px;
-      height: 3px;
-      background: var(--primary);
-      border-radius: 2px;
-    }
-    
-    .footer-links {
-      list-style: none;
-    }
-    
-    .footer-links li {
-      margin-bottom: 15px;
-    }
-    
-    .footer-links a {
-      color: #b2bec3;
-      text-decoration: none;
-      transition: color 0.3s;
-      display: flex;
-      align-items: center;
-      gap: 10px;
-      font-size: 1.1rem;
-    }
-    
-    .footer-links a:hover {
-      color: var(--primary);
-    }
-    
-    .social-links a {
-      display: inline-flex;
-      align-items: center;
-      justify-content: center;
-      width: 45px;
-      height: 45px;
-      border-radius: 50%;
-      background: rgba(255, 255, 255, 0.1);
-      color: white;
-      font-size: 1.3rem;
-      margin-right: 15px;
-      transition: all 0.3s;
-    }
-    
-    .social-links a:hover {
-      background: var(--primary);
-      transform: translateY(-3px);
-    }
-    
-    .copyright {
-      text-align: center;
-      padding-top: 30px;
-      border-top: 1px solid rgba(255, 255, 255, 0.05);
-      color: var(--gray);
-      font-size: 1rem;
-    }
-    
-    /* 响应式设计 */
-    @media (max-width: 992px) {
-      .nodes-grid {
-        grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
-      }
-      
-      .hero h1 {
-        font-size: 2.8rem;
-      }
-      
-      .section-title {
-        font-size: 2.2rem;
-      }
-    }
-    
-    @media (max-width: 768px) {
-      .header-content {
-        flex-direction: column;
-        gap: 20px;
-      }
-      
-      .nav-links {
-        gap: 15px;
-        flex-wrap: wrap;
-        justify-content: center;
-      }
-      
-      .filter-row {
-        flex-direction: column;
-        gap: 20px;
-      }
-      
-      .search-box {
-        width: 100%;
-      }
-      
-      .stats {
-        flex-direction: column;
-        gap: 30px;
-      }
-      
-      .cta-buttons {
-        flex-direction: column;
-        align-items: center;
-      }
-      
-      .hero h1 {
-        font-size: 2.2rem;
-      }
-      
-      .hero p {
-        font-size: 1.1rem;
-      }
-      
-      .feature-title {
-        font-size: 1.5rem;
-      }
-    }
-    
-    @media (max-width: 480px) {
-      .node-card {
-        max-width: 100%;
-      }
-      
-      .nodes-grid {
-        grid-template-columns: 1fr;
-      }
-      
-      .hero {
-        padding: 70px 0;
-      }
-      
-      .section-title {
-        font-size: 1.8rem;
-      }
-      
-      .filter-btn {
-        padding: 10px 15px;
-        font-size: 14px;
-      }
-    }
-    
-    /* 动画 */
-    @keyframes fadeIn {
-      from { opacity: 0; transform: translateY(20px); }
-      to { opacity: 1; transform: translateY(0); }
-    }
-    
-    .fade-in {
-      animation: fadeIn 0.8s ease forwards;
-    }
-    
-    .delay-1 { animation-delay: 0.1s; }
-    .delay-2 { animation-delay: 0.2s; }
-    .delay-3 { animation-delay: 0.3s; }
-    .delay-4 { animation-delay: 0.4s; }
-    .delay-5 { animation-delay: 0.5s; }
-    .delay-6 { animation-delay: 0.6s; }
-    
-    @keyframes spin {
-      0% { transform: rotate(0deg); }
-      100% { transform: rotate(360deg); }
-    }
-  </style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CloakAccess - 免费VPN节点服务</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary: #6366f1;
+            --primary-dark: #4f46e5;
+            --secondary: #10b981;
+            --dark: #1e293b;
+            --darker: #0f172a;
+            --light: #f1f5f9;
+            --gray: #94a3b8;
+            --success: #10b981;
+            --danger: #ef4444;
+            --warning: #f59e0b;
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Inter', sans-serif;
+            background: linear-gradient(to bottom right, #0f172a, #1e293b);
+            color: #e2e8f0;
+            line-height: 1.6;
+            min-height: 100vh;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+        
+        /* 头部样式 */
+        header {
+            padding: 20px 0;
+            background: rgba(15, 23, 42, 0.8);
+            backdrop-filter: blur(10px);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        
+        .header-inner {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: white;
+            text-decoration: none;
+        }
+        
+        .logo i {
+            color: var(--primary);
+        }
+        
+        nav ul {
+            display: flex;
+            list-style: none;
+            gap: 30px;
+        }
+        
+        nav a {
+            color: var(--gray);
+            text-decoration: none;
+            font-weight: 500;
+            transition: color 0.3s;
+            font-size: 1rem;
+        }
+        
+        nav a:hover, nav a.active {
+            color: white;
+        }
+        
+        .btn {
+            display: inline-block;
+            padding: 10px 20px;
+            background: var(--primary);
+            color: white;
+            border-radius: 8px;
+            text-decoration: none;
+            font-weight: 500;
+            transition: all 0.3s;
+            border: none;
+            cursor: pointer;
+            font-size: 0.9rem;
+        }
+        
+        .btn:hover {
+            background: var(--primary-dark);
+            transform: translateY(-2px);
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+        
+        .btn-outline {
+            background: transparent;
+            border: 1px solid var(--primary);
+            color: var(--primary);
+        }
+        
+        .btn-outline:hover {
+            background: rgba(99, 102, 241, 0.1);
+        }
+        
+        /* 英雄区域 */
+        .hero {
+            padding: 80px 0 60px;
+            text-align: center;
+            max-width: 800px;
+            margin: 0 auto;
+        }
+        
+        .hero h1 {
+            font-size: 3.5rem;
+            font-weight: 800;
+            line-height: 1.2;
+            margin-bottom: 20px;
+            background: linear-gradient(to right, #e0e7ff, #c7d2fe);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+        }
+        
+        .hero p {
+            font-size: 1.2rem;
+            color: #cbd5e1;
+            margin-bottom: 30px;
+            max-width: 600px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+        
+        .hero-btns {
+            display: flex;
+            gap: 15px;
+            justify-content: center;
+            margin-top: 30px;
+        }
+        
+        /* 特性区域 */
+        .features {
+            padding: 80px 0;
+        }
+        
+        .section-title {
+            text-align: center;
+            font-size: 2.5rem;
+            margin-bottom: 60px;
+            font-weight: 700;
+            color: white;
+        }
+        
+        .features-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 30px;
+        }
+        
+        .feature-card {
+            background: rgba(30, 41, 59, 0.6);
+            border-radius: 16px;
+            padding: 30px;
+            transition: transform 0.3s;
+            border: 1px solid rgba(255, 255, 255, 0.05);
+        }
+        
+        .feature-card:hover {
+            transform: translateY(-10px);
+            border-color: rgba(99, 102, 241, 0.3);
+        }
+        
+        .feature-icon {
+            width: 60px;
+            height: 60px;
+            background: rgba(79, 70, 229, 0.1);
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 20px;
+        }
+        
+        .feature-icon i {
+            font-size: 24px;
+            color: var(--primary);
+        }
+        
+        .feature-card h3 {
+            font-size: 1.5rem;
+            margin-bottom: 15px;
+            color: white;
+        }
+        
+        /* 节点列表 */
+        .nodes-section {
+            padding: 80px 0;
+        }
+        
+        .filters {
+            display: flex;
+            gap: 15px;
+            margin-bottom: 30px;
+            flex-wrap: wrap;
+        }
+        
+        .filter-btn {
+            padding: 8px 16px;
+            background: rgba(30, 41, 59, 0.6);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 8px;
+            color: #cbd5e1;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        
+        .filter-btn.active, .filter-btn:hover {
+            background: var(--primary);
+            color: white;
+            border-color: var(--primary);
+        }
+        
+        .nodes-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 25px;
+        }
+        
+        .node-card {
+            background: rgba(30, 41, 59, 0.6);
+            border-radius: 16px;
+            padding: 25px;
+            position: relative;
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            transition: all 0.3s;
+        }
+        
+        .node-card.recommended {
+            border-color: var(--success);
+            box-shadow: 0 0 0 2px rgba(16, 185, 129, 0.3);
+        }
+        
+        .node-card:hover {
+            border-color: rgba(99, 102, 241, 0.3);
+            transform: translateY(-5px);
+        }
+        
+        .node-status {
+            display: flex;
+            align-items: center;
+            margin-bottom: 15px;
+            font-size: 0.85rem;
+        }
+        
+        .status-indicator {
+            display: inline-block;
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            margin-right: 6px;
+        }
+        
+        .status-indicator.active {
+            background-color: var(--success);
+        }
+        
+        .status-indicator.inactive {
+            background-color: var(--danger);
+        }
+        
+        .last-checked {
+            margin-left: auto;
+            color: var(--gray);
+            font-size: 0.75rem;
+        }
+        
+        .node-name {
+            font-size: 1.25rem;
+            margin-bottom: 10px;
+            color: white;
+        }
+        
+        .node-meta {
+            display: flex;
+            gap: 15px;
+            margin-bottom: 20px;
+            font-size: 0.9rem;
+            color: var(--gray);
+        }
+        
+        .node-meta span {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+        
+        .node-actions {
+            display: flex;
+            gap: 10px;
+        }
+        
+        .node-actions .btn {
+            flex: 1;
+            padding: 8px 10px;
+            font-size: 0.85rem;
+            text-align: center;
+        }
+        
+        /* 客户端下载 */
+        .clients-section {
+            padding: 80px 0;
+        }
+        
+        .clients-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 30px;
+            margin-top: 40px;
+        }
+        
+        .client-card {
+            background: rgba(30, 41, 59, 0.6);
+            border-radius: 16px;
+            padding: 25px;
+            text-align: center;
+            transition: transform 0.3s;
+            border: 1px solid rgba(255, 255, 255, 0.05);
+        }
+        
+        .client-card:hover {
+            transform: translateY(-5px);
+            border-color: rgba(99, 102, 241, 0.3);
+        }
+        
+        .client-card img {
+            width: 80px;
+            height: 80px;
+            margin-bottom: 15px;
+        }
+        
+        .client-card h3 {
+            margin-bottom: 15px;
+            color: white;
+        }
+        
+        /* 教程区域 */
+        .tutorial-section {
+            padding: 80px 0;
+        }
+        
+        .tutorial-steps {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+            margin: 40px 0;
+        }
+        
+        .step {
+            text-align: center;
+            padding: 25px;
+            background: rgba(30, 41, 59, 0.6);
+            border-radius: 16px;
+            transition: all 0.3s;
+            border: 1px solid rgba(255, 255, 255, 0.05);
+        }
+        
+        .step:hover {
+            transform: translateY(-5px);
+            border-color: rgba(99, 102, 241, 0.3);
+        }
+        
+        .step-number {
+            width: 40px;
+            height: 40px;
+            background: var(--primary);
+            color: white;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            margin: 0 auto 15px;
+        }
+        
+        .step h3 {
+            margin-bottom: 10px;
+            color: white;
+        }
+        
+        .video-tutorial {
+            margin-top: 50px;
+        }
+        
+        .video-placeholder {
+            width: 100%;
+            height: 400px;
+            background: linear-gradient(to right, #1e293b, #0f172a);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            border-radius: 16px;
+            cursor: pointer;
+            position: relative;
+            overflow: hidden;
+            border: 1px solid rgba(255, 255, 255, 0.05);
+        }
+        
+        .video-placeholder i {
+            font-size: 80px;
+            color: var(--primary);
+            margin-bottom: 20px;
+            z-index: 2;
+        }
+        
+        .video-placeholder p {
+            font-size: 1.5rem;
+            color: white;
+            z-index: 2;
+        }
+        
+        .video-placeholder::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: radial-gradient(circle, rgba(99, 102, 241, 0.1) 0%, transparent 70%);
+            z-index: 1;
+        }
+        
+        /* 页脚 */
+        footer {
+            padding: 60px 0 30px;
+            background: rgba(15, 23, 42, 0.8);
+            margin-top: 60px;
+            border-top: 1px solid rgba(255, 255, 255, 0.05);
+        }
+        
+        .footer-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 40px;
+            margin-bottom: 40px;
+        }
+        
+        .footer-col h3 {
+            font-size: 1.2rem;
+            margin-bottom: 20px;
+            color: white;
+        }
+        
+        .footer-col ul {
+            list-style: none;
+        }
+        
+        .footer-col ul li {
+            margin-bottom: 10px;
+        }
+        
+        .footer-col a {
+            color: var(--gray);
+            text-decoration: none;
+            transition: color 0.3s;
+        }
+        
+        .footer-col a:hover {
+            color: white;
+        }
+        
+        .copyright {
+            text-align: center;
+            padding-top: 30px;
+            color: var(--gray);
+            font-size: 0.9rem;
+            border-top: 1px solid rgba(255, 255, 255, 0.05);
+        }
+        
+        /* 响应式调整 */
+        @media (max-width: 768px) {
+            .header-inner {
+                flex-direction: column;
+                gap: 20px;
+            }
+            
+            nav ul {
+                gap: 15px;
+                flex-wrap: wrap;
+                justify-content: center;
+            }
+            
+            .hero h1 {
+                font-size: 2.5rem;
+            }
+            
+            .hero-btns {
+                flex-direction: column;
+                align-items: center;
+            }
+        }
+    </style>
 </head>
 <body>
-  <!-- 头部导航 -->
-  <header>
-    <div class="container">
-      <div class="header-content">
-        <div class="logo">
-          <div class="logo-icon">
-            <i class="fas fa-shield-alt"></i>
-          </div>
-          <div class="logo-text">CloakAccess</div>
-        </div>
-        <nav class="nav-links">
-          <a href="#"><i class="fas fa-home"></i> 首页</a>
-          <a href="#nodes"><i class="fas fa-server"></i> 节点列表</a>
-          <a href="#features"><i class="fas fa-rocket"></i> 服务优势</a>
-          <a href="#"><i class="fas fa-question-circle"></i> 帮助中心</a>
-          <a href="#"><i class="fas fa-user"></i> 用户面板</a>
-        </nav>
-      </div>
-    </div>
-  </header>
-
-  <!-- 英雄区域 -->
-  <section class="hero">
-    <div class="container hero-content">
-      <h1 class="fade-in">保护您的隐私，安全自由访问互联网</h1>
-      <p class="fade-in delay-1">CloakAccess 提供高质量的免费VPN节点服务，让您绕过地理限制，保护在线隐私，享受真正的互联网自由</p>
-      <div class="cta-buttons fade-in delay-2">
-        <button class="btn btn-primary" id="cta-btn">
-          <i class="fas fa-bolt"></i> 获取免费节点
-        </button>
-        <button class="btn btn-secondary">
-          <i class="fas fa-book"></i> 使用教程
-        </button>
-      </div>
-    </div>
-  </section>
-
-  <!-- 筛选区域 -->
-  <section class="filters">
-    <div class="container">
-      <div class="filter-row">
-        <div class="filter-group">
-          <button class="filter-btn active" data-filter="all">全部节点</button>
-          <button class="filter-btn" data-filter="vmess">VMess</button>
-          <button class="filter-btn" data-filter="ss">Shadowsocks</button>
-          <button class="filter-btn" data-filter="trojan">Trojan</button>
-        </div>
-        <div class="filter-group">
-          <button class="filter-btn" data-filter="china">中国</button>
-          <button class="filter-btn" data-filter="usa">美国</button>
-          <button class="filter-btn" data-filter="japan">日本</button>
-          <button class="filter-btn" data-filter="singapore">新加坡</button>
-        </div>
-        <div class="search-box">
-          <i class="fas fa-search"></i>
-          <input type="text" id="node-search" placeholder="搜索节点...">
-        </div>
-      </div>
-    </div>
-  </section>
-
-  <!-- 节点列表区域 -->
-  <section class="nodes-container" id="nodes">
-    <div class="container">
-      <h2 class="section-title">全球节点列表</h2>
-      
-      <div class="stats">
-        <div class="stat-item">
-          <div class="stat-value" id="total-nodes">0</div>
-          <div class="stat-label">可用节点</div>
-        </div>
-        <div class="stat-item">
-          <div class="stat-value" id="countries">0</div>
-          <div class="stat-label">国家/地区</div>
-        </div>
-        <div class="stat-item">
-          <div class="stat-value" id="protocols">0</div>
-          <div class="stat-label">协议类型</div>
-        </div>
-        <div class="stat-item">
-          <div class="stat-value">24/7</div>
-          <div class="stat-label">服务在线</div>
-        </div>
-      </div>
-      
-      <!-- 加载状态 -->
-      <div class="loading-container" id="loading" style="display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 40px; background: rgba(0,0,0,0.2); border-radius: 12px;">
-        <div style="border: 4px solid rgba(255,255,255,0.1); border-top: 4px solid var(--primary); border-radius: 50%; width: 40px; height: 40px; animation: spin 1s linear infinite;"></div>
-        <p style="margin-top: 20px;">正在加载节点数据，请稍候...</p>
-      </div>
-      
-      <div class="nodes-grid" id="server-list"></div>
-    </div>
-  </section>
-
-  <!-- 特性区域 -->
-  <section class="features" id="features">
-    <div class="container">
-      <h2 class="section-title">我们的优势</h2>
-      <div class="features-grid">
-        <div class="feature-card fade-in delay-1">
-          <div class="feature-icon">
-            <i class="fas fa-bolt"></i>
-          </div>
-          <h3 class="feature-title">高速稳定</h3>
-          <p class="feature-desc">我们使用高速服务器和优化网络，确保您的连接稳定快速，无延迟卡顿。</p>
-        </div>
-        
-        <div class="feature-card fade-in delay-2">
-          <div class="feature-icon">
-            <i class="fas fa-lock"></i>
-          </div>
-          <h3 class="feature-title">安全加密</h3>
-          <p class="feature-desc">采用军用级加密技术，保护您的数据安全，防止黑客攻击和网络监控。</p>
-        </div>
-        
-        <div class="feature-card fade-in delay-3">
-          <div class="feature-icon">
-            <i class="fas fa-globe"></i>
-          </div>
-          <h3 class="feature-title">全球覆盖</h3>
-          <p class="feature-desc">遍布全球的服务器节点，让您可以访问任何地区的内容，突破地理限制。</p>
-        </div>
-        
-        <div class="feature-card fade-in delay-4">
-          <div class="feature-icon">
-            <i class="fas fa-user-shield"></i>
-          </div>
-          <h3 class="feature-title">隐私保护</h3>
-          <p class="feature-desc">严格的无日志政策，确保您的在线活动不会被记录，真正保护您的隐私。</p>
-        </div>
-        
-        <div class="feature-card fade-in delay-5">
-          <div class="feature-icon">
-            <i class="fas fa-plug"></i>
-          </div>
-          <h3 class="feature-title">多平台支持</h3>
-          <p class="feature-desc">支持Windows、Mac、iOS、Android等多种平台，随时随地保护您的连接。</p>
-        </div>
-        
-        <div class="feature-card fade-in delay-6">
-          <div class="feature-icon">
-            <i class="fas fa-infinity"></i>
-          </div>
-          <h3 class="feature-title">无限流量</h3>
-          <p class="feature-desc">所有节点均提供无限流量，无需担心使用限制，尽情享受网络自由。</p>
-        </div>
-      </div>
-    </div>
-  </section>
-
-  <!-- 页脚 -->
-  <footer>
-    <div class="container">
-      <div class="footer-content">
-        <div class="footer-column">
-          <h3>关于我们</h3>
-          <p style="color: #b2bec3; margin-bottom: 25px; line-height: 1.7;">CloakAccess致力于提供高质量的免费VPN服务，让每个人都能安全自由地访问互联网。我们坚持隐私至上、安全可靠的原则，为用户提供卓越的网络体验。</p>
-          <div class="social-links">
-            <a href="#"><i class="fab fa-telegram"></i></a>
-            <a href="#"><i class="fab fa-twitter"></i></a>
-            <a href="#"><i class="fab fa-github"></i></a>
-            <a href="#"><i class="fab fa-discord"></i></a>
-          </div>
-        </div>
-        
-        <div class="footer-column">
-          <h3>快速链接</h3>
-          <ul class="footer-links">
-            <li><a href="#"><i class="fas fa-chevron-right"></i> 首页</a></li>
-            <li><a href="#nodes"><i class="fas fa-chevron-right"></i> 节点列表</a></li>
-            <li><a href="#"><i class="fas fa-chevron-right"></i> 免费体验</a></li>
-            <li><a href="#"><i class="fas fa-chevron-right"></i> 使用教程</a></li>
-            <li><a href="#"><i class="fas fa-chevron-right"></i> 用户面板</a></li>
-          </ul>
-        </div>
-        
-        <div class="footer-column">
-          <h3>服务支持</h3>
-          <ul class="footer-links">
-            <li><a href="#"><i class="fas fa-chevron-right"></i> 帮助中心</a></li>
-            <li><a href="#"><i class="fas fa-chevron-right"></i> 常见问题</a></li>
-            <li><a href="#"><i class="fas fa-chevron-right"></i> 服务状态</a></li>
-            <li><a href="#"><i class="fas fa-chevron-right"></i> 联系我们</a></li>
-            <li><a href="#"><i class="fas fa-chevron-right"></i> 更新日志</a></li>
-          </ul>
-        </div>
-        
-        <div class="footer-column">
-          <h3>法律信息</h3>
-          <ul class="footer-links">
-            <li><a href="#"><i class="fas fa-chevron-right"></i> 服务条款</a></li>
-            <li><a href="#"><i class="fas fa-chevron-right"></i> 隐私政策</a></li>
-            <li><a href="#"><i class="fas fa-chevron-right"></i> 免责声明</a></li>
-            <li><a href="#"><i class="fas fa-chevron-right"></i> 版权声明</a></li>
-            <li><a href="#"><i class="fas fa-chevron-right"></i> 使用规范</a></li>
-          </ul>
-        </div>
-      </div>
-      
-      <div class="copyright">
-        <p>&copy; 2023 CloakAccess. 保留所有权利。 | 提供高质量的免费VPN节点服务</p>
-      </div>
-    </div>
-  </footer>
-
-  <script>
-    // 解决乱码问题：显式设置字符编码
-    async function loadNodes() {
-      const loading = document.getElementById('loading');
-      if (loading) loading.style.display = 'flex';
-      
-      try {
-        const timestamp = new Date().getTime();
-        const res = await fetch(`/nodes.json?t=${timestamp}`, {
-          cache: 'no-store',
-          headers: {
-            'Content-Type': 'application/json; charset=utf-8'
-          }
-        });
-        
-        if (!res.ok) throw new Error(`HTTP错误! 状态码: ${res.status}`);
-        
-        // 使用TextDecoder确保UTF-8解码
-        const decoder = new TextDecoder('utf-8');
-        const text = decoder.decode(await res.arrayBuffer());
-        return JSON.parse(text);
-        
-      } catch (error) {
-        console.error('加载 nodes.json 出错：', error);
-        
-        if (loading) {
-          loading.innerHTML = `
-            <div style="text-align: center;">
-              <p style="color: var(--danger); font-size: 18px; margin-bottom: 10px;">⚠️ 加载节点数据失败</p>
-              <p>${error.message}</p>
-              <p>请检查控制台获取更多信息</p>
-              <button onclick="location.reload()" style="margin-top:20px; background:var(--primary); color:#fff; border:none; padding:10px 20px; border-radius:4px; cursor:pointer;">
-                重新加载
-              </button>
+    <!-- 头部 -->
+    <header>
+        <div class="container">
+            <div class="header-inner">
+                <a href="#" class="logo">
+                    <i class="fas fa-user-secret"></i>
+                    <span>CloakAccess</span>
+                </a>
+                
+                <nav>
+                    <ul>
+                        <li><a href="#" class="active">首页</a></li>
+                        <li><a href="#nodes">节点列表</a></li>
+                        <li><a href="#clients">客户端下载</a></li>
+                        <li><a href="#tutorial">使用教程</a></li>
+                        <li><a href="#">支持我们</a></li>
+                    </ul>
+                </nav>
+                
+                <div>
+                    <button class="btn btn-outline">登录</button>
+                    <button class="btn">注册</button>
+                </div>
             </div>
-          `;
+        </div>
+    </header>
+
+    <!-- 英雄区域 -->
+    <section class="hero">
+        <div class="container">
+            <h1>安全、快速、免费的全球VPN服务</h1>
+            <p>随时随地访问全球内容，保护您的网络隐私和安全，完全免费使用</p>
+            
+            <div class="hero-btns">
+                <a href="#nodes" class="btn">查看可用节点</a>
+                <a href="#clients" class="btn btn-outline">下载客户端</a>
+            </div>
+        </div>
+    </section>
+
+    <!-- 特性区域 -->
+    <section class="features">
+        <div class="container">
+            <h2 class="section-title">我们的优势</h2>
+            
+            <div class="features-grid">
+                <div class="feature-card">
+                    <div class="feature-icon">
+                        <i class="fas fa-shield-alt"></i>
+                    </div>
+                    <h3>高级加密</h3>
+                    <p>使用AES-256加密技术保护您的所有网络流量，防止数据泄露和窃听</p>
+                </div>
+                
+                <div class="feature-card">
+                    <div class="feature-icon">
+                        <i class="fas fa-bolt"></i>
+                    </div>
+                    <h3>超快速度</h3>
+                    <p>全球多节点分布，智能路由优化，提供低延迟高速连接体验</p>
+                </div>
+                
+                <div class="feature-card">
+                    <div class="feature-icon">
+                        <i class="fas fa-globe"></i>
+                    </div>
+                    <h3>全球覆盖</h3>
+                    <p>30+国家/地区节点，轻松访问全球内容和服务</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- 节点列表 -->
+    <section class="nodes-section" id="nodes">
+        <div class="container">
+            <h2 class="section-title">可用节点</h2>
+            
+            <div class="filters">
+                <button class="filter-btn active" data-protocol="all">全部节点</button>
+                <button class="filter-btn" data-protocol="vmess">VMess</button>
+                <button class="filter-btn" data-protocol="ss">Shadowsocks</button>
+                <button class="filter-btn" data-sort="fastest">最快节点</button>
+                <button class="filter-btn" data-sort="newest">最新添加</button>
+            </div>
+            
+            <div class="nodes-grid" id="nodes-container">
+                <!-- 节点将通过JavaScript动态加载 -->
+            </div>
+        </div>
+    </section>
+
+    <!-- 客户端下载 -->
+    <section class="clients-section" id="clients">
+        <div class="container">
+            <h2 class="section-title">VPN客户端下载</h2>
+            
+            <div class="clients-grid">
+                <div class="client-card">
+                    <img src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAyNCAyNCI+PHBhdGggZD0iTTE4LDE4SDZWNkgxOFYxOE0xOCw0SDZBMjIsMjIgMCwwLDAsNCw2VjE4QTIsMiwwLDAsMCw2LDIwSDE4QTIsMiwwLDAsMCwyMCwxOFY2QTIsMiwwLDAsMCwxOCw0WiIgZmlsbD0id2hpdGUiLz48L3N2Zz4=" alt="Windows">
+                    <h3>V2RayN (Windows)</h3>
+                    <a href="https://github.com/2dust/v2rayN/releases" class="btn">下载</a>
+                </div>
+                
+                <div class="client-card">
+                    <img src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAyNCAyNCI+PHBhdGggZD0iTTEyLjE0MiwyQTEwLjE0MiwxMC4xNDIsMCwwLDAsMiwxMi4xNDIsMTAsMTAsMCwwLDAsMTIsMjIsMTAsMTAsMCwwLDAsMjIsMTIuMTQyQTEwLjE0MiwxMC4xNDIsMCwwLDAsMTIuMTQyLDJaIiBmaWxsPSJ3aGl0ZSIvPjxwYXRoIGQ9Ik0xNS4wNzUsMTIuODM3YS44MjEuODIxLDAsMCwxLS44MjEuODIxSC45MjJhLjgyMS44MjEsMCwwLDEsMC0xLjY0MkgxNC4yNTRBLjgyMS44MjEsMCwwLDEsMTUuMDc1LDEyLjgzN1ptMS42NDItMy4yODVhLjgyMS44MjEsMCwwLDEsMCwxLjY0Mkg1LjgxMmEuODIxLjgyMSwwLDAsMSwwLTEuNjQySDE2LjcxN1ptLjgyMSw2LjU3YS44MjEuODIxLDAsMCwxLS44MjEuODIxSDguNDU0YS44MjEuODIxLDAsMCwxLDAtMS42NDJoOC44NTlBLjgyMS44MjEsMCwwLDEsMTcuNTM4LDE2LjEyMloiIGZpbGw9IiNmZmYiLz48L3N2Zz4=" alt="macOS">
+                    <h3>ClashX (macOS)</h3>
+                    <a href="https://github.com/yichengchen/clashX/releases" class="btn">下载</a>
+                </div>
+                
+                <div class="client-card">
+                    <img src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAyNCAyNCI+PHBhdGggZD0iTTE3LjI0LDIwLjgzNEg2Ljc2Yy0yLjA0LDAtMy43MDYtMS42NjctMy43MDYtMy43MDdWNi44NzZjMC0yLjA0LDEuNjY3LTMuNzA2LDMuNzA2LTMuNzA2aDEwLjQ4YzIuMDQsMCwzLjcwNiwxLjY2NywzLjcwNiwzLjcwNnYxMC4yNTFDMjAuOTQ2LDE5LjE2NywxOS4yOCwyMC44MzQsMTcuMjQsMjAuODM0WiIgZmlsbD0id2hpdGUiLz48cGF0aCBkPSJNMTIuMDAxLDE4LjI3OWMtMy40MjMsMC02LjIwNi0yLjc4My02LjIwNi02LjIwNnMyLjc4My02LjIwNiw2LjIwNi02LjIwNiw2LjIwNiwyLjc4Myw2LjIwNiw2LjIwNVMxNS40MjQsMTguMjc5LDEyLjAwMSwxOC4yNzlaIiBmaWxsPSIjZmZmIi8+PC9zdmc+" alt="Android">
+                    <h3>Shadowsocks (Android)</h3>
+                    <a href="https://github.com/shadowsocks/shadowsocks-android/releases" class="btn">下载</a>
+                </div>
+                
+                <div class="client-card">
+                    <img src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAyNCAyNCI+PHBhdGggZD0iTTEyLjE0MiwyQTEwLjE0MiwxMC4xNDIsMCwwLDAsMiwxMi4xNDIsMTAsMTAsMCwwLDAsMTIsMjIsMTAsMTAsMCwwLDAsMjIsMTIuMTQyQTEwLjE0MiwxMC4xNDIsMCwwLDAsMTIuMTQyLDJaIiBmaWxsPSJ3aGl0ZSIvPjxwYXRoIGQ9Ik0xNS4wNzUsMTIuODM3YS44MjEuODIxLDAsMCwxLS44MjEuODIxSC45MjJhLjgyMS44MjEsMCwwLDEsMC0xLjY0MkgxNC4yNTRBLjgyMS44MjEsMCwwLDEsMTUuMDc1LDEyLjgzN1ptMS42NDItMy4yODVhLjgyMS44MjEsMCwwLDEsMCwxLjY0Mkg1LjgxMmEuODIxLjgyMSwwLDAsMSwwLTEuNjQySDE2LjcxN1ptLjgyMSw2LjU3YS44MjEuODIxLDAsMCwxLS44MjEuODIxSDguNDU0YS44MjEuODIxLDAsMCwxLDAtMS42NDJoOC44NTlBLjgyMS44MjEsMCwwLDEsMTcuNTM4LDE2LjEyMloiIGZpbGw9IiNmZmYiLz48L3N2Zz4=" alt="iOS">
+                    <h3>Shadowrocket (iOS)</h3>
+                    <a href="https://apps.apple.com/us/app/shadowrocket/id932747118" class="btn">App Store</a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- 使用教程 -->
+    <section class="tutorial-section" id="tutorial">
+        <div class="container">
+            <h2 class="section-title">使用教程</h2>
+            
+            <div class="tutorial-steps">
+                <div class="step">
+                    <div class="step-number">1</div>
+                    <h3>下载配置文件</h3>
+                    <p>在节点列表中选择可用节点，点击"下载"按钮获取配置文件</p>
+                </div>
+                
+                <div class="step">
+                    <div class="step-number">2</div>
+                    <h3>安装客户端</h3>
+                    <p>根据您的设备系统下载并安装对应的VPN客户端</p>
+                </div>
+                
+                <div class="step">
+                    <div class="step-number">3</div>
+                    <h3>导入配置</h3>
+                    <p>在客户端中找到"导入配置"选项，选择下载的配置文件</p>
+                </div>
+                
+                <div class="step">
+                    <div class="step-number">4</div>
+                    <h3>连接使用</h3>
+                    <p>选择导入的节点，点击"连接"按钮开始使用</p>
+                </div>
+            </div>
+            
+            <div class="video-tutorial">
+                <h3>视频教程</h3>
+                <div class="video-placeholder">
+                    <i class="fas fa-play-circle"></i>
+                    <p>Windows 使用教程</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- 页脚 -->
+    <footer>
+        <div class="container">
+            <div class="footer-grid">
+                <div class="footer-col">
+                    <h3>CloakAccess</h3>
+                    <ul>
+                        <li><a href="#">关于我们</a></li>
+                        <li><a href="#">服务条款</a></li>
+                        <li><a href="#">隐私政策</a></li>
+                    </ul>
+                </div>
+                
+                <div class="footer-col">
+                    <h3>资源</h3>
+                    <ul>
+                        <li><a href="#">节点列表</a></li>
+                        <li><a href="#">客户端下载</a></li>
+                        <li><a href="#">使用教程</a></li>
+                        <li><a href="#">常见问题</a></li>
+                    </ul>
+                </div>
+                
+                <div class="footer-col">
+                    <h3>支持</h3>
+                    <ul>
+                        <li><a href="#">联系我们</a></li>
+                        <li><a href="#">报告问题</a></li>
+                        <li><a href="#">提交反馈</a></li>
+                    </ul>
+                </div>
+                
+                <div class="footer-col">
+                    <h3>关注我们</h3>
+                    <ul>
+                        <li><a href="#"><i class="fab fa-telegram"></i> Telegram</a></li>
+                        <li><a href="#"><i class="fab fa-github"></i> GitHub</a></li>
+                        <li><a href="#"><i class="fab fa-twitter"></i> Twitter</a></li>
+                    </ul>
+                </div>
+            </div>
+            
+            <div class="copyright">
+                &copy; 2023 CloakAccess. 保留所有权利。本服务仅提供技术演示，请遵守当地法律法规。
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        // 节点数据
+        let nodes = [];
+        
+        // DOM元素
+        const nodesContainer = document.getElementById('nodes-container');
+        const filterButtons = document.querySelectorAll('.filter-btn');
+        
+        // 加载节点数据
+        async function loadNodes() {
+            try {
+                const response = await fetch('nodes.json');
+                if (!response.ok) throw new Error('网络响应异常');
+                
+                nodes = await response.json();
+                renderNodes(nodes);
+                selectBestNode();
+            } catch (error) {
+                console.error('加载节点失败:', error);
+                nodesContainer.innerHTML = `
+                    <div class="error-message" style="grid-column: 1/-1; text-align: center; padding: 40px;">
+                        <i class="fas fa-exclamation-triangle" style="font-size: 3rem; color: var(--warning); margin-bottom: 20px;"></i>
+                        <h3>节点加载失败</h3>
+                        <p>请刷新页面重试或稍后再访问</p>
+                        <button class="btn" onclick="location.reload()" style="margin-top: 20px;">刷新页面</button>
+                    </div>
+                `;
+            }
         }
         
-        return [];
-      }
-    }
-
-    // 获取协议类型名称
-    function getProtocolType(type) {
-      const types = {
-        "vmess": "VMess",
-        "ss": "Shadowsocks",
-        "trojan": "Trojan",
-        "unknown": "未知协议"
-      };
-      return types[type] || type;
-    }
-
-    // 获取国家国旗emoji
-    function getCountryFlag(city) {
-      const flags = {
-        "中国": "🇨🇳",
-        "美国": "🇺🇸",
-        "日本": "🇯🇵",
-        "香港": "🇭🇰",
-        "台湾": "🇹🇼",
-        "新加坡": "🇸🇬",
-        "韩国": "🇰🇷",
-        "德国": "🇩🇪",
-        "英国": "🇬🇧",
-        "法国": "🇫🇷"
-      };
-      
-      return flags[city] || "🌐";
-    }
-
-    // 创建节点卡片
-    function createNodeCard(node) {
-      const card = document.createElement('div');
-      card.className = 'node-card';
-      card.dataset.type = node.type;
-      card.dataset.city = node.city;
-      
-      const protocolName = getProtocolType(node.type);
-      const flagEmoji = getCountryFlag(node.city);
-      
-      card.innerHTML = `
-        <div class="card-header">
-          <div class="node-name">
-            <i class="fas fa-server"></i> ${node.name || '未知节点'}
-          </div>
-        </div>
-        <div class="card-body">
-          <div class="node-info">
-            <div class="info-item">
-              <div class="info-label">地区</div>
-              <div class="info-value country">
-                <div class="flag">${flagEmoji}</div>
-                ${node.city || '未知城市'}
-              </div>
-            </div>
-            <div class="divider"></div>
-            <div class="info-item">
-              <div class="info-label">协议</div>
-              <div class="info-value">${protocolName}</div>
-            </div>
-            <div class="divider"></div>
-            <div class="info-item">
-              <div class="info-label">来源</div>
-              <div class="info-value">${node.source ? '公开' : '未知'}</div>
-            </div>
-          </div>
-          <div class="node-type">
-            <i class="fas fa-bolt"></i> ${node.type === 'vmess' ? '高速稳定' : node.type === 'ss' ? '安全加密' : '隐私保护'}
-          </div>
-        </div>
-        <div class="card-footer">
-          <button class="action-btn btn-download" data-config="${node.config ? encodeURIComponent(node.config) : ''}" data-name="${node.name || 'config'}">
-            <i class="fas fa-download"></i> 下载配置
-          </button>
-          <button class="action-btn btn-copy" data-server="${node.server || ''}" data-port="${node.port || ''}">
-            <i class="fas fa-copy"></i> 复制地址
-          </button>
-        </div>
-      `;
-      
-      return card;
-    }
-
-    // 渲染节点列表
-    async function render() {
-      const nodes = await loadNodes();
-      const listContainer = document.getElementById('server-list');
-      const loading = document.getElementById('loading');
-      
-      // 更新统计数据
-      document.getElementById('total-nodes').textContent = nodes.length;
-      
-      // 计算不同国家/地区数量
-      const cities = [...new Set(nodes.map(node => node.city))];
-      document.getElementById('countries').textContent = cities.length;
-      
-      // 计算不同协议数量
-      const protocols = [...new Set(nodes.map(node => node.type))];
-      document.getElementById('protocols').textContent = protocols.length;
-      
-      // 隐藏加载状态
-      if (loading) loading.style.display = 'none';
-      
-      // 清空容器
-      listContainer.innerHTML = '';
-      
-      if (nodes.length === 0) {
-        const message = document.createElement('div');
-        message.className = 'error-message';
-        message.innerHTML = `
-          <p>⚠️ 没有找到可用节点</p>
-          <p>请稍后再试或联系管理员</p>
-          <button onclick="location.reload()" style="margin-top:10px; background:#007bff; color:#fff; border:none; padding:8px 16px; border-radius:4px; cursor:pointer;">
-            重新加载
-          </button>
-        `;
-        listContainer.appendChild(message);
-        return;
-      }
-      
-      // 创建节点卡片
-      nodes.forEach(node => {
-        const card = createNodeCard(node);
-        listContainer.appendChild(card);
-      });
-      
-      // 添加事件监听器
-      addEventListeners();
-    }
-
-    // 添加事件监听器
-    function addEventListeners() {
-      // 下载配置按钮
-      document.querySelectorAll('.btn-download').forEach(btn => {
-        btn.addEventListener('click', function() {
-          const config = decodeURIComponent(this.dataset.config);
-          const name = this.dataset.name;
-          
-          if (!config) {
-            alert('此节点无可用配置');
-            return;
-          }
-          
-          try {
-            const blob = new Blob([config], { type: 'text/plain' });
-            const url = URL.createObjectURL(blob);
-            const a = document.createElement('a');
-            a.href = url;
+        // 渲染节点
+        function renderNodes(nodesToRender) {
+            nodesContainer.innerHTML = '';
             
-            // 创建有意义的文件名
-            let fileName = name.replace(/[^a-z0-9]/gi, '_') || 'vpn_config';
-            fileName = fileName.substring(0, 30); // 限制文件名长度
+            if (nodesToRender.length === 0) {
+                nodesContainer.innerHTML = `
+                    <div style="grid-column: 1/-1; text-align: center; padding: 40px;">
+                        <i class="fas fa-frown" style="font-size: 3rem; color: var(--gray); margin-bottom: 20px;"></i>
+                        <h3>暂无可用节点</h3>
+                        <p>请稍后再尝试或联系管理员</p>
+                    </div>
+                `;
+                return;
+            }
             
-            // 根据协议类型添加扩展名
-            const type = this.closest('.node-card').dataset.type;
-            if (type === 'vmess') fileName += '.vmess';
-            else if (type === 'ss') fileName += '.ss';
-            else if (type === 'trojan') fileName += '.trojan';
-            else fileName += '.txt';
+            nodesToRender.forEach(node => {
+                const nodeCard = document.createElement('div');
+                nodeCard.className = 'node-card';
+                nodeCard.dataset.protocol = node.type;
+                
+                // 格式化时间
+                const lastChecked = new Date(node.last_checked);
+                const formattedTime = lastChecked.toLocaleString('zh-CN', {
+                    month: '2-digit',
+                    day: '2-digit',
+                    hour: '2-digit',
+                    minute: '2-digit'
+                });
+                
+                nodeCard.innerHTML = `
+                    <div class="node-status">
+                        <span class="status-indicator active"></span>
+                        <span class="status-text">延迟: ${node.latency}ms</span>
+                        <span class="last-checked">更新: ${formattedTime}</span>
+                    </div>
+                    
+                    <h3 class="node-name">${node.name}</h3>
+                    <div class="node-meta">
+                        <span><i class="fas fa-map-marker-alt"></i> ${node.city}</span>
+                        <span><i class="fas fa-plug"></i> ${node.type.toUpperCase()}</span>
+                    </div>
+                    
+                    <div class="node-actions">
+                        <button class="btn btn-copy" data-config="${btoa(node.config)}">
+                            <i class="fas fa-copy"></i> 复制配置
+                        </button>
+                        <button class="btn btn-download" data-config="${btoa(node.config)}" 
+                                data-filename="${node.name}.${node.type === 'vmess' ? 'vmess' : 'ss'}">
+                            <i class="fas fa-download"></i> 下载
+                        </button>
+                        <button class="btn btn-feedback" data-node-id="${node.id}">
+                            <i class="fas fa-flag"></i> 报告
+                        </button>
+                    </div>
+                `;
+                
+                nodesContainer.appendChild(nodeCard);
+            });
             
-            a.download = fileName;
-            document.body.appendChild(a);
-            a.click();
-            document.body.removeChild(a);
-            URL.revokeObjectURL(url);
-          } catch (e) {
-            console.error('下载失败:', e);
-            alert(`下载失败: ${e.message}`);
-          }
-        });
-      });
-      
-      // 复制地址按钮
-      document.querySelectorAll('.btn-copy').forEach(btn => {
-        btn.addEventListener('click', function() {
-          const server = this.dataset.server;
-          const port = this.dataset.port;
-          
-          if (!server || !port) {
-            alert('此节点无服务器地址信息');
-            return;
-          }
-          
-          const text = `${server}:${port}`;
-          navigator.clipboard.writeText(text)
-            .then(() => {
-              const originalText = this.innerHTML;
-              this.innerHTML = '<i class="fas fa-check"></i> 已复制';
-              
-              setTimeout(() => {
-                this.innerHTML = originalText;
-              }, 2000);
-            })
-            .catch(err => {
-              console.error('复制失败:', err);
-              this.innerHTML = '<i class="fas fa-times"></i> 复制失败';
+            // 添加事件监听器
+            addEventListeners();
+        }
+        
+        // 自动选择最佳节点
+        function selectBestNode() {
+            const validNodes = nodes.filter(node => node.latency < 500);
+            
+            if (validNodes.length > 0) {
+                // 按延迟排序
+                validNodes.sort((a, b) => a.latency - b.latency);
+                const bestNode = validNodes[0];
+                
+                // 标记为推荐节点
+                const nodeCards = document.querySelectorAll('.node-card');
+                nodeCards.forEach(card => {
+                    const nodeName = card.querySelector('.node-name').textContent;
+                    if (nodeName === bestNode.name) {
+                        card.classList.add('recommended');
+                        
+                        // 滚动到推荐节点
+                        setTimeout(() => {
+                            card.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                        }, 1000);
+                    }
+                });
+            }
+        }
+        
+        // 添加事件监听器
+        function addEventListeners() {
+            // 复制配置
+            document.querySelectorAll('.btn-copy').forEach(btn => {
+                btn.addEventListener('click', function() {
+                    const config = atob(this.dataset.config);
+                    
+                    navigator.clipboard.writeText(config).then(() => {
+                        const originalText = this.innerHTML;
+                        this.innerHTML = '<i class="fas fa-check"></i> 已复制';
+                        
+                        setTimeout(() => {
+                            this.innerHTML = originalText;
+                        }, 2000);
+                    }).catch(err => {
+                        console.error('复制失败:', err);
+                        alert('复制失败，请手动复制配置');
+                    });
+                });
+            });
+            
+            // 下载配置
+            document.querySelectorAll('.btn-download').forEach(btn => {
+                btn.addEventListener('click', function() {
+                    const config = atob(this.dataset.config);
+                    const fileName = this.dataset.filename;
+                    
+                    const blob = new Blob([config], { type: 'text/plain' });
+                    const url = URL.createObjectURL(blob);
+                    
+                    const a = document.createElement('a');
+                    a.href = url;
+                    a.download = fileName;
+                    document.body.appendChild(a);
+                    a.click();
+                    
+                    // 清理
+                    setTimeout(() => {
+                        document.body.removeChild(a);
+                        URL.revokeObjectURL(url);
+                    }, 100);
+                });
+            });
+            
+            // 反馈功能
+            document.querySelectorAll('.btn-feedback').forEach(btn => {
+                btn.addEventListener('click', function() {
+                    const nodeId = this.dataset.nodeId;
+                    const nodeCard = this.closest('.node-card');
+                    const nodeName = nodeCard.querySelector('.node-name').textContent;
+                    
+                    // 反馈选项
+                    const options = [
+                        '无法连接',
+                        '连接速度慢',
+                        '配置导入失败',
+                        '其他问题'
+                    ];
+                    
+                    let feedbackText = `请报告节点问题:\n节点: ${nodeName}\n问题类型:\n`;
+                    options.forEach((opt, i) => {
+                        feedbackText += `${i+1}. ${opt}\n`;
+                    });
+                    
+                    const problemType = prompt(feedbackText, '1');
+                    if (problemType !== null) {
+                        const comment = prompt('请补充问题详情:');
+                        if (comment !== null) {
+                            sendFeedback(nodeId, problemType, comment);
+                        }
+                    }
+                });
+            });
+        }
+        
+        // 发送反馈
+        function sendFeedback(nodeId, problemType, comment) {
+            // 实际应用中应发送到后端API
+            console.log('发送反馈:', { nodeId, problemType, comment });
+            
+            // 临时前端存储
+            const feedbacks = JSON.parse(localStorage.getItem('nodeFeedbacks') || '[]');
+            feedbacks.push({
+                nodeId,
+                problemType,
+                comment,
+                timestamp: new Date().toISOString()
+            });
+            localStorage.setItem('nodeFeedbacks', JSON.stringify(feedbacks));
+            
+            alert('感谢您的反馈！我们将尽快处理该问题。');
+        }
+        
+        // 初始化页面
+        document.addEventListener('DOMContentLoaded', () => {
+            // 加载节点
+            loadNodes();
+            
+            // 筛选按钮事件
+            filterButtons.forEach(btn => {
+                btn.addEventListener('click', function() {
+                    // 更新活动状态
+                    filterButtons.forEach(b => b.classList.remove('active'));
+                    this.classList.add('active');
+                    
+                    // 获取筛选条件
+                    const protocol = this.dataset.protocol;
+                    const sort = this.dataset.sort;
+                    
+                    // 应用筛选
+                    let filteredNodes = [...nodes];
+                    
+                    if (protocol && protocol !== 'all') {
+                        filteredNodes = filteredNodes.filter(node => node.type === protocol);
+                    }
+                    
+                    if (sort === 'fastest') {
+                        filteredNodes.sort((a, b) => a.latency - b.latency);
+                    } else if (sort === 'newest') {
+                        filteredNodes.sort((a, b) => 
+                            new Date(b.last_checked) - new Date(a.last_checked));
+                    }
+                    
+                    renderNodes(filteredNodes);
+                });
+            });
+            
+            // 视频占位符点击事件
+            document.querySelector('.video-placeholder').addEventListener('click', function() {
+                alert('实际应用中应嵌入教程视频');
             });
         });
-      });
-      
-      // 筛选按钮
-      document.querySelectorAll('.filter-btn').forEach(btn => {
-        btn.addEventListener('click', function() {
-          // 移除所有active类
-          document.querySelectorAll('.filter-btn').forEach(b => {
-            b.classList.remove('active');
-          });
-          
-          // 为当前按钮添加active
-          this.classList.add('active');
-          
-          // 获取筛选值
-          const filter = this.dataset.filter;
-          
-          // 应用筛选
-          filterNodes(filter);
-        });
-      });
-      
-      // 搜索功能
-      document.getElementById('node-search').addEventListener('input', function() {
-        const searchTerm = this.value.toLowerCase();
-        filterNodes(searchTerm);
-      });
-      
-      // 获取免费节点按钮
-      document.getElementById('cta-btn').addEventListener('click', function() {
-        document.getElementById('nodes').scrollIntoView({ behavior: 'smooth' });
-      });
-    }
-
-    // 筛选节点
-    function filterNodes(filter) {
-      const cards = document.querySelectorAll('.node-card');
-      let visibleCount = 0;
-      
-      cards.forEach(card => {
-        const type = card.dataset.type;
-        const city = card.dataset.city.toLowerCase();
-        const name = card.querySelector('.node-name').textContent.toLowerCase();
-        
-        let show = true;
-        
-        if (filter === 'all') {
-          show = true;
-        } else if (filter === 'vmess' || filter === 'ss' || filter === 'trojan') {
-          show = type === filter;
-        } else if (filter === 'china' || filter === 'usa' || filter === 'japan' || filter === 'singapore') {
-          show = city.includes(filter);
-        } else if (filter) { // 搜索
-          show = name.includes(filter) || city.includes(filter) || type.includes(filter);
-        }
-        
-        if (show) {
-          card.style.display = 'block';
-          visibleCount++;
-        } else {
-          card.style.display = 'none';
-        }
-      });
-      
-      // 如果没有可见节点，显示消息
-      if (visibleCount === 0) {
-        const listContainer = document.getElementById('server-list');
-        const message = document.createElement('div');
-        message.style.gridColumn = '1 / -1';
-        message.style.textAlign = 'center';
-        message.style.padding = '40px';
-        message.style.background = 'rgba(0,0,0,0.2)';
-        message.style.borderRadius = '12px';
-        message.innerHTML = `
-          <p>⚠️ 没有找到匹配的节点</p>
-          <p>请尝试其他筛选条件</p>
-        `;
-        listContainer.appendChild(message);
-      }
-    }
-
-    // 等 DOM 加载完成再执行
-    document.addEventListener('DOMContentLoaded', function() {
-      // 渲染节点
-      render();
-      
-      // 筛选按钮激活效果
-      const filterBtns = document.querySelectorAll('.filter-btn');
-      filterBtns.forEach(btn => {
-        btn.addEventListener('click', function() {
-          filterBtns.forEach(b => b.classList.remove('active'));
-          this.classList.add('active');
-        });
-      });
-      
-      // 节点卡片悬停效果
-      const nodeCards = document.querySelectorAll('.node-card');
-      nodeCards.forEach(card => {
-        card.addEventListener('mouseenter', function() {
-          this.style.transform = 'translateY(-10px)';
-        });
-        
-        card.addEventListener('mouseleave', function() {
-          this.style.transform = 'translateY(0)';
-        });
-      });
-    });
-
-    // 暴露重新加载函数给全局
-    window.reloadNodes = function() {
-      render();
-    };
-  </script>
+    </script>
 </body>
 </html>
