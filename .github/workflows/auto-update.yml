@@ -24,7 +24,7 @@ jobs:
       run: pip install -r requirements.txt
 
     - name: 运行爬虫
-      run: python crawler.py
+      run: python crawler.py -o output/nodes.json
 
     # 添加文件检查步骤
     - name: 检查 nodes.json 文件
@@ -50,8 +50,12 @@ jobs:
         git config user.name "github-actions"
         git config user.email "github-actions@github.com"
         git add website/nodes.json
-        git commit -m "🔄 Auto update nodes.json" || echo "No changes to commit"
-        git push
+        if git diff --cached --quiet; then
+          echo "没有变化需要提交"
+        else
+          git commit -m "🔄 Auto update nodes.json"
+          git push
+        fi
 
     - name: 上传网站文件到 Hostinger（FTP）
       env:
