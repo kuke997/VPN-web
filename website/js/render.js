@@ -63,6 +63,8 @@ function getProtocolType(type) {
     "vless": "VLESS",
     "ss": "Shadowsocks",
     "trojan": "Trojan",
+    "ssr": "ShadowsocksR",
+    "hysteria": "Hysteria",
     "unknown": "未知协议",
     "": "未知协议"  // 处理空类型
   };
@@ -78,7 +80,6 @@ function createServerTable(nodes) {
   thead.innerHTML = `
     <tr>
       <th>名称</th>
-      <th>城市</th>
       <th>类型</th>
       <th>来源</th>
       <th>操作</th>
@@ -96,11 +97,6 @@ function createServerTable(nodes) {
     const nameCell = document.createElement('td');
     nameCell.textContent = node.name || '未知节点';
     row.appendChild(nameCell);
-    
-    // 城市列
-    const cityCell = document.createElement('td');
-    cityCell.textContent = node.city || '未知城市';
-    row.appendChild(cityCell);
     
     // 类型列
     const typeCell = document.createElement('td');
