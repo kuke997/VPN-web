@@ -3,7 +3,7 @@ async function loadNodes() {
   const loading = document.getElementById('loading');
   if (loading) {
     loading.style.display = 'block';
-    loading.querySelector('p').textContent = '正在加载节点数据，请稍候...';
+    loading.querySelector('p').textContent = translations[currentLang]['nodes.loading'] || '正在加载节点数据，请稍候...';
   }
   
   try {
@@ -12,7 +12,7 @@ async function loadNodes() {
     const res = await fetch(`/nodes.json?t=${timestamp}`, { cache: 'no-store' });
     
     if (!res.ok) {
-      throw new Error(`HTTP错误! 状态码: ${res.status}`);
+      throw new Error(translations[currentLang]['nodes.load_failed'] || '加载节点数据失败');
     }
     
     // 获取响应文本
@@ -29,7 +29,6 @@ async function loadNodes() {
       count: data.length,
       firstNode: data[0] || null,
       types: [...new Set(data.map(n => n.type))],
-      cities: [...new Set(data.map(n => n.city))]
     });
     
     return data;
@@ -40,11 +39,11 @@ async function loadNodes() {
     if (loading) {
       loading.innerHTML = `
         <div class="error-message">
-          <p>⚠️ 加载节点数据失败</p>
+          <p>⚠️ ${translations[currentLang]['nodes.load_failed_title'] || '加载节点数据失败'}</p>
           <p>${error.message}</p>
-          <p>请检查控制台获取更多信息</p>
+          <p>${translations[currentLang]['nodes.load_failed_message'] || '请刷新页面重试或稍后再访问'}</p>
           <button onclick="location.reload()" style="margin-top:10px; background:#007bff; color:#fff; border:none; padding:8px 16px; border-radius:4px; cursor:pointer;">
-            重新加载
+            ${translations[currentLang]['nodes.refresh'] || '刷新页面'}
           </button>
         </div>
       `;
@@ -58,17 +57,15 @@ async function loadNodes() {
 }
 
 function getProtocolType(type) {
-  const types = {
-    "vmess": "VMess",
-    "vless": "VLESS",
-    "ss": "Shadowsocks",
-    "trojan": "Trojan",
-    "ssr": "ShadowsocksR",
-    "hysteria": "Hysteria",
-    "unknown": "未知协议",
-    "": "未知协议"  // 处理空类型
-  };
-  return types[type] || type;
+  const key = `protocol.${type}`;
+  return translations[currentLang][key] || type;
+}
+
+function getStatusText(status, latency) {
+  if (status) {
+    return `${translations[currentLang]['nodes.latency'] || '延迟'}: ${latency}ms`;
+  }
+  return translations[currentLang]['nodes.inactive'] || '已失效';
 }
 
 function createServerTable(nodes) {
@@ -79,10 +76,10 @@ function createServerTable(nodes) {
   const thead = document.createElement('thead');
   thead.innerHTML = `
     <tr>
-      <th>名称</th>
-      <th>类型</th>
-      <th>来源</th>
-      <th>操作</th>
+      <th>${translations[currentLang]['nodes.name'] || '名称'}</th>
+      <th>${translations[currentLang]['nodes.type'] || '类型'}</th>
+      <th>${translations[currentLang]['nodes.status'] || '状态'}</th>
+      <th>${translations[currentLang]['nodes.operation'] || '操作'}</th>
     </tr>
   `;
   table.appendChild(thead);
@@ -95,70 +92,59 @@ function createServerTable(nodes) {
     
     // 名称列
     const nameCell = document.createElement('td');
-    nameCell.textContent = node.name || '未知节点';
+    nameCell.textContent = node.name || translations[currentLang]['nodes.unnamed'] || '未知节点';
     row.appendChild(nameCell);
     
     // 类型列
     const typeCell = document.createElement('td');
-    const protocolType = getProtocolType(node.type || ''); // 确保有默认值
+    const protocolType = getProtocolType(node.type || '');
     typeCell.textContent = protocolType;
     row.appendChild(typeCell);
     
-    // 来源列
-    const sourceCell = document.createElement('td');
-    if (node.source) {
-      const sourceLink = document.createElement('a');
-      sourceLink.href = node.source;
-      sourceLink.target = '_blank';
-      sourceLink.textContent = '查看来源';
-      sourceLink.style.color = '#007bff';
-      sourceCell.appendChild(sourceLink);
-    } else {
-      sourceCell.textContent = '未知来源';
-    }
-    row.appendChild(sourceCell);
+    // 状态列
+    const statusCell = document.createElement('td');
+    const isActive = node.latency && node.latency < 500;
+    statusCell.innerHTML = `
+      <span class="status-indicator ${isActive ? 'active' : 'inactive'}"></span>
+      <span class="status-text">${getStatusText(isActive, node.latency)}</span>
+    `;
+    row.appendChild(statusCell);
     
     // 操作列
     const actionCell = document.createElement('td');
     
     // 根据节点类型创建不同的操作
-    if (node.config) {
+    if (node.clash_config) {
       // 配置下载按钮
       const downloadBtn = document.createElement('button');
       downloadBtn.className = 'download-link';
-      downloadBtn.textContent = '下载配置';
+      downloadBtn.textContent = translations[currentLang]['nodes.download'] || '下载配置';
       downloadBtn.onclick = () => {
         try {
-          // 确保 config 是有效字符串
-          if (typeof node.config === 'string' && node.config.trim() !== '') {
-            // 直接使用配置内容
-            const blob = new Blob([node.config], { type: 'text/plain' });
-            const url = URL.createObjectURL(blob);
-            const a = document.createElement('a');
-            a.href = url;
-            
-            // 创建有意义的文件名
-            let fileName = node.name.replace(/[^a-z0-9]/gi, '_') || 'vpn_config';
-            fileName = fileName.substring(0, 30); // 限制文件名长度
-            
-            // 根据协议类型添加扩展名
-            if (node.type === 'vmess') fileName += '.vmess';
-            else if (node.type === 'ss') fileName += '.ss';
-            else if (node.type === 'trojan') fileName += '.trojan';
-            else fileName += '.txt';
-            
-            a.download = fileName;
-            document.body.appendChild(a);
-            a.click();
-            document.body.removeChild(a);
-            URL.revokeObjectURL(url);
-          } else {
-            console.error('无效的配置内容', node);
-            alert('配置内容无效，无法下载');
-          }
+          // 创建有意义的文件名
+          let fileName = node.name.replace(/[^a-z0-9]/gi, '_') || 'vpn_config';
+          fileName = fileName.substring(0, 30); // 限制文件名长度
+          
+          // 根据协议类型添加扩展名
+          if (node.type === 'vmess') fileName += '.yaml';
+          else if (node.type === 'ss') fileName += '.yaml';
+          else fileName += '.yaml';
+          
+          // 创建配置内容
+          const configContent = yaml.dump(node.clash_config, {lineWidth: -1});
+          
+          const blob = new Blob([configContent], { type: 'text/yaml' });
+          const url = URL.createObjectURL(blob);
+          const a = document.createElement('a');
+          a.href = url;
+          a.download = fileName;
+          document.body.appendChild(a);
+          a.click();
+          document.body.removeChild(a);
+          URL.revokeObjectURL(url);
         } catch (e) {
           console.error('下载失败:', e);
-          alert(`下载失败: ${e.message}`);
+          alert(`${translations[currentLang]['nodes.download_failed'] || '下载失败'}: ${e.message}`);
         }
       };
       actionCell.appendChild(downloadBtn);
@@ -166,23 +152,23 @@ function createServerTable(nodes) {
       // 服务器地址按钮
       const copyBtn = document.createElement('button');
       copyBtn.className = 'download-link';
-      copyBtn.textContent = '复制地址';
+      copyBtn.textContent = translations[currentLang]['nodes.copy_address'] || '复制地址';
       copyBtn.onclick = () => {
         navigator.clipboard.writeText(`${node.server}:${node.port}`)
           .then(() => {
-            copyBtn.textContent = '已复制!';
+            copyBtn.textContent = translations[currentLang]['nodes.copied'] || '已复制!';
             setTimeout(() => {
-              copyBtn.textContent = '复制地址';
+              copyBtn.textContent = translations[currentLang]['nodes.copy_address'] || '复制地址';
             }, 2000);
           })
           .catch(err => {
             console.error('复制失败:', err);
-            copyBtn.textContent = '复制失败';
+            copyBtn.textContent = translations[currentLang]['nodes.copy_failed'] || '复制失败';
           });
       };
       actionCell.appendChild(copyBtn);
     } else {
-      actionCell.textContent = '无操作';
+      actionCell.textContent = translations[currentLang]['nodes.no_action'] || '无操作';
     }
     
     row.appendChild(actionCell);
@@ -216,10 +202,10 @@ async function render() {
     const message = document.createElement('div');
     message.className = 'error-message';
     message.innerHTML = `
-      <p>⚠️ 没有找到可用节点</p>
-      <p>请稍后再试或联系管理员</p>
+      <p>⚠️ ${translations[currentLang]['nodes.no_nodes_title'] || '没有找到可用节点'}</p>
+      <p>${translations[currentLang]['nodes.no_nodes_message'] || '请稍后再试或联系管理员'}</p>
       <button onclick="location.reload()" style="margin-top:10px; background:#007bff; color:#fff; border:none; padding:8px 16px; border-radius:4px; cursor:pointer;">
-        重新加载
+        ${translations[currentLang]['nodes.refresh'] || '重新加载'}
       </button>
     `;
     listContainer.appendChild(message);
@@ -233,7 +219,7 @@ async function render() {
   // 更新获取免费节点按钮
   const ctaBtn = document.getElementById('cta-btn');
   if (ctaBtn) {
-    ctaBtn.textContent = `获取免费节点 (${nodes.length})`;
+    ctaBtn.textContent = `${translations[currentLang]['hero.get_subscription'] || '获取免费节点'} (${nodes.length})`;
     ctaBtn.onclick = () => {
       // 滚动到节点列表
       document.getElementById('server-list').scrollIntoView({ behavior: 'smooth' });
