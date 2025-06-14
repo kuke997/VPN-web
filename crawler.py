@@ -8,6 +8,7 @@ import random
 import uuid
 import os
 import logging
+import argparse
 from datetime import datetime, timezone
 from urllib.parse import urlparse
 import concurrent.futures
@@ -40,7 +41,7 @@ USER_AGENTS = [
 def get_random_user_agent():
     return random.choice(USER_AGENTS)
 
-def fetch_source(url, retry=3):
+def fetch_source(url, retry=3, backoff_factor=0.5):
     """从单个源获取节点数据，带重试机制"""
     for attempt in range(retry):
         try:
@@ -61,7 +62,8 @@ def fetch_source(url, retry=3):
             logging.error(f"获取源 {url} 失败 (尝试 {attempt+1}/{retry}): {str(e)}")
         
         # 指数退避重试
-        time.sleep(2 ** attempt)
+        sleep_time = backoff_factor * (2 ** attempt)
+        time.sleep(sleep_time)
     
     logging.error(f"无法获取源: {url} (已重试 {retry} 次)")
     return None
@@ -343,7 +345,7 @@ def test_node_connectivity(node, timeout=3):
         logging.warning(f"连接失败: {node['name']} - {server}:{port} - {str(e)}")
         return None
 
-def fetch_all_sources():
+def fetch_all_sources(output_file):
     """从所有源获取并处理节点"""
     all_nodes = []
     
@@ -397,7 +399,7 @@ def fetch_all_sources():
             node = futures[future]
             try:
                 latency = future.result()
-                if latency is not None and latency < 3000:  # 只接受延迟小于3秒的节点
+                if latency is not None and latency < 5000:  # 放宽延迟限制到5秒
                     node["latency"] = latency
                     node["last_checked"] = datetime.now(timezone.utc).isoformat()
                     valid_nodes.append(node)
@@ -411,15 +413,19 @@ def fetch_all_sources():
     
     # 保存到文件
     try:
-        with open('nodes.json', 'w', encoding='utf-8') as f:
+        with open(output_file, 'w', encoding='utf-8') as f:
             json.dump(valid_nodes, f, indent=2, ensure_ascii=False)
-        logging.info("节点数据已保存到 nodes.json")
+        logging.info(f"节点数据已保存到 {output_file}")
     except Exception as e:
         logging.error(f"保存节点数据失败: {str(e)}")
     
     return valid_nodes
 
 if __name__ == "__main__":
+    parser = argparse.ArgumentParser(description='爬取免费VPN节点')
+    parser.add_argument('-o', '--output', default='nodes.json', help='输出文件路径')
+    args = parser.parse_args()
+    
     logging.info("="*50)
     logging.info("开始爬取所有来源的免费VPN节点...")
     logging.info("="*50)
@@ -427,7 +433,7 @@ if __name__ == "__main__":
     start_time = time.time()
     
     try:
-        nodes = fetch_all_sources()
+        nodes = fetch_all_sources(args.output)
     except Exception as e:
         logging.error(f"爬取过程中发生错误: {str(e)}")
         nodes = []
@@ -440,8 +446,8 @@ if __name__ == "__main__":
     else:
         logging.error("❌ 未获取到任何有效节点")
         # 创建空文件防止前端出错
-        with open('nodes.json', 'w') as f:
+        with open(args.output, 'w') as f:
             json.dump([], f)
-        logging.info("已创建空的 nodes.json 文件")
+        logging.info(f"已创建空的 {args.output} 文件")
     
     logging.info("="*50)
