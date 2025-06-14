@@ -4,6 +4,21 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>CloakAccess - 免费VPN节点服务</title>
+    <meta name="description" content="CloakAccess提供免费、安全、快速的VPN节点服务，支持Clash和Shadowrocket客户端，全球服务器覆盖，多语言支持。">
+    <meta name="keywords" content="免费VPN,Clash节点,Shadowrocket节点,翻墙,科学上网,网络安全">
+    <link rel="alternate" hreflang="en" href="https://cloakaccess.com/?lang=en" />
+    <link rel="alternate" hreflang="hi" href="https://cloakaccess.com/?lang=hi" />
+    <link rel="alternate" hreflang="pt" href="https://cloakaccess.com/?lang=pt" />
+    <link rel="alternate" hreflang="zh" href="https://cloakaccess.com/?lang=zh" />
+    <link rel="canonical" href="https://cloakaccess.com/" />
+    
+    <!-- Open Graph / Social Media Tags -->
+    <meta property="og:title" content="CloakAccess - 免费VPN节点服务">
+    <meta property="og:description" content="提供免费、安全、快速的VPN节点服务，支持多语言和多种客户端">
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://cloakaccess.com/">
+    <meta property="og:image" content="https://cloakaccess.com/images/og-image.jpg">
+    
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <script src="https://fpyf8.com/88/tag.min.js" data-zone="152190" async data-cfasync="false"></script>
@@ -76,6 +91,7 @@
             display: flex;
             list-style: none;
             gap: 30px;
+            align-items: center;
         }
         
         nav a {
@@ -120,6 +136,64 @@
             background: rgba(99, 102, 241, 0.1);
         }
         
+        /* 语言切换 */
+        .language-switcher {
+            position: relative;
+            margin-left: 15px;
+        }
+        
+        .language-btn {
+            background: rgba(30, 41, 59, 0.6);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            color: var(--gray);
+            padding: 8px 15px;
+            border-radius: 8px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .language-btn:hover {
+            border-color: var(--primary);
+            color: white;
+        }
+        
+        .language-dropdown {
+            position: absolute;
+            top: 100%;
+            right: 0;
+            background: rgba(30, 41, 59, 0.9);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 8px;
+            width: 150px;
+            margin-top: 5px;
+            display: none;
+            z-index: 10;
+            backdrop-filter: blur(10px);
+        }
+        
+        .language-dropdown a {
+            display: block;
+            padding: 10px 15px;
+            color: var(--gray);
+            text-decoration: none;
+            transition: all 0.3s;
+        }
+        
+        .language-dropdown a:hover {
+            background: rgba(99, 102, 241, 0.1);
+            color: white;
+        }
+        
+        .language-dropdown a.active {
+            color: var(--primary);
+        }
+        
+        .language-switcher:hover .language-dropdown {
+            display: block;
+        }
+        
         /* 英雄区域 */
         .hero {
             padding: 80px 0 60px;
@@ -153,60 +227,6 @@
             gap: 15px;
             justify-content: center;
             margin-top: 30px;
-        }
-        
-        /* 特性区域 */
-        .features {
-            padding: 80px 0;
-        }
-        
-        .section-title {
-            text-align: center;
-            font-size: 2.5rem;
-            margin-bottom: 60px;
-            font-weight: 700;
-            color: white;
-        }
-        
-        .features-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-            gap: 30px;
-        }
-        
-        .feature-card {
-            background: rgba(30, 41, 59, 0.6);
-            border-radius: 16px;
-            padding: 30px;
-            transition: transform 0.3s;
-            border: 1px solid rgba(255, 255, 255, 0.05);
-        }
-        
-        .feature-card:hover {
-            transform: translateY(-10px);
-            border-color: rgba(99, 102, 241, 0.3);
-        }
-        
-        .feature-icon {
-            width: 60px;
-            height: 60px;
-            background: rgba(79, 70, 229, 0.1);
-            border-radius: 12px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            margin-bottom: 20px;
-        }
-        
-        .feature-icon i {
-            font-size: 24px;
-            color: var(--primary);
-        }
-        
-        .feature-card h3 {
-            font-size: 1.5rem;
-            margin-bottom: 15px;
-            color: white;
         }
         
         /* 订阅区域 */
@@ -471,16 +491,29 @@
                 
                 <nav>
                     <ul>
-                        <li><a href="#" class="active">首页</a></li>
-                        <li><a href="#subscription">订阅下载</a></li>
-                        <li><a href="#nodes">节点列表</a></li>
-                        <li><a href="#login">登录/注册</a></li>
+                        <li><a href="#" class="active" data-i18n="nav.home">首页</a></li>
+                        <li><a href="#subscription" data-i18n="nav.subscription">订阅下载</a></li>
+                        <li><a href="#nodes" data-i18n="nav.nodes">节点列表</a></li>
+                        <li><a href="#login" data-i18n="nav.login">登录/注册</a></li>
+                        <li class="language-switcher">
+                            <div class="language-btn">
+                                <i class="fas fa-globe"></i>
+                                <span data-i18n="lang.zh">中文</span>
+                                <i class="fas fa-chevron-down"></i>
+                            </div>
+                            <div class="language-dropdown">
+                                <a href="?lang=en" class="lang-en" data-lang="en"><i class="fas fa-language"></i> <span data-i18n="lang.en">English</span></a>
+                                <a href="?lang=hi" class="lang-hi" data-lang="hi"><i class="fas fa-language"></i> <span data-i18n="lang.hi">हिन्दी</span></a>
+                                <a href="?lang=pt" class="lang-pt" data-lang="pt"><i class="fas fa-language"></i> <span data-i18n="lang.pt">Português</span></a>
+                                <a href="?lang=zh" class="lang-zh active" data-lang="zh"><i class="fas fa-language"></i> <span data-i18n="lang.zh">中文</span></a>
+                            </div>
+                        </li>
                     </ul>
                 </nav>
                 
                 <div id="auth-buttons">
-                    <button class="btn" onclick="showAuthModal('login')">登录</button>
-                    <button class="btn" onclick="showAuthModal('register')">注册</button>
+                    <button class="btn" onclick="showAuthModal('login')" data-i18n="auth.login">登录</button>
+                    <button class="btn" onclick="showAuthModal('register')" data-i18n="auth.register">注册</button>
                 </div>
             </div>
         </div>
@@ -489,12 +522,12 @@
     <!-- 英雄区域 -->
     <section class="hero">
         <div class="container">
-            <h1>安全、快速、免费的全球VPN服务</h1>
-            <p>专为Clash和Shadowrocket用户优化的免费VPN节点订阅服务</p>
+            <h1 data-i18n="hero.title">安全、快速、免费的全球VPN服务</h1>
+            <p data-i18n="hero.subtitle">专为Clash和Shadowrocket用户优化的免费VPN节点订阅服务</p>
             
             <div class="hero-btns">
-                <a href="#subscription" class="btn">获取订阅</a>
-                <a href="#nodes" class="btn btn-outline">查看节点</a>
+                <a href="#subscription" class="btn" data-i18n="hero.get_subscription">获取订阅</a>
+                <a href="#nodes" class="btn btn-outline" data-i18n="hero.view_nodes">查看节点</a>
             </div>
         </div>
     </section>
@@ -502,20 +535,20 @@
     <!-- 订阅区域 -->
     <section class="subscription-section" id="subscription">
         <div class="container">
-            <h2 class="section-title">客户端订阅</h2>
+            <h2 class="section-title" data-i18n="subscription.title">客户端订阅</h2>
             
             <div class="subscription-grid">
                 <div class="subscription-card">
                     <div class="client-icon">
                         <i class="fas fa-bolt"></i>
                     </div>
-                    <h3><i class="fas fa-shield-alt"></i> Clash 订阅</h3>
-                    <p>专为Clash客户端优化的订阅配置，包含所有可用节点和自动选择策略</p>
+                    <h3><i class="fas fa-shield-alt"></i> <span data-i18n="subscription.clash">Clash 订阅</span></h3>
+                    <p data-i18n="subscription.clash_desc">专为Clash客户端优化的订阅配置，包含所有可用节点和自动选择策略</p>
                     <a href="clash_subscription.yaml" class="btn" download="clash_config.yaml">
-                        <i class="fas fa-download"></i> 下载Clash订阅
+                        <i class="fas fa-download"></i> <span data-i18n="subscription.download_clash">下载Clash订阅</span>
                     </a>
                     <div class="subscription-note">
-                        <p>在Clash客户端中使用URL:<br>https://cloakaccess.com/clash_subscription.yaml</p>
+                        <p data-i18n="subscription.clash_url">在Clash客户端中使用URL:<br>https://cloakaccess.com/clash_subscription.yaml</p>
                     </div>
                 </div>
                 
@@ -523,13 +556,13 @@
                     <div class="client-icon">
                         <i class="fas fa-rocket"></i>
                     </div>
-                    <h3><i class="fas fa-mobile-alt"></i> Shadowrocket 订阅</h3>
-                    <p>专为Shadowrocket优化的订阅配置，Base64编码格式，一键导入</p>
+                    <h3><i class="fas fa-mobile-alt"></i> <span data-i18n="subscription.shadowrocket">Shadowrocket 订阅</span></h3>
+                    <p data-i18n="subscription.shadowrocket_desc">专为Shadowrocket优化的订阅配置，Base64编码格式，一键导入</p>
                     <a href="shadowrocket_subscription.txt" class="btn" download="shadowrocket_sub.txt">
-                        <i class="fas fa-download"></i> 下载Shadowrocket订阅
+                        <i class="fas fa-download"></i> <span data-i18n="subscription.download_shadowrocket">下载Shadowrocket订阅</span>
                     </a>
                     <div class="subscription-note">
-                        <p>在Shadowrocket中使用URL:<br>https://cloakaccess.com/shadowrocket_subscription.txt</p>
+                        <p data-i18n="subscription.shadowrocket_url">在Shadowrocket中使用URL:<br>https://cloakaccess.com/shadowrocket_subscription.txt</p>
                     </div>
                 </div>
             </div>
@@ -539,14 +572,14 @@
     <!-- 节点列表 -->
     <section class="nodes-section" id="nodes">
         <div class="container">
-            <h2 class="section-title">可用节点</h2>
+            <h2 class="section-title" data-i18n="nodes.title">可用节点</h2>
             
             <div class="filters">
-                <button class="filter-btn active" data-protocol="all">全部节点</button>
-                <button class="filter-btn" data-protocol="vmess">VMess</button>
-                <button class="filter-btn" data-protocol="ss">Shadowsocks</button>
-                <button class="filter-btn" data-sort="fastest">最快节点</button>
-                <button class="filter-btn" data-sort="newest">最新添加</button>
+                <button class="filter-btn active" data-protocol="all" data-i18n="filters.all">全部节点</button>
+                <button class="filter-btn" data-protocol="vmess" data-i18n="filters.vmess">VMess</button>
+                <button class="filter-btn" data-protocol="ss" data-i18n="filters.shadowsocks">Shadowsocks</button>
+                <button class="filter-btn" data-sort="fastest" data-i18n="filters.fastest">最快节点</button>
+                <button class="filter-btn" data-sort="newest" data-i18n="filters.newest">最新添加</button>
             </div>
             
             <div class="nodes-grid" id="nodes-container">
@@ -563,48 +596,48 @@
             <span class="close" onclick="closeAuthModal()">&times;</span>
             
             <div id="login-form" class="auth-form">
-                <h2>登录账户</h2>
+                <h2 data-i18n="auth.login_title">登录账户</h2>
                 <div class="form-group">
-                    <label for="login-email">邮箱地址</label>
-                    <input type="email" id="login-email" placeholder="输入您的邮箱">
+                    <label for="login-email" data-i18n="auth.email">邮箱地址</label>
+                    <input type="email" id="login-email" :placeholder="translations[currentLang].auth.email_placeholder">
                 </div>
                 <div class="form-group">
-                    <label for="login-password">密码</label>
-                    <input type="password" id="login-password" placeholder="输入密码">
+                    <label for="login-password" data-i18n="auth.password">密码</label>
+                    <input type="password" id="login-password" :placeholder="translations[currentLang].auth.password_placeholder">
                 </div>
-                <button class="btn" onclick="login()">登录</button>
+                <button class="btn" onclick="login()" data-i18n="auth.login">登录</button>
                 <div class="google-login">
                     <button class="btn google-btn" onclick="googleLogin()">
-                        <i class="fab fa-google"></i> 使用 Google 登录
+                        <i class="fab fa-google"></i> <span data-i18n="auth.google_login">使用 Google 登录</span>
                     </button>
                 </div>
                 <p class="auth-switch">
-                    还没有账户？ <a href="#" onclick="showAuthForm('register')">立即注册</a>
+                    <span data-i18n="auth.no_account">还没有账户？</span> <a href="#" onclick="showAuthForm('register')" data-i18n="auth.register_now">立即注册</a>
                 </p>
             </div>
             
             <div id="register-form" class="auth-form" style="display:none;">
-                <h2>创建账户</h2>
+                <h2 data-i18n="auth.register_title">创建账户</h2>
                 <div class="form-group">
-                    <label for="register-email">邮箱地址</label>
-                    <input type="email" id="register-email" placeholder="输入您的邮箱">
+                    <label for="register-email" data-i18n="auth.email">邮箱地址</label>
+                    <input type="email" id="register-email" :placeholder="translations[currentLang].auth.email_placeholder">
                 </div>
                 <div class="form-group">
-                    <label for="register-password">密码</label>
-                    <input type="password" id="register-password" placeholder="创建密码（至少8位）">
+                    <label for="register-password" data-i18n="auth.password">密码</label>
+                    <input type="password" id="register-password" :placeholder="translations[currentLang].auth.create_password">
                 </div>
                 <div class="form-group">
-                    <label for="register-confirm">确认密码</label>
-                    <input type="password" id="register-confirm" placeholder="再次输入密码">
+                    <label for="register-confirm" data-i18n="auth.confirm_password">确认密码</label>
+                    <input type="password" id="register-confirm" :placeholder="translations[currentLang].auth.confirm_password_placeholder">
                 </div>
-                <button class="btn" onclick="register()">注册</button>
+                <button class="btn" onclick="register()" data-i18n="auth.register">注册</button>
                 <div class="google-login">
                     <button class="btn google-btn" onclick="googleLogin()">
-                        <i class="fab fa-google"></i> 使用 Google 注册
+                        <i class="fab fa-google"></i> <span data-i18n="auth.google_register">使用 Google 注册</span>
                     </button>
                 </div>
                 <p class="auth-switch">
-                    已有账户？ <a href="#" onclick="showAuthForm('login')">立即登录</a>
+                    <span data-i18n="auth.have_account">已有账户？</span> <a href="#" onclick="showAuthForm('login')" data-i18n="auth.login_now">立即登录</a>
                 </p>
             </div>
         </div>
@@ -617,32 +650,32 @@
                 <div class="footer-col">
                     <h3>CloakAccess</h3>
                     <ul>
-                        <li><a href="#">关于我们</a></li>
-                        <li><a href="#">服务条款</a></li>
-                        <li><a href="#">隐私政策</a></li>
+                        <li><a href="#" data-i18n="footer.about">关于我们</a></li>
+                        <li><a href="#" data-i18n="footer.terms">服务条款</a></li>
+                        <li><a href="#" data-i18n="footer.privacy">隐私政策</a></li>
                     </ul>
                 </div>
                 
                 <div class="footer-col">
-                    <h3>资源</h3>
+                    <h3 data-i18n="footer.resources">资源</h3>
                     <ul>
-                        <li><a href="#subscription">订阅下载</a></li>
-                        <li><a href="#nodes">节点列表</a></li>
-                        <li><a href="#">常见问题</a></li>
+                        <li><a href="#subscription" data-i18n="footer.subscriptions">订阅下载</a></li>
+                        <li><a href="#nodes" data-i18n="footer.nodes">节点列表</a></li>
+                        <li><a href="#" data-i18n="footer.faq">常见问题</a></li>
                     </ul>
                 </div>
                 
                 <div class="footer-col">
-                    <h3>支持</h3>
+                    <h3 data-i18n="footer.support">支持</h3>
                     <ul>
-                        <li><a href="#">联系我们</a></li>
-                        <li><a href="#">报告问题</a></li>
-                        <li><a href="#">提交反馈</a></li>
+                        <li><a href="#" data-i18n="footer.contact">联系我们</a></li>
+                        <li><a href="#" data-i18n="footer.report">报告问题</a></li>
+                        <li><a href="#" data-i18n="footer.feedback">提交反馈</a></li>
                     </ul>
                 </div>
                 
                 <div class="footer-col">
-                    <h3>关注我们</h3>
+                    <h3 data-i18n="footer.follow">关注我们</h3>
                     <ul>
                         <li><a href="#"><i class="fab fa-telegram"></i> Telegram</a></li>
                         <li><a href="#"><i class="fab fa-github"></i> GitHub</a></li>
@@ -651,7 +684,7 @@
                 </div>
             </div>
             
-            <div class="copyright">
+            <div class="copyright" data-i18n="footer.copyright">
                 &copy; 2023 CloakAccess. 保留所有权利。本服务仅提供技术演示，请遵守当地法律法规。
             </div>
         </div>
@@ -785,6 +818,337 @@
     </style>
 
     <script>
+        // 多语言翻译
+        const translations = {
+            en: {
+                // 导航
+                "nav.home": "Home",
+                "nav.subscription": "Subscriptions",
+                "nav.nodes": "Nodes",
+                "nav.login": "Login/Register",
+                "lang.en": "English",
+                "lang.hi": "Hindi",
+                "lang.pt": "Portuguese",
+                "lang.zh": "Chinese",
+                
+                // 认证
+                "auth.login": "Login",
+                "auth.register": "Register",
+                "auth.login_title": "Login to Account",
+                "auth.email": "Email Address",
+                "auth.email_placeholder": "Enter your email",
+                "auth.password": "Password",
+                "auth.password_placeholder": "Enter password",
+                "auth.google_login": "Login with Google",
+                "auth.no_account": "Don't have an account?",
+                "auth.register_now": "Register Now",
+                "auth.register_title": "Create Account",
+                "auth.create_password": "Create password (at least 8 characters)",
+                "auth.confirm_password": "Confirm Password",
+                "auth.confirm_password_placeholder": "Re-enter password",
+                "auth.register": "Register",
+                "auth.google_register": "Register with Google",
+                "auth.have_account": "Already have an account?",
+                "auth.login_now": "Login Now",
+                
+                // 英雄区域
+                "hero.title": "Secure, Fast & Free Global VPN Service",
+                "hero.subtitle": "Free VPN node subscription service optimized for Clash and Shadowrocket users",
+                "hero.get_subscription": "Get Subscription",
+                "hero.view_nodes": "View Nodes",
+                
+                // 订阅
+                "subscription.title": "Client Subscriptions",
+                "subscription.clash": "Clash Subscription",
+                "subscription.clash_desc": "Subscription configuration optimized for Clash client, includes all available nodes and auto-select strategy",
+                "subscription.download_clash": "Download Clash Subscription",
+                "subscription.clash_url": "In Clash client use URL:<br>https://cloakaccess.com/clash_subscription.yaml",
+                "subscription.shadowrocket": "Shadowrocket Subscription",
+                "subscription.shadowrocket_desc": "Subscription configuration optimized for Shadowrocket, Base64 encoded, one-click import",
+                "subscription.download_shadowrocket": "Download Shadowrocket Subscription",
+                "subscription.shadowrocket_url": "In Shadowrocket use URL:<br>https://cloakaccess.com/shadowrocket_subscription.txt",
+                
+                // 节点
+                "nodes.title": "Available Nodes",
+                "filters.all": "All Nodes",
+                "filters.vmess": "VMess",
+                "filters.shadowsocks": "Shadowsocks",
+                "filters.fastest": "Fastest",
+                "filters.newest": "Newest",
+                
+                // 页脚
+                "footer.about": "About Us",
+                "footer.terms": "Terms of Service",
+                "footer.privacy": "Privacy Policy",
+                "footer.resources": "Resources",
+                "footer.subscriptions": "Subscriptions",
+                "footer.nodes": "Nodes List",
+                "footer.faq": "FAQ",
+                "footer.support": "Support",
+                "footer.contact": "Contact Us",
+                "footer.report": "Report Issue",
+                "footer.feedback": "Submit Feedback",
+                "footer.follow": "Follow Us",
+                "footer.copyright": "&copy; 2023 CloakAccess. All rights reserved. This service is for technical demonstration only, please comply with local laws and regulations."
+            },
+            hi: {
+                // 导航
+                "nav.home": "होम",
+                "nav.subscription": "सदस्यता",
+                "nav.nodes": "नोड्स",
+                "nav.login": "लॉगिन/पंजीकरण",
+                "lang.en": "अंग्रेज़ी",
+                "lang.hi": "हिंदी",
+                "lang.pt": "पुर्तगाली",
+                "lang.zh": "चीनी",
+                
+                // 认证
+                "auth.login": "लॉग इन करें",
+                "auth.register": "पंजीकरण करवाना",
+                "auth.login_title": "खाते में लॉग इन करें",
+                "auth.email": "ईमेल पता",
+                "auth.email_placeholder": "अपना ईमेल दर्ज करें",
+                "auth.password": "पासवर्ड",
+                "auth.password_placeholder": "पासवर्ड दर्ज करें",
+                "auth.google_login": "Google के साथ लॉग इन करें",
+                "auth.no_account": "खाता नहीं है?",
+                "auth.register_now": "अभी पंजीकरण करें",
+                "auth.register_title": "खाता बनाएं",
+                "auth.create_password": "पासवर्ड बनाएं (कम से कम 8 अक्षर)",
+                "auth.confirm_password": "पासवर्ड की पुष्टि कीजिये",
+                "auth.confirm_password_placeholder": "पासवर्ड फिर से दर्ज करें",
+                "auth.register": "पंजीकरण करवाना",
+                "auth.google_register": "Google के साथ पंजीकरण करें",
+                "auth.have_account": "क्या आपके पास पहले से एक खाता मौजूद है?",
+                "auth.login_now": "अभी लॉगिन करें",
+                
+                // 英雄区域
+                "hero.title": "सुरक्षित, तेज़ और मुफ़्त वैश्विक वीपीएन सेवा",
+                "hero.subtitle": "क्लैश और शैडोरॉकेट उपयोगकर्ताओं के लिए अनुकूलित मुफ़्त वीपीएन नोड सदस्यता सेवा",
+                "hero.get_subscription": "सदस्यता प्राप्त करें",
+                "hero.view_nodes": "नोड्स देखें",
+                
+                // 订阅
+                "subscription.title": "क्लाइंट सदस्यता",
+                "subscription.clash": "क्लैश सदस्यता",
+                "subscription.clash_desc": "क्लैश क्लाइंट के लिए अनुकूलित सदस्यता कॉन्फ़िगरेशन, सभी उपलब्ध नोड्स और ऑटो-चयन रणनीति शामिल है",
+                "subscription.download_clash": "क्लैश सदस्यता डाउनलोड करें",
+                "subscription.clash_url": "क्लैश क्लाइंट में URL का उपयोग करें:<br>https://cloakaccess.com/clash_subscription.yaml",
+                "subscription.shadowrocket": "शैडोरॉकेट सदस्यता",
+                "subscription.shadowrocket_desc": "शैडोरॉकेट के लिए अनुकूलित सदस्यता कॉन्फ़िगरेशन, बेस64 एन्कोडेड, वन-क्लिक आयात",
+                "subscription.download_shadowrocket": "शैडोरॉकेट सदस्यता डाउनलोड करें",
+                "subscription.shadowrocket_url": "शैडोरॉकेट में URL का उपयोग करें:<br>https://cloakaccess.com/shadowrocket_subscription.txt",
+                
+                // 节点
+                "nodes.title": "उपलब्ध नोड्स",
+                "filters.all": "सभी नोड्स",
+                "filters.vmess": "वीमेस",
+                "filters.shadowsocks": "शैडोसॉक्स",
+                "filters.fastest": "सबसे तेज़",
+                "filters.newest": "नवीनतम",
+                
+                // 页脚
+                "footer.about": "हमारे बारे में",
+                "footer.terms": "सेवा की शर्तें",
+                "footer.privacy": "गोपनीयता नीति",
+                "footer.resources": "संसाधन",
+                "footer.subscriptions": "सदस्यताएँ",
+                "footer.nodes": "नोड्स सूची",
+                "footer.faq": "सामान्य प्रश्न",
+                "footer.support": "समर्थन",
+                "footer.contact": "हमसे संपर्क करें",
+                "footer.report": "समस्या रिपोर्ट करें",
+                "footer.feedback": "प्रतिक्रिया सबमिट करें",
+                "footer.follow": "हमें फ़ॉलो करें",
+                "footer.copyright": "&copy; 2023 क्लोकएक्सेस। सर्वाधिकार सुरक्षित। यह सेवा केवल तकनीकी प्रदर्शन के लिए है, कृपया स्थानीय कानूनों और विनियमों का पालन करें।"
+            },
+            pt: {
+                // 导航
+                "nav.home": "Início",
+                "nav.subscription": "Assinaturas",
+                "nav.nodes": "Nós",
+                "nav.login": "Login/Registro",
+                "lang.en": "Inglês",
+                "lang.hi": "Hindi",
+                "lang.pt": "Português",
+                "lang.zh": "Chinês",
+                
+                // 认证
+                "auth.login": "Entrar",
+                "auth.register": "Registrar",
+                "auth.login_title": "Entrar na Conta",
+                "auth.email": "Endereço de Email",
+                "auth.email_placeholder": "Digite seu email",
+                "auth.password": "Senha",
+                "auth.password_placeholder": "Digite sua senha",
+                "auth.google_login": "Entrar com Google",
+                "auth.no_account": "Não tem uma conta?",
+                "auth.register_now": "Registre-se Agora",
+                "auth.register_title": "Criar Conta",
+                "auth.create_password": "Criar senha (pelo menos 8 caracteres)",
+                "auth.confirm_password": "Confirmar Senha",
+                "auth.confirm_password_placeholder": "Digite novamente a senha",
+                "auth.register": "Registrar",
+                "auth.google_register": "Registrar com Google",
+                "auth.have_account": "Já tem uma conta?",
+                "auth.login_now": "Entrar Agora",
+                
+                // 英雄区域
+                "hero.title": "Serviço VPN Global Seguro, Rápido e Gratuito",
+                "hero.subtitle": "Serviço de assinatura de nó VPN gratuito otimizado para usuários de Clash e Shadowrocket",
+                "hero.get_subscription": "Obter Assinatura",
+                "hero.view_nodes": "Ver Nós",
+                
+                // 订阅
+                "subscription.title": "Assinaturas de Cliente",
+                "subscription.clash": "Assinatura Clash",
+                "subscription.clash_desc": "Configuração de assinatura otimizada para o cliente Clash, inclui todos os nós disponíveis e estratégia de seleção automática",
+                "subscription.download_clash": "Baixar Assinatura Clash",
+                "subscription.clash_url": "No cliente Clash use o URL:<br>https://cloakaccess.com/clash_subscription.yaml",
+                "subscription.shadowrocket": "Assinatura Shadowrocket",
+                "subscription.shadowrocket_desc": "Configuração de assinatura otimizada para Shadowrocket, codificada em Base64, importação com um clique",
+                "subscription.download_shadowrocket": "Baixar Assinatura Shadowrocket",
+                "subscription.shadowrocket_url": "No Shadowrocket use o URL:<br>https://cloakaccess.com/shadowrocket_subscription.txt",
+                
+                // 节点
+                "nodes.title": "Nós Disponíveis",
+                "filters.all": "Todos os Nós",
+                "filters.vmess": "VMess",
+                "filters.shadowsocks": "Shadowsocks",
+                "filters.fastest": "Mais Rápido",
+                "filters.newest": "Mais Recente",
+                
+                // 页脚
+                "footer.about": "Sobre Nós",
+                "footer.terms": "Termos de Serviço",
+                "footer.privacy": "Política de Privacidade",
+                "footer.resources": "Recursos",
+                "footer.subscriptions": "Assinaturas",
+                "footer.nodes": "Lista de Nós",
+                "footer.faq": "Perguntas Frequentes",
+                "footer.support": "Suporte",
+                "footer.contact": "Contate-nos",
+                "footer.report": "Reportar Problema",
+                "footer.feedback": "Enviar Feedback",
+                "footer.follow": "Siga-nos",
+                "footer.copyright": "&copy; 2023 CloakAccess. Todos os direitos reservados. Este serviço é apenas para demonstração técnica, por favor cumpra as leis e regulamentos locais."
+            },
+            zh: {
+                // 导航
+                "nav.home": "首页",
+                "nav.subscription": "订阅下载",
+                "nav.nodes": "节点列表",
+                "nav.login": "登录/注册",
+                "lang.en": "English",
+                "lang.hi": "हिन्दी",
+                "lang.pt": "Português",
+                "lang.zh": "中文",
+                
+                // 认证
+                "auth.login": "登录",
+                "auth.register": "注册",
+                "auth.login_title": "登录账户",
+                "auth.email": "邮箱地址",
+                "auth.email_placeholder": "输入您的邮箱",
+                "auth.password": "密码",
+                "auth.password_placeholder": "输入密码",
+                "auth.google_login": "使用 Google 登录",
+                "auth.no_account": "还没有账户？",
+                "auth.register_now": "立即注册",
+                "auth.register_title": "创建账户",
+                "auth.create_password": "创建密码（至少8位）",
+                "auth.confirm_password": "确认密码",
+                "auth.confirm_password_placeholder": "再次输入密码",
+                "auth.register": "注册",
+                "auth.google_register": "使用 Google 注册",
+                "auth.have_account": "已有账户？",
+                "auth.login_now": "立即登录",
+                
+                // 英雄区域
+                "hero.title": "安全、快速、免费的全球VPN服务",
+                "hero.subtitle": "专为Clash和Shadowrocket用户优化的免费VPN节点订阅服务",
+                "hero.get_subscription": "获取订阅",
+                "hero.view_nodes": "查看节点",
+                
+                // 订阅
+                "subscription.title": "客户端订阅",
+                "subscription.clash": "Clash 订阅",
+                "subscription.clash_desc": "专为Clash客户端优化的订阅配置，包含所有可用节点和自动选择策略",
+                "subscription.download_clash": "下载Clash订阅",
+                "subscription.clash_url": "在Clash客户端中使用URL:<br>https://cloakaccess.com/clash_subscription.yaml",
+                "subscription.shadowrocket": "Shadowrocket 订阅",
+                "subscription.shadowrocket_desc": "专为Shadowrocket优化的订阅配置，Base64编码格式，一键导入",
+                "subscription.download_shadowrocket": "下载Shadowrocket订阅",
+                "subscription.shadowrocket_url": "在Shadowrocket中使用URL:<br>https://cloakaccess.com/shadowrocket_subscription.txt",
+                
+                // 节点
+                "nodes.title": "可用节点",
+                "filters.all": "全部节点",
+                "filters.vmess": "VMess",
+                "filters.shadowsocks": "Shadowsocks",
+                "filters.fastest": "最快节点",
+                "filters.newest": "最新添加",
+                
+                // 页脚
+                "footer.about": "关于我们",
+                "footer.terms": "服务条款",
+                "footer.privacy": "隐私政策",
+                "footer.resources": "资源",
+                "footer.subscriptions": "订阅下载",
+                "footer.nodes": "节点列表",
+                "footer.faq": "常见问题",
+                "footer.support": "支持",
+                "footer.contact": "联系我们",
+                "footer.report": "报告问题",
+                "footer.feedback": "提交反馈",
+                "footer.follow": "关注我们",
+                "footer.copyright": "&copy; 2023 CloakAccess. 保留所有权利。本服务仅提供技术演示，请遵守当地法律法规。"
+            }
+        };
+
+        // 当前语言
+        let currentLang = 'zh';
+        const urlParams = new URLSearchParams(window.location.search);
+        const langParam = urlParams.get('lang');
+        if (langParam && translations[langParam]) {
+            currentLang = langParam;
+        } else {
+            // 根据浏览器语言设置默认语言
+            const browserLang = navigator.language || navigator.userLanguage;
+            if (browserLang.startsWith('en')) currentLang = 'en';
+            if (browserLang.startsWith('hi')) currentLang = 'hi';
+            if (browserLang.startsWith('pt')) currentLang = 'pt';
+        }
+
+        // 应用翻译
+        function applyTranslations() {
+            // 更新所有带data-i18n属性的元素
+            document.querySelectorAll('[data-i18n]').forEach(el => {
+                const key = el.getAttribute('data-i18n');
+                if (translations[currentLang][key]) {
+                    if (el.tagName === 'INPUT' && el.placeholder) {
+                        el.placeholder = translations[currentLang][key];
+                    } else {
+                        el.innerHTML = translations[currentLang][key];
+                    }
+                }
+            });
+            
+            // 更新语言选择器
+            document.querySelector('.language-btn span').innerHTML = translations[currentLang]['lang.' + currentLang];
+            
+            // 更新语言下拉菜单激活状态
+            document.querySelectorAll('.language-dropdown a').forEach(a => {
+                a.classList.remove('active');
+                if (a.getAttribute('data-lang') === currentLang) {
+                    a.classList.add('active');
+                }
+            });
+            
+            // 更新HTML lang属性
+            document.documentElement.lang = currentLang;
+        }
+
         // 节点数据
         let nodes = [];
         
@@ -825,7 +1189,7 @@
             const password = document.getElementById('login-password').value;
             
             if (!email || !password) {
-                alert('请填写邮箱和密码');
+                alert(translations[currentLang]['auth.email_password_required'] || '请填写邮箱和密码');
                 return;
             }
             
@@ -833,12 +1197,12 @@
             document.getElementById('auth-buttons').innerHTML = `
                 <div class="user-profile">
                     <span>${email}</span>
-                    <button class="btn" onclick="logout()">退出</button>
+                    <button class="btn" onclick="logout()">${translations[currentLang]['auth.logout'] || '退出'}</button>
                 </div>
             `;
             
             closeAuthModal();
-            alert('登录成功！');
+            alert(translations[currentLang]['auth.login_success'] || '登录成功！');
         }
         
         // 注册函数
@@ -848,17 +1212,17 @@
             const confirm = document.getElementById('register-confirm').value;
             
             if (!email || !password || !confirm) {
-                alert('请填写所有字段');
+                alert(translations[currentLang]['auth.all_fields_required'] || '请填写所有字段');
                 return;
             }
             
             if (password !== confirm) {
-                alert('两次输入的密码不一致');
+                alert(translations[currentLang]['auth.password_mismatch'] || '两次输入的密码不一致');
                 return;
             }
             
             if (password.length < 8) {
-                alert('密码长度至少为8位');
+                alert(translations[currentLang]['auth.password_length'] || '密码长度至少为8位');
                 return;
             }
             
@@ -866,12 +1230,12 @@
             document.getElementById('auth-buttons').innerHTML = `
                 <div class="user-profile">
                     <span>${email}</span>
-                    <button class="btn" onclick="logout()">退出</button>
+                    <button class="btn" onclick="logout()">${translations[currentLang]['auth.logout'] || '退出'}</button>
                 </div>
             `;
             
             closeAuthModal();
-            alert('注册成功！');
+            alert(translations[currentLang]['auth.register_success'] || '注册成功！');
         }
         
         // Google登录/注册
@@ -883,19 +1247,19 @@
             document.getElementById('auth-buttons').innerHTML = `
                 <div class="user-profile">
                     <span>${email}</span>
-                    <button class="btn" onclick="logout()">退出</button>
+                    <button class="btn" onclick="logout()">${translations[currentLang]['auth.logout'] || '退出'}</button>
                 </div>
             `;
             
             closeAuthModal();
-            alert('Google登录成功！');
+            alert(translations[currentLang]['auth.google_login_success'] || 'Google登录成功！');
         }
         
         // 退出登录
         function logout() {
             document.getElementById('auth-buttons').innerHTML = `
-                <button class="btn" onclick="showAuthModal('login')">登录</button>
-                <button class="btn" onclick="showAuthModal('register')">注册</button>
+                <button class="btn" onclick="showAuthModal('login')">${translations[currentLang]['auth.login'] || '登录'}</button>
+                <button class="btn" onclick="showAuthModal('register')">${translations[currentLang]['auth.register'] || '注册'}</button>
             `;
         }
         
@@ -906,11 +1270,12 @@
                 nodesContainer.innerHTML = `
                     <div class="loader">
                         <div class="spinner"></div>
+                        <span>${translations[currentLang]['nodes.loading'] || '正在加载节点数据...'}</span>
                     </div>
                 `;
                 
                 const response = await fetch('nodes.json');
-                if (!response.ok) throw new Error('网络响应异常');
+                if (!response.ok) throw new Error(translations[currentLang]['nodes.load_failed'] || '网络响应异常');
                 
                 nodes = await response.json();
                 renderNodes(nodes);
@@ -920,9 +1285,11 @@
                 nodesContainer.innerHTML = `
                     <div class="error-message" style="grid-column: 1/-1; text-align: center; padding: 40px;">
                         <i class="fas fa-exclamation-triangle" style="font-size: 3rem; color: var(--warning); margin-bottom: 20px;"></i>
-                        <h3>节点加载失败</h3>
-                        <p>请刷新页面重试或稍后再访问</p>
-                        <button class="btn" onclick="location.reload()" style="margin-top: 20px;">刷新页面</button>
+                        <h3>${translations[currentLang]['nodes.load_failed_title'] || '节点加载失败'}</h3>
+                        <p>${translations[currentLang]['nodes.load_failed_message'] || '请刷新页面重试或稍后再访问'}</p>
+                        <button class="btn" onclick="location.reload()" style="margin-top: 20px;">
+                            ${translations[currentLang]['nodes.refresh'] || '刷新页面'}
+                        </button>
                     </div>
                 `;
             }
@@ -936,8 +1303,8 @@
                 nodesContainer.innerHTML = `
                     <div style="grid-column: 1/-1; text-align: center; padding: 40px;">
                         <i class="fas fa-frown" style="font-size: 3rem; color: var(--gray); margin-bottom: 20px;"></i>
-                        <h3>暂无可用节点</h3>
-                        <p>请稍后再尝试或联系管理员</p>
+                        <h3>${translations[currentLang]['nodes.no_nodes_title'] || '暂无可用节点'}</h3>
+                        <p>${translations[currentLang]['nodes.no_nodes_message'] || '请稍后再尝试或联系管理员'}</p>
                     </div>
                 `;
                 return;
@@ -954,22 +1321,24 @@
                 nodeCard.innerHTML = `
                     <div class="node-status">
                         <span class="status-indicator ${isActive ? 'active' : 'inactive'}"></span>
-                        <span class="status-text">${isActive ? `延迟: ${node.latency}ms` : '已失效'}</span>
+                        <span class="status-text">${isActive ? 
+                            (translations[currentLang]['nodes.latency'] || '延迟') + `: ${node.latency}ms` : 
+                            (translations[currentLang]['nodes.inactive'] || '已失效')}</span>
                     </div>
                     
-                    <h3 class="node-name">${node.name || '未命名节点'}</h3>
+                    <h3 class="node-name">${node.name || (translations[currentLang]['nodes.unnamed'] || '未命名节点')}</h3>
                     <div class="node-meta">
-                        <span><i class="fas fa-server"></i> ${node.server || '未知服务器'}:${node.port || '未知端口'}</span>
-                        <span><i class="fas fa-plug"></i> ${node.type ? node.type.toUpperCase() : '未知协议'}</span>
+                        <span><i class="fas fa-server"></i> ${node.server || (translations[currentLang]['nodes.unknown_server'] || '未知服务器')}:${node.port || (translations[currentLang]['nodes.unknown_port'] || '未知端口')}</span>
+                        <span><i class="fas fa-plug"></i> ${node.type ? node.type.toUpperCase() : (translations[currentLang]['nodes.unknown_protocol'] || '未知协议')}</span>
                     </div>
                     
                     <div class="node-actions">
                         <button class="btn btn-copy" data-config="${btoa(encodeURIComponent(node.config || ''))}">
-                            <i class="fas fa-copy"></i> 复制配置
+                            <i class="fas fa-copy"></i> ${translations[currentLang]['nodes.copy_config'] || '复制配置'}
                         </button>
                         <button class="btn btn-download" data-config="${btoa(encodeURIComponent(node.config || ''))}" 
                                 data-filename="${node.name || 'node'}.${node.type === 'vmess' ? 'vmess' : 'ss'}">
-                            <i class="fas fa-download"></i> 下载
+                            <i class="fas fa-download"></i> ${translations[currentLang]['nodes.download'] || '下载'}
                         </button>
                     </div>
                 `;
@@ -1010,14 +1379,14 @@
                     
                     navigator.clipboard.writeText(config).then(() => {
                         const originalText = this.innerHTML;
-                        this.innerHTML = '<i class="fas fa-check"></i> 已复制';
+                        this.innerHTML = `<i class="fas fa-check"></i> ${translations[currentLang]['nodes.copied'] || '已复制'}`;
                         
                         setTimeout(() => {
                             this.innerHTML = originalText;
                         }, 2000);
                     }).catch(err => {
                         console.error('复制失败:', err);
-                        alert('复制失败，请手动复制配置');
+                        alert(translations[currentLang]['nodes.copy_failed'] || '复制失败，请手动复制配置');
                     });
                 });
             });
@@ -1048,6 +1417,9 @@
         
         // 初始化页面
         document.addEventListener('DOMContentLoaded', () => {
+            // 应用翻译
+            applyTranslations();
+            
             // 加载节点
             loadNodes();
             
@@ -1085,6 +1457,25 @@
                 if (event.target === authModal) {
                     closeAuthModal();
                 }
+            });
+            
+            // 语言切换
+            document.querySelectorAll('.language-dropdown a').forEach(a => {
+                a.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    const lang = this.getAttribute('data-lang');
+                    if (lang !== currentLang) {
+                        // 更新URL参数
+                        const url = new URL(window.location.href);
+                        url.searchParams.set('lang', lang);
+                        window.history.replaceState(null, '', url.toString());
+                        
+                        // 更新语言并重新加载页面
+                        currentLang = lang;
+                        applyTranslations();
+                        loadNodes();
+                    }
+                });
             });
         });
     </script>
