@@ -177,26 +177,26 @@
     "source": "https://raw.githubusercontent.com/freefq/free/master/v2"
   },
   {
-    "name": "🇨🇳_CN_中国->🇺🇸_US_美国",
-    "type": "trojan",
-    "server": "42.240.152.238",
-    "port": "8842",
-    "city": "中国",
+    "name": "🇲🇩_MD_摩尔多瓦->🇷🇺_RU_俄罗斯",
+    "type": "ss",
+    "server": "185.153.197.5",
+    "port": "989",
+    "city": "俄罗斯",
+    "source": "https://raw.githubusercontent.com/ermaozi/get_subscribe/main/subscribe/clash.yml"
+  },
+  {
+    "name": "🇺🇸_US_美国->🇰🇷_KR_韩国",
+    "type": "ss",
+    "server": "194.87.216.121",
+    "port": "443",
+    "city": "美国",
     "source": "https://raw.githubusercontent.com/ermaozi/get_subscribe/main/subscribe/clash.yml"
   },
   {
     "name": "🇨🇳_CN_中国",
-    "type": "ss",
-    "server": "103.149.182.191",
-    "port": "8388",
-    "city": "中国",
-    "source": "https://raw.githubusercontent.com/ermaozi/get_subscribe/main/subscribe/clash.yml"
-  },
-  {
-    "name": "🇨🇳_CN_中国->🇺🇸_US_美国_1",
     "type": "trojan",
-    "server": "120.233.44.201",
-    "port": "21179",
+    "server": "36.151.251.56",
+    "port": "4447",
     "city": "中国",
     "source": "https://raw.githubusercontent.com/ermaozi/get_subscribe/main/subscribe/clash.yml"
   },
@@ -204,16 +204,24 @@
     "name": "🇳🇱_NL_荷兰->🇺🇸_US_美国",
     "type": "vmess",
     "server": "45.147.201.231",
-    "port": "20057",
+    "port": "20058",
     "city": "美国",
     "source": "https://raw.githubusercontent.com/ermaozi/get_subscribe/main/subscribe/clash.yml"
   },
   {
-    "name": "🇰🇷_KR_韩国->🇺🇸_US_美国",
-    "type": "ss",
-    "server": "125.141.26.12",
-    "port": "4857",
-    "city": "美国",
+    "name": "🇨🇳_CN_中国->🇺🇸_US_美国",
+    "type": "vmess",
+    "server": "120.26.55.225",
+    "port": "50002",
+    "city": "中国",
+    "source": "https://raw.githubusercontent.com/ermaozi/get_subscribe/main/subscribe/clash.yml"
+  },
+  {
+    "name": "🇨🇳_CN_中国->🇳🇱_NL_荷兰",
+    "type": "trojan",
+    "server": "120.233.44.201",
+    "port": "21102",
+    "city": "中国",
     "source": "https://raw.githubusercontent.com/ermaozi/get_subscribe/main/subscribe/clash.yml"
   },
   {
@@ -226,58 +234,90 @@
   },
   {
     "name": "🇨🇳_CN_中国->🇺🇸_US_美国_3",
-    "type": "vmess",
-    "server": "v29.heduian.link",
-    "port": "30829",
+    "type": "trojan",
+    "server": "120.233.44.201",
+    "port": "21179",
     "city": "中国",
     "source": "https://raw.githubusercontent.com/ermaozi/get_subscribe/main/subscribe/clash.yml"
   },
   {
     "name": "🇨🇳_CN_中国->🇺🇸_US_美国_4",
-    "type": "vmess",
-    "server": "v24.heduian.link",
-    "port": "30824",
+    "type": "trojan",
+    "server": "42.240.152.238",
+    "port": "8842",
     "city": "中国",
     "source": "https://raw.githubusercontent.com/ermaozi/get_subscribe/main/subscribe/clash.yml"
   },
   {
     "name": "🇰🇷_KR_韩国",
     "type": "ss",
-    "server": "125.141.31.72",
-    "port": "15098",
+    "server": "125.141.26.12",
+    "port": "4857",
     "city": "韩国",
     "source": "https://raw.githubusercontent.com/ermaozi/get_subscribe/main/subscribe/clash.yml"
   },
   {
-    "name": "🇨🇳_CN_中国_1",
+    "name": "🇷🇺_RU_俄罗斯",
+    "type": "ss",
+    "server": "77.246.97.187",
+    "port": "7749",
+    "city": "俄罗斯",
+    "source": "https://raw.githubusercontent.com/ermaozi/get_subscribe/main/subscribe/clash.yml"
+  },
+  {
+    "name": "🇰🇷_KR_韩国->🇲🇾_MY_马来西亚",
+    "type": "ss",
+    "server": "210.217.18.70",
+    "port": "11171",
+    "city": "韩国",
+    "source": "https://raw.githubusercontent.com/ermaozi/get_subscribe/main/subscribe/clash.yml"
+  },
+  {
+    "name": "🇰🇷_KR_韩国->🇺🇸_US_美国",
+    "type": "ss",
+    "server": "125.141.31.72",
+    "port": "15098",
+    "city": "美国",
+    "source": "https://raw.githubusercontent.com/ermaozi/get_subscribe/main/subscribe/clash.yml"
+  },
+  {
+    "name": "🇨🇳_CN_中国->🇬🇧_GB_英国",
     "type": "vmess",
-    "server": "120.26.55.225",
-    "port": "50002",
+    "server": "v36.heduian.link",
+    "port": "30836",
     "city": "中国",
     "source": "https://raw.githubusercontent.com/ermaozi/get_subscribe/main/subscribe/clash.yml"
   },
   {
-    "name": "🇨🇳_CN_中国->🇩🇪_DE_德国",
+    "name": "🇺🇸_US_美国->🇲🇾_MY_马来西亚",
     "type": "trojan",
-    "server": "120.233.44.201",
-    "port": "21102",
-    "city": "中国",
+    "server": "172.67.204.120",
+    "port": "443",
+    "city": "美国",
+    "source": "https://raw.githubusercontent.com/ermaozi/get_subscribe/main/subscribe/clash.yml"
+  },
+  {
+    "name": "🇧🇪_BE_比利时",
+    "type": "ss",
+    "server": "57.128.190.171",
+    "port": "11259",
+    "city": "未知城市",
     "source": "https://raw.githubusercontent.com/ermaozi/get_subscribe/main/subscribe/clash.yml"
   },
   {
     "name": "🇨🇳_CN_中国->🇺🇸_US_美国_5",
     "type": "vmess",
-    "server": "v7.heduian.link",
-    "port": "30807",
+    "server": "v35.heduian.link",
+    "port": "30835",
     "city": "中国",
     "source": "https://raw.githubusercontent.com/ermaozi/get_subscribe/main/subscribe/clash.yml"
   },
   {
-    "name": "🇰🇷_KR_韩国_1",
-    "type": "ss",
-    "server": "p231.panda004.net",
-    "port": "11389",
-    "city": "韩国",
+    "name": "🇳🇱_NL_荷兰->🇨🇳_CN_中国",
+    "type": "vmess",
+    "server": "194.5.193.95",
+    "port": "58819",
+    "city": "中国",
     "source": "https://raw.githubusercontent.com/ermaozi/get_subscribe/main/subscribe/clash.yml"
   }
 ]
