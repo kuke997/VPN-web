@@ -10,6 +10,17 @@ import os
 from datetime import datetime
 from urllib.parse import urlparse
 import concurrent.futures
+import logging
+
+# 配置日志
+logging.basicConfig(
+    level=logging.INFO,
+    format='%(asctime)s - %(levelname)s - %(message)s',
+    handlers=[
+        logging.FileHandler('vpn_crawler.log'),
+        logging.StreamHandler()
+    ]
+)
 
 # 更新为更可靠的免费节点源
 SOURCES = [
@@ -17,7 +28,9 @@ SOURCES = [
     "https://raw.githubusercontent.com/ssrsub/ssr/master/ssrsub",
     "https://raw.githubusercontent.com/freefq/free/master/v2",
     "https://raw.githubusercontent.com/aiboboxx/v2rayfree/main/v2",
-    "https://raw.githubusercontent.com/Pawdroid/Free-servers/main/sub"
+    "https://raw.githubusercontent.com/Pawdroid/Free-servers/main/sub",
+    "https://raw.githubusercontent.com/Leon406/SubCrawler/main/sub/share/all",
+    "https://raw.githubusercontent.com/mahdibland/ShadowsocksAggregator/master/sub/sip002"
 ]
 
 USER_AGENTS = [
@@ -29,24 +42,31 @@ USER_AGENTS = [
 def get_random_user_agent():
     return random.choice(USER_AGENTS)
 
-def fetch_source(url):
-    """从单个源获取节点数据"""
-    try:
-        headers = {
-            "User-Agent": get_random_user_agent(),
-            "Accept": "text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8"
-        }
+def fetch_source(url, retry=3):
+    """从单个源获取节点数据，带重试机制"""
+    for attempt in range(retry):
+        try:
+            headers = {
+                "User-Agent": get_random_user_agent(),
+                "Accept": "text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8",
+                "Connection": "keep-alive"
+            }
+            
+            response = requests.get(url, headers=headers, timeout=15)
+            
+            if response.status_code == 200:
+                logging.info(f"成功获取源: {url}")
+                return response.text
+            else:
+                logging.warning(f"源 {url} 返回状态码: {response.status_code} (尝试 {attempt+1}/{retry})")
+        except Exception as e:
+            logging.error(f"获取源 {url} 失败 (尝试 {attempt+1}/{retry}): {str(e)}")
         
-        response = requests.get(url, headers=headers, timeout=15)
-        
-        if response.status_code == 200:
-            return response.text
-        else:
-            print(f"源 {url} 返回状态码: {response.status_code}")
-            return None
-    except Exception as e:
-        print(f"获取源 {url} 失败: {str(e)}")
-        return None
+        # 指数退避重试
+        time.sleep(2 ** attempt)
+    
+    logging.error(f"无法获取源: {url} (已重试 {retry} 次)")
+    return None
 
 def parse_clash_config(content):
     """解析Clash配置文件"""
@@ -55,6 +75,7 @@ def parse_clash_config(content):
     # 查找proxies部分
     proxies_start = content.find("proxies:")
     if proxies_start == -1:
+        logging.warning("在Clash配置中未找到proxies部分")
         return nodes
         
     proxies_content = content[proxies_start:]
@@ -62,6 +83,12 @@ def parse_clash_config(content):
     # 使用正则表达式匹配每个节点
     node_pattern = r"- {.*?}\n"
     matches = re.findall(node_pattern, proxies_content, re.DOTALL)
+    
+    if not matches:
+        logging.warning("在Clash配置中未找到任何节点")
+        return nodes
+    
+    logging.info(f"在Clash配置中找到 {len(matches)} 个节点")
     
     for match in matches:
         try:
@@ -131,8 +158,9 @@ def parse_clash_config(content):
                         "source": "clash_config"
                     })
         except Exception as e:
-            print(f"解析Clash节点失败: {str(e)}")
+            logging.error(f"解析Clash节点失败: {str(e)}")
     
+    logging.info(f"成功解析 {len(nodes)} 个Clash节点")
     return nodes
 
 def parse_subscription_content(content, source_url):
@@ -147,11 +175,18 @@ def parse_subscription_content(content, source_url):
         
         # 检查是否是Clash配置
         if "proxies:" in content:
+            logging.info("检测到Clash配置格式")
             return parse_clash_config(content), "clash"
         
         # 解析为节点列表
         nodes = []
         lines = content.splitlines()
+        
+        if not lines:
+            logging.warning("订阅内容为空")
+            return nodes, "empty"
+        
+        logging.info(f"开始解析订阅内容，共 {len(lines)} 行")
         
         for line in lines:
             line = line.strip()
@@ -184,6 +219,7 @@ def parse_subscription_content(content, source_url):
                             "ps": "",
                             "id": ""
                         }
+                        logging.warning(f"VMess配置解析失败: {line[:60]}...")
                     
                     server = config.get("add", config.get("host", config.get("address", "")))
                     port = config.get("port", "443")
@@ -243,55 +279,51 @@ def parse_subscription_content(content, source_url):
                     }
                     nodes.append(node)
             except Exception as e:
-                print(f"解析节点失败: {str(e)} - {line[:60]}")
+                logging.error(f"解析节点失败: {str(e)} - {line[:60]}")
         
+        logging.info(f"成功解析 {len(nodes)} 个节点")
         return nodes, "mixed"
     except Exception as e:
-        print(f"解析订阅内容失败: {str(e)}")
+        logging.error(f"解析订阅内容失败: {str(e)}")
         return [], "unknown"
 
-def test_node_connectivity(node):
-    """测试节点连接性 - 更严格的测试"""
+def test_node_connectivity(node, timeout=5):
+    """测试节点连接性"""
     server = node.get("server", "")
     port = str(node.get("port", ""))
     
     if not server or not port or not port.isdigit():
+        logging.warning(f"节点无效: {node.get('name', '未知节点')} - 缺少服务器或端口")
         return None
     
     try:
         # 解析域名
-        if not re.match(r"\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}", server):
-            try:
-                server_ip = socket.gethostbyname(server)
-            except socket.gaierror:
-                return None
-        else:
-            server_ip = server
+        start_time = time.time()
         
         # 测试TCP连接
-        start_time = time.time()
-        sock = socket.create_connection((server_ip, int(port)), timeout=5)
-        
-        # 发送测试数据
-        if node["type"] == "ss":
-            # Shadowsocks测试数据
-            sock.send(b"\x05\x01\x00")
-            response = sock.recv(2)
-            if response != b"\x05\x00":
-                return None
-        
+        sock = socket.create_connection((server, int(port)), timeout=timeout)
         sock.close()
-        return int((time.time() - start_time) * 1000)
+        
+        latency = int((time.time() - start_time) * 1000)
+        logging.info(f"节点有效: {node['name']} - 延迟: {latency}ms")
+        return latency
+    except socket.gaierror:
+        logging.warning(f"域名解析失败: {node['name']} - {server}")
+        return None
+    except socket.timeout:
+        logging.warning(f"连接超时: {node['name']} - {server}:{port}")
+        return None
     except Exception as e:
+        logging.warning(f"连接失败: {node['name']} - {server}:{port} - {str(e)}")
         return None
 
 def fetch_all_sources():
     """从所有源获取并处理节点"""
     all_nodes = []
     
-    print("="*50)
-    print("开始获取节点源...")
-    print("="*50)
+    logging.info("="*50)
+    logging.info("开始获取节点源...")
+    logging.info("="*50)
     
     # 获取所有源数据
     with concurrent.futures.ThreadPoolExecutor() as executor:
@@ -300,17 +332,17 @@ def fetch_all_sources():
             url = futures[future]
             content = future.result()
             if content:
-                print(f"成功获取源: {url}")
+                logging.info(f"处理源: {url}")
                 nodes, source_type = parse_subscription_content(content, url)
-                print(f"从该源解析出 {len(nodes)} 个节点")
+                logging.info(f"从该源解析出 {len(nodes)} 个节点")
                 all_nodes.extend(nodes)
             else:
-                print(f"无法获取源: {url}")
+                logging.warning(f"无法处理源: {url}")
     
-    print(f"初始节点数: {len(all_nodes)}")
+    logging.info(f"初始节点数: {len(all_nodes)}")
     
     if not all_nodes:
-        print("⚠️ 未获取到任何节点，退出。")
+        logging.error("⚠️ 未获取到任何节点，退出。")
         return []
     
     # 去重
@@ -323,13 +355,13 @@ def fetch_all_sources():
             seen_configs.add(config)
             unique_nodes.append(node)
     
-    print(f"去重后节点数: {len(unique_nodes)}")
+    logging.info(f"去重后节点数: {len(unique_nodes)}")
     
     # 验证节点有效性
     valid_nodes = []
-    print("="*50)
-    print("开始验证节点连通性...")
-    print("="*50)
+    logging.info("="*50)
+    logging.info("开始验证节点连通性...")
+    logging.info("="*50)
     
     # 限制最大并发数
     max_workers = min(20, len(unique_nodes))
@@ -343,13 +375,13 @@ def fetch_all_sources():
                     node["latency"] = latency
                     node["last_checked"] = datetime.utcnow().isoformat() + "Z"
                     valid_nodes.append(node)
-                    print(f"✅ 节点有效: {node['name']} - 延迟: {latency}ms")
+                    logging.info(f"✅ 节点有效: {node['name']} - 延迟: {latency}ms")
                 else:
-                    print(f"❌ 节点无效: {node['name']}")
+                    logging.info(f"❌ 节点无效: {node['name']}")
             except Exception as e:
-                print(f"⚠️ 验证节点失败: {node.get('name', '未知节点')} - {str(e)}")
+                logging.error(f"⚠️ 验证节点失败: {node.get('name', '未知节点')} - {str(e)}")
     
-    print(f"有效节点数: {len(valid_nodes)}")
+    logging.info(f"有效节点数: {len(valid_nodes)}")
     
     # 保存到文件
     with open('nodes.json', 'w', encoding='utf-8') as f:
@@ -363,12 +395,12 @@ def fetch_all_sources():
 def generate_subscriptions(nodes):
     """生成Clash和Shadowrocket订阅"""
     if not nodes:
-        print("⚠️ 没有有效节点，跳过订阅生成")
+        logging.warning("⚠️ 没有有效节点，跳过订阅生成")
         return
     
-    print("="*50)
-    print("生成订阅文件中...")
-    print("="*50)
+    logging.info("="*50)
+    logging.info("生成订阅文件中...")
+    logging.info("="*50)
     
     # 1. 生成Clash订阅
     clash_config = """port: 7890
@@ -417,7 +449,7 @@ proxies:
                 clash_config += "    udp: true\n\n"
                 
             except Exception as e:
-                print(f"生成Clash配置失败: {node['name']} - {str(e)}")
+                logging.error(f"生成Clash配置失败: {node['name']} - {str(e)}")
         
         elif node["type"] == "ss":
             try:
@@ -452,7 +484,7 @@ proxies:
                 clash_config += "    udp: true\n\n"
                 
             except Exception as e:
-                print(f"生成Clash配置失败: {node['name']} - {str(e)}")
+                logging.error(f"生成Clash配置失败: {node['name']} - {str(e)}")
     
     # 添加代理组和规则
     clash_config += """
@@ -490,35 +522,35 @@ rules:
     with open('shadowrocket_subscription.txt', 'w', encoding='utf-8') as f:
         f.write(shadowrocket_base64)
     
-    print("✅ 订阅文件生成完成:")
-    print(f"- Clash订阅: clash_subscription.yaml ({len(nodes)}个节点)")
-    print(f"- Shadowrocket订阅: shadowrocket_subscription.txt ({len(nodes)}个节点)")
+    logging.info("✅ 订阅文件生成完成:")
+    logging.info(f"- Clash订阅: clash_subscription.yaml ({len(nodes)}个节点)")
+    logging.info(f"- Shadowrocket订阅: shadowrocket_subscription.txt ({len(nodes)}个节点)")
 
 if __name__ == "__main__":
-    print("="*50)
-    print("开始爬取所有来源的免费VPN节点...")
-    print("="*50)
+    logging.info("="*50)
+    logging.info("开始爬取所有来源的免费VPN节点...")
+    logging.info("="*50)
     
     start_time = time.time()
     
     try:
         nodes = fetch_all_sources()
     except Exception as e:
-        print(f"爬取过程中发生错误: {str(e)}")
+        logging.error(f"爬取过程中发生错误: {str(e)}")
         nodes = []
     
     elapsed_time = time.time() - start_time
     
-    print("\n" + "="*50)
+    logging.info("\n" + "="*50)
     if nodes:
-        print(f"✅ 成功获取 {len(nodes)} 个有效节点 (耗时: {elapsed_time:.2f}秒)")
-        print("结果已保存到 nodes.json")
+        logging.info(f"✅ 成功获取 {len(nodes)} 个有效节点 (耗时: {elapsed_time:.2f}秒)")
+        logging.info("结果已保存到 nodes.json")
     else:
-        print("❌ 未获取到任何有效节点")
+        logging.error("❌ 未获取到任何有效节点")
         # 创建空文件防止前端出错
         with open('nodes.json', 'w') as f:
             json.dump([], f)
-        print("已创建空的 nodes.json 文件")
+        logging.info("已创建空的 nodes.json 文件")
     
     # 确保订阅文件存在
     if not os.path.exists('clash_subscription.yaml'):
@@ -529,4 +561,4 @@ if __name__ == "__main__":
         with open('shadowrocket_subscription.txt', 'w') as f:
             f.write("")
     
-    print("="*50)
+    logging.info("="*50)
