@@ -8,8 +8,455 @@
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <script src="https://fpyf8.com/88/tag.min.js" data-zone="152190" async data-cfasync="false"></script>
     <style>
-        /* 样式代码保持不变，只修改内容部分 */
-        /* ... 原有样式代码 ... */
+        :root {
+            --primary: #6366f1;
+            --primary-dark: #4f46e5;
+            --secondary: #10b981;
+            --dark: #1e293b;
+            --darker: #0f172a;
+            --light: #f1f5f9;
+            --gray: #94a3b8;
+            --success: #10b981;
+            --danger: #ef4444;
+            --warning: #f59e0b;
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Inter', sans-serif;
+            background: linear-gradient(to bottom right, #0f172a, #1e293b);
+            color: #e2e8f0;
+            line-height: 1.6;
+            min-height: 100vh;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+        
+        /* 头部样式 */
+        header {
+            padding: 20px 0;
+            background: rgba(15, 23, 42, 0.8);
+            backdrop-filter: blur(10px);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        
+        .header-inner {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: white;
+            text-decoration: none;
+        }
+        
+        .logo i {
+            color: var(--primary);
+        }
+        
+        nav ul {
+            display: flex;
+            list-style: none;
+            gap: 30px;
+        }
+        
+        nav a {
+            color: var(--gray);
+            text-decoration: none;
+            font-weight: 500;
+            transition: color 0.3s;
+            font-size: 1rem;
+        }
+        
+        nav a:hover, nav a.active {
+            color: white;
+        }
+        
+        .btn {
+            display: inline-block;
+            padding: 10px 20px;
+            background: var(--primary);
+            color: white;
+            border-radius: 8px;
+            text-decoration: none;
+            font-weight: 500;
+            transition: all 0.3s;
+            border: none;
+            cursor: pointer;
+            font-size: 0.9rem;
+        }
+        
+        .btn:hover {
+            background: var(--primary-dark);
+            transform: translateY(-2px);
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+        
+        .btn-outline {
+            background: transparent;
+            border: 1px solid var(--primary);
+            color: var(--primary);
+        }
+        
+        .btn-outline:hover {
+            background: rgba(99, 102, 241, 0.1);
+        }
+        
+        /* 英雄区域 */
+        .hero {
+            padding: 80px 0 60px;
+            text-align: center;
+            max-width: 800px;
+            margin: 0 auto;
+        }
+        
+        .hero h1 {
+            font-size: 3.5rem;
+            font-weight: 800;
+            line-height: 1.2;
+            margin-bottom: 20px;
+            background: linear-gradient(to right, #e0e7ff, #c7d2fe);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+        }
+        
+        .hero p {
+            font-size: 1.2rem;
+            color: #cbd5e1;
+            margin-bottom: 30px;
+            max-width: 600px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+        
+        .hero-btns {
+            display: flex;
+            gap: 15px;
+            justify-content: center;
+            margin-top: 30px;
+        }
+        
+        /* 特性区域 */
+        .features {
+            padding: 80px 0;
+        }
+        
+        .section-title {
+            text-align: center;
+            font-size: 2.5rem;
+            margin-bottom: 60px;
+            font-weight: 700;
+            color: white;
+        }
+        
+        .features-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 30px;
+        }
+        
+        .feature-card {
+            background: rgba(30, 41, 59, 0.6);
+            border-radius: 16px;
+            padding: 30px;
+            transition: transform 0.3s;
+            border: 1px solid rgba(255, 255, 255, 0.05);
+        }
+        
+        .feature-card:hover {
+            transform: translateY(-10px);
+            border-color: rgba(99, 102, 241, 0.3);
+        }
+        
+        .feature-icon {
+            width: 60px;
+            height: 60px;
+            background: rgba(79, 70, 229, 0.1);
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 20px;
+        }
+        
+        .feature-icon i {
+            font-size: 24px;
+            color: var(--primary);
+        }
+        
+        .feature-card h3 {
+            font-size: 1.5rem;
+            margin-bottom: 15px;
+            color: white;
+        }
+        
+        /* 订阅区域 */
+        .subscription-section {
+            padding: 60px 0;
+            background: rgba(15, 23, 42, 0.6);
+            border-radius: 16px;
+            margin: 40px 0;
+        }
+        
+        .subscription-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 30px;
+        }
+        
+        .subscription-card {
+            background: rgba(30, 41, 59, 0.6);
+            border-radius: 16px;
+            padding: 30px;
+            text-align: center;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        
+        .subscription-card h3 {
+            font-size: 1.5rem;
+            margin-bottom: 20px;
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+        }
+        
+        .subscription-card p {
+            margin-bottom: 25px;
+            color: #cbd5e1;
+        }
+        
+        .client-icon {
+            font-size: 2.5rem;
+            color: var(--primary);
+            margin-bottom: 15px;
+        }
+        
+        /* 节点列表 */
+        .nodes-section {
+            padding: 80px 0;
+        }
+        
+        .filters {
+            display: flex;
+            gap: 15px;
+            margin-bottom: 30px;
+            flex-wrap: wrap;
+        }
+        
+        .filter-btn {
+            padding: 8px 16px;
+            background: rgba(30, 41, 59, 0.6);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 8px;
+            color: #cbd5e1;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        
+        .filter-btn.active, .filter-btn:hover {
+            background: var(--primary);
+            color: white;
+            border-color: var(--primary);
+        }
+        
+        .nodes-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 25px;
+        }
+        
+        .node-card {
+            background: rgba(30, 41, 59, 0.6);
+            border-radius: 16px;
+            padding: 25px;
+            position: relative;
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            transition: all 0.3s;
+        }
+        
+        .node-card.recommended {
+            border-color: var(--success);
+            box-shadow: 0 0 0 2px rgba(16, 185, 129, 0.3);
+        }
+        
+        .node-card:hover {
+            border-color: rgba(99, 102, 241, 0.3);
+            transform: translateY(-5px);
+        }
+        
+        .node-status {
+            display: flex;
+            align-items: center;
+            margin-bottom: 15px;
+            font-size: 0.85rem;
+        }
+        
+        .status-indicator {
+            display: inline-block;
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            margin-right: 6px;
+        }
+        
+        .status-indicator.active {
+            background-color: var(--success);
+        }
+        
+        .status-indicator.inactive {
+            background-color: var(--danger);
+        }
+        
+        .last-checked {
+            margin-left: auto;
+            color: var(--gray);
+            font-size: 0.75rem;
+        }
+        
+        .node-name {
+            font-size: 1.25rem;
+            margin-bottom: 10px;
+            color: white;
+        }
+        
+        .node-meta {
+            display: flex;
+            gap: 15px;
+            margin-bottom: 20px;
+            font-size: 0.9rem;
+            color: var(--gray);
+        }
+        
+        .node-meta span {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+        
+        .node-actions {
+            display: flex;
+            gap: 10px;
+        }
+        
+        .node-actions .btn {
+            flex: 1;
+            padding: 8px 10px;
+            font-size: 0.85rem;
+            text-align: center;
+        }
+        
+        /* 页脚 */
+        footer {
+            padding: 60px 0 30px;
+            background: rgba(15, 23, 42, 0.8);
+            margin-top: 60px;
+            border-top: 1px solid rgba(255, 255, 255, 0.05);
+        }
+        
+        .footer-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 40px;
+            margin-bottom: 40px;
+        }
+        
+        .footer-col h3 {
+            font-size: 1.2rem;
+            margin-bottom: 20px;
+            color: white;
+        }
+        
+        .footer-col ul {
+            list-style: none;
+        }
+        
+        .footer-col ul li {
+            margin-bottom: 10px;
+        }
+        
+        .footer-col a {
+            color: var(--gray);
+            text-decoration: none;
+            transition: color 0.3s;
+        }
+        
+        .footer-col a:hover {
+            color: white;
+        }
+        
+        .copyright {
+            text-align: center;
+            padding-top: 30px;
+            color: var(--gray);
+            font-size: 0.9rem;
+            border-top: 1px solid rgba(255, 255, 255, 0.05);
+        }
+        
+        /* 响应式调整 */
+        @media (max-width: 768px) {
+            .header-inner {
+                flex-direction: column;
+                gap: 20px;
+            }
+            
+            nav ul {
+                gap: 15px;
+                flex-wrap: wrap;
+                justify-content: center;
+            }
+            
+            .hero h1 {
+                font-size: 2.5rem;
+            }
+            
+            .hero-btns {
+                flex-direction: column;
+                align-items: center;
+            }
+        }
+        
+        /* 加载指示器 */
+        .loader {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 200px;
+            grid-column: 1/-1;
+        }
+        
+        .loader .spinner {
+            width: 40px;
+            height: 40px;
+            border: 4px solid rgba(255, 255, 255, 0.1);
+            border-radius: 50%;
+            border-top-color: var(--primary);
+            animation: spin 1s linear infinite;
+        }
+        
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
     </style>
 </head>
 <body>
@@ -68,7 +515,7 @@
                         <i class="fas fa-download"></i> 下载Clash订阅
                     </a>
                     <div class="subscription-note">
-                        <p>在Clash客户端中使用URL:<br>https://your-domain.com/clash_subscription.yaml</p>
+                        <p>在Clash客户端中使用URL:<br>https://cloakaccess.com/clash_subscription.yaml</p>
                     </div>
                 </div>
                 
@@ -82,7 +529,7 @@
                         <i class="fas fa-download"></i> 下载Shadowrocket订阅
                     </a>
                     <div class="subscription-note">
-                        <p>在Shadowrocket中使用URL:<br>https://your-domain.com/shadowrocket_subscription.txt</p>
+                        <p>在Shadowrocket中使用URL:<br>https://cloakaccess.com/shadowrocket_subscription.txt</p>
                     </div>
                 </div>
             </div>
@@ -103,7 +550,9 @@
             </div>
             
             <div class="nodes-grid" id="nodes-container">
-                <!-- 节点将通过JavaScript动态加载 -->
+                <div class="loader">
+                    <div class="spinner"></div>
+                </div>
             </div>
         </div>
     </section>
@@ -453,6 +902,13 @@
         // 加载节点数据
         async function loadNodes() {
             try {
+                // 显示加载状态
+                nodesContainer.innerHTML = `
+                    <div class="loader">
+                        <div class="spinner"></div>
+                    </div>
+                `;
+                
                 const response = await fetch('nodes.json');
                 if (!response.ok) throw new Error('网络响应异常');
                 
@@ -476,7 +932,7 @@
         function renderNodes(nodesToRender) {
             nodesContainer.innerHTML = '';
             
-            if (nodesToRender.length === 0) {
+            if (!nodesToRender || nodesToRender.length === 0) {
                 nodesContainer.innerHTML = `
                     <div style="grid-column: 1/-1; text-align: center; padding: 40px;">
                         <i class="fas fa-frown" style="font-size: 3rem; color: var(--gray); margin-bottom: 20px;"></i>
@@ -493,7 +949,7 @@
                 nodeCard.dataset.protocol = node.type;
                 
                 // 状态指示器
-                const isActive = node.latency < 500;
+                const isActive = node.latency && node.latency < 500;
                 
                 nodeCard.innerHTML = `
                     <div class="node-status">
@@ -501,18 +957,18 @@
                         <span class="status-text">${isActive ? `延迟: ${node.latency}ms` : '已失效'}</span>
                     </div>
                     
-                    <h3 class="node-name">${node.name}</h3>
+                    <h3 class="node-name">${node.name || '未命名节点'}</h3>
                     <div class="node-meta">
-                        <span><i class="fas fa-server"></i> ${node.server}:${node.port}</span>
-                        <span><i class="fas fa-plug"></i> ${node.type.toUpperCase()}</span>
+                        <span><i class="fas fa-server"></i> ${node.server || '未知服务器'}:${node.port || '未知端口'}</span>
+                        <span><i class="fas fa-plug"></i> ${node.type ? node.type.toUpperCase() : '未知协议'}</span>
                     </div>
                     
                     <div class="node-actions">
-                        <button class="btn btn-copy" data-config="${btoa(node.config)}">
+                        <button class="btn btn-copy" data-config="${btoa(encodeURIComponent(node.config || ''))}">
                             <i class="fas fa-copy"></i> 复制配置
                         </button>
-                        <button class="btn btn-download" data-config="${btoa(node.config)}" 
-                                data-filename="${node.name}.${node.type === 'vmess' ? 'vmess' : 'ss'}">
+                        <button class="btn btn-download" data-config="${btoa(encodeURIComponent(node.config || ''))}" 
+                                data-filename="${node.name || 'node'}.${node.type === 'vmess' ? 'vmess' : 'ss'}">
                             <i class="fas fa-download"></i> 下载
                         </button>
                     </div>
@@ -527,7 +983,9 @@
         
         // 自动选择最佳节点
         function selectBestNode() {
-            const validNodes = nodes.filter(node => node.latency < 500);
+            if (!nodes || nodes.length === 0) return;
+            
+            const validNodes = nodes.filter(node => node.latency && node.latency < 500);
             
             if (validNodes.length > 0) {
                 validNodes.sort((a, b) => a.latency - b.latency);
@@ -548,7 +1006,7 @@
             // 复制配置
             document.querySelectorAll('.btn-copy').forEach(btn => {
                 btn.addEventListener('click', function() {
-                    const config = atob(this.dataset.config);
+                    const config = decodeURIComponent(atob(this.dataset.config));
                     
                     navigator.clipboard.writeText(config).then(() => {
                         const originalText = this.innerHTML;
@@ -567,7 +1025,7 @@
             // 下载配置
             document.querySelectorAll('.btn-download').forEach(btn => {
                 btn.addEventListener('click', function() {
-                    const config = atob(this.dataset.config);
+                    const config = decodeURIComponent(atob(this.dataset.config));
                     const fileName = this.dataset.filename;
                     
                     const blob = new Blob([config], { type: 'text/plain' });
@@ -612,10 +1070,10 @@
                     }
                     
                     if (sort === 'fastest') {
-                        filteredNodes.sort((a, b) => a.latency - b.latency);
+                        filteredNodes.sort((a, b) => (a.latency || 9999) - (b.latency || 9999));
                     } else if (sort === 'newest') {
                         filteredNodes.sort((a, b) => 
-                            new Date(b.last_checked) - new Date(a.last_checked));
+                            new Date(b.last_checked || 0) - new Date(a.last_checked || 0));
                     }
                     
                     renderNodes(filteredNodes);
