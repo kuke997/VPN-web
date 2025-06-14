@@ -1,460 +1,239 @@
 import requests
 import re
-import yaml
 import json
-from bs4 import BeautifulSoup
-from urllib.parse import urljoin, urlparse
-import time
-import random
-import ssl
-import urllib3
-from requests.adapters import HTTPAdapter
-from requests.packages.urllib3.util.retry import Retry
 import base64
+import socket
+import time
+from datetime import datetime
+from urllib.parse import urlparse
+import concurrent.futures
 
-# 禁用SSL警告
-urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
-ssl._create_default_https_context = ssl._create_unverified_context
-
-# 配置设置
-USER_AGENTS = [
-    "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36",
-    "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/14.1.1 Safari/605.1.15",
-    "Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:89.0) Gecko/20100101 Firefox/89.0",
-    "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/92.0.4515.107 Safari/537.36"
+# 节点源列表
+SOURCES = [
+    "https://example.com/v1/nodes",  # 替换为实际源
+    "https://example.com/v2/nodes",  # 替换为实际源
+    "https://example.com/v3/nodes"   # 替换为实际源
 ]
 
-HEADERS = {
-    "Accept": "text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8",
-    "Accept-Language": "en-US,en;q=0.5",
-    "Connection": "keep-alive",
-    "Upgrade-Insecure-Requests": "1",
-    "Cache-Control": "max-age=0"
-}
+def fetch_source(url):
+    """从单个源获取节点数据"""
+    try:
+        response = requests.get(url, timeout=10)
+        if response.status_code == 200:
+            return response.text
+        else:
+            print(f"源 {url} 返回状态码: {response.status_code}")
+            return None
+    except Exception as e:
+        print(f"获取源 {url} 失败: {str(e)}")
+        return None
 
-def get_random_user_agent():
-    return random.choice(USER_AGENTS)
+def parse_vmess(uri):
+    """解析VMess URI"""
+    try:
+        # 提取Base64部分
+        base64_str = uri[8:]
+        # 补足等号
+        if len(base64_str) % 4 != 0:
+            base64_str += '=' * (4 - len(base64_str) % 4)
+        
+        # 解码
+        decoded = base64.b64decode(base64_str).decode('utf-8')
+        config = json.loads(decoded)
+        
+        # 提取基本信息
+        return {
+            'type': 'vmess',
+            'server': config.get('add'),
+            'port': config.get('port'),
+            'id': config.get('id'),
+            'alterId': config.get('aid'),
+            'security': config.get('scy', 'auto'),
+            'network': config.get('net'),
+            'name': config.get('ps') or f"vmess-{config.get('add')}:{config.get('port')}"
+        }
+    except Exception as e:
+        print(f"解析VMess失败: {str(e)}")
+        return None
 
-def get_session():
-    session = requests.Session()
-    session.headers.update({
-        "User-Agent": get_random_user_agent()
-    })
-    session.headers.update(HEADERS)
-    
-    # 添加重试逻辑
-    retry_strategy = Retry(
-        total=3,
-        backoff_factor=1,
-        status_forcelist=[429, 500, 502, 503, 504],
-        allowed_methods=["GET"]
-    )
-    adapter = HTTPAdapter(max_retries=retry_strategy)
-    session.mount("http://", adapter)
-    session.mount("https://", adapter)
-    
-    return session
+def parse_ss(uri):
+    """解析Shadowsocks URI"""
+    try:
+        # 提取Base64部分
+        base64_str = uri[5:].split('#')[0]
+        # 补足等号
+        if len(base64_str) % 4 != 0:
+            base64_str += '=' * (4 - len(base64_str) % 4)
+        
+        # 解码
+        decoded = base64.b64decode(base64_str).decode('utf-8')
+        parts = decoded.split('@')
+        method_password = parts[0]
+        server_port = parts[1]
+        
+        # 提取方法/密码
+        method, password = method_password.split(':', 1)
+        
+        # 提取服务器/端口
+        server, port = server_port.split(':')
+        
+        # 提取名称
+        name_match = re.search(r'#(.+)$', uri)
+        name = name_match.group(1) if name_match else f"ss-{server}:{port}"
+        
+        return {
+            'type': 'ss',
+            'server': server,
+            'port': port,
+            'method': method,
+            'password': password,
+            'name': name
+        }
+    except Exception as e:
+        print(f"解析SS失败: {str(e)}")
+        return None
 
-def fetch_page(url, session=None, verify_ssl=False):
-    """获取页面内容，带重试机制"""
-    if not session:
-        session = get_session()
-    
-    for attempt in range(3):
-        try:
-            response = session.get(url, timeout=15, verify=verify_ssl)
-            response.raise_for_status()
-            
-            # 检查是否被重定向到验证页面
-            if "just a moment" in response.text.lower() or "cloudflare" in response.text.lower():
-                print(f"⚠️ 检测到Cloudflare防护，尝试绕过... (尝试 {attempt+1}/3)")
-                time.sleep(2 + attempt * 2)  # 逐渐增加等待时间
-                session = get_session()  # 创建新的session
-                continue
-                
-            return response.text, session
-        except Exception as e:
-            print(f"请求失败 (尝试 {attempt+1}/3): {e}")
-            time.sleep(1)
-    
-    raise Exception(f"无法获取页面: {url}")
-
-def extract_city_from_name(name):
-    """从节点名称中提取城市信息"""
-    if not name:
-        return "未知城市"
-    
-    # 国家/地区映射
-    country_map = {
-        "CN": "中国", "US": "美国", "JP": "日本", "KR": "韩国", "SG": "新加坡",
-        "TW": "台湾", "HK": "香港", "UK": "英国", "DE": "德国", "FR": "法国",
-        "CA": "加拿大", "RU": "俄罗斯", "IN": "印度", "BR": "巴西", "AU": "澳大利亚"
-    }
-    
-    # 尝试匹配国家代码
-    for code, country in country_map.items():
-        if f"_{code}_" in name:
-            return country
-    
-    # 尝试匹配中文城市名
-    cities = ["香港", "台湾", "日本", "韩国", "美国", "新加坡", "英国", "德国", 
-             "法国", "俄罗斯", "加拿大", "印度", "巴西", "澳大利亚", "中国"]
-    for city in cities:
-        if city in name:
-            return city
-    
-    # 尝试匹配国家英文名
-    english_names = {
-        "China": "中国", "USA": "美国", "Japan": "日本", "Korea": "韩国", 
-        "Singapore": "新加坡", "Taiwan": "台湾", "HongKong": "香港", 
-        "UK": "英国", "Germany": "德国", "France": "法国", "Russia": "俄罗斯",
-        "Canada": "加拿大", "India": "印度", "Brazil": "巴西", "Australia": "澳大利亚"
-    }
-    for en_name, cn_name in english_names.items():
-        if en_name in name:
-            return cn_name
-    
-    return "未知城市"
-
-def extract_subscription_links(html, base_url):
-    """从HTML中提取订阅链接"""
-    soup = BeautifulSoup(html, 'html.parser')
-    links = []
-    
-    # 查找所有可能的链接元素
-    for a in soup.find_all('a', href=True):
-        href = a['href'].strip()
-        if href:
-            full_url = urljoin(base_url, href)
-            # 匹配常见的订阅文件扩展名
-            if re.search(r'\.(yaml|yml|txt|conf|ini|v2ray|ssr?|sub|list)$', full_url, re.I):
-                links.append(full_url)
-    
-    # 额外检查文本内容中的链接
-    text_links = re.findall(r'https?://[^\s"\'<>]+?\.(?:yaml|yml|txt|conf|ini|v2ray|ssr?|sub|list)', html, re.I)
-    for link in text_links:
-        full_url = urljoin(base_url, link)
-        links.append(full_url)
-    
-    # 去重并返回
-    return list(set(links))
-
-def parse_subscription_content(content, source_url):
-    """解析订阅内容文本 - 增强解析能力"""
+def parse_subscription_content(content):
+    """解析订阅内容"""
     nodes = []
     
-    # 1. 解析YAML格式内容
-    try:
-        data = yaml.safe_load(content)
-        if data and isinstance(data, dict) and data.get('proxies'):
-            for proxy in data['proxies']:
-                name = proxy.get('name', '未知节点')
-                nodes.append({
-                    "name": name,
-                    "type": proxy.get('type', 'unknown'),
-                    "server": proxy.get('server', ''),
-                    "port": str(proxy.get('port', '')),
-                    "city": extract_city_from_name(name),
-                    "source": source_url
-                })
-    except:
-        pass
+    # 分割为行
+    lines = content.splitlines()
     
-    # 2. 解析各种协议节点
-    # VMess格式: vmess://...
-    vmess_matches = re.findall(r'vmess://[a-zA-Z0-9+/=]+', content)
-    for match in vmess_matches:
-        # 尝试解码VMess配置获取名称
-        name = 'VMess节点'
+    for line in lines:
+        line = line.strip()
+        if not line:
+            continue
+            
         try:
-            # 去除协议头，并进行base64解码
-            decoded_str = base64.b64decode(match.replace("vmess://", "")).decode('utf-8')
-            config = json.loads(decoded_str)
-            name = config.get('ps', name)
-        except:
-            pass
-        
-        nodes.append({
-            "name": name,
-            "type": "vmess",
-            "config": match,
-            "city": extract_city_from_name(name),
-            "source": source_url
-        })
-    
-    # SS格式: ss://...
-    ss_matches = re.findall(r'ss://[a-zA-Z0-9+/=]+', content)
-    for match in ss_matches:
-        name = 'Shadowsocks节点'
-        nodes.append({
-            "name": name,
-            "type": "ss",
-            "config": match,
-            "city": extract_city_from_name(name),
-            "source": source_url
-        })
-    
-    # Trojan格式: trojan://...
-    trojan_matches = re.findall(r'trojan://[a-zA-Z0-9+/=]+', content)
-    for match in trojan_matches:
-        name = 'Trojan节点'
-        # 尝试从配置中提取服务器
-        try:
-            # trojan://password@server:port?...
-            server_part = match.split('@')[1].split('?')[0]
-            server = server_part.split(':')[0]
-            name = f"Trojan节点 ({server})"
-        except:
-            pass
-        
-        nodes.append({
-            "name": name,
-            "type": "trojan",
-            "config": match,
-            "city": extract_city_from_name(name),
-            "source": source_url
-        })
-    
-    # 传统IP:PORT格式
-    ip_port_matches = re.findall(r'(\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}):(\d{2,5})', content)
-    for ip, port in ip_port_matches:
-        nodes.append({
-            "name": f"{ip}:{port}",
-            "type": "unknown",
-            "server": ip,
-            "port": port,
-            "city": "未知城市",  # IP地址无法直接获取城市
-            "source": source_url
-        })
+            if line.startswith("vmess://"):
+                node = parse_vmess(line)
+            elif line.startswith("ss://"):
+                node = parse_ss(line)
+            else:
+                continue
+                
+            if node:
+                # 添加配置URI
+                node['config'] = line
+                nodes.append(node)
+        except Exception as e:
+            print(f"解析行失败: {line} - {str(e)}")
     
     return nodes
 
-def parse_subscription(url, session=None):
-    """解析订阅链接内容"""
-    if not session:
-        session = get_session()
+def test_node_connectivity(node, timeout=2):
+    """测试节点连接性"""
+    server = node.get('server')
+    port = node.get('port')
     
-    print(f"解析订阅: {url}")
-    
-    try:
-        # 获取订阅内容 - 对于非GitHub链接禁用SSL验证
-        verify_ssl = "github" in url  # 仅对GitHub链接启用SSL验证
-        content, _ = fetch_page(url, session, verify_ssl=verify_ssl)
-        
-        # 尝试解析为YAML
-        try:
-            data = yaml.safe_load(content)
-            if data and isinstance(data, dict) and data.get('proxies'):
-                nodes = []
-                for proxy in data['proxies']:
-                    name = proxy.get('name', '未知节点')
-                    nodes.append({
-                        "name": name,
-                        "type": proxy.get('type', 'unknown'),
-                        "server": proxy.get('server', ''),
-                        "port": str(proxy.get('port', '')),
-                        "city": extract_city_from_name(name),
-                        "source": url
-                    })
-                print(f"✅ 从YAML订阅解析出 {len(nodes)} 个节点")
-                return nodes
-        except yaml.YAMLError:
-            pass
-        
-        # 尝试解析为纯文本节点列表
-        nodes = []
-        
-        # 1. 尝试Base64解码
-        try:
-            # 检查内容是否是Base64编码
-            if len(content) > 100 and '=' in content:
-                decoded = base64.b64decode(content).decode('utf-8')
-                decoded_nodes = parse_subscription_content(decoded, url)
-                if decoded_nodes:
-                    nodes.extend(decoded_nodes)
-                    print(f"✅ 从Base64解码内容解析出 {len(decoded_nodes)} 个节点")
-        except Exception as e:
-            # 如果Base64解码失败，继续尝试其他方式
-            pass
-        
-        # 2. 如果Base64解码没有获取到节点，则直接解析内容
-        if not nodes:
-            # 调用通用解析函数
-            nodes = parse_subscription_content(content, url)
-        
-        print(f"✅ 从文本订阅解析出 {len(nodes)} 个节点")
-        return nodes
-        
-    except Exception as e:
-        print(f"⚠️ 解析订阅失败: {e}")
-        return []
-
-def crawl_freefq():
-    """专门抓取 freefq.com 的节点 - 使用API替代"""
-    print("\n" + "="*50)
-    print("开始抓取 freefq.com 免费节点")
-    print("="*50)
-    
-    session = get_session()
-    all_nodes = []
+    if not server or not port:
+        return False
     
     try:
-        # 使用freefq的GitHub API获取节点
-        api_url = "https://api.github.com/repos/freefq/free/contents/v2"
-        content, _ = fetch_page(api_url, session, verify_ssl=True)
+        # 解析域名获取IP
+        if not re.match(r"\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}", server):
+            try:
+                server_ip = socket.gethostbyname(server)
+            except socket.gaierror:
+                return False
+        else:
+            server_ip = server
         
-        # 解析API响应
-        files = json.loads(content)
-        for file in files:
-            if file['name'].endswith('.txt'):
-                file_url = file['download_url']
-                print(f"处理文件: {file['name']}")
-                
-                # 获取文件内容
-                file_content, _ = fetch_page(file_url, session)
-                
-                # 解析节点
-                nodes = parse_subscription_content(file_content, file_url)
-                if nodes:
-                    all_nodes.extend(nodes)
-                    print(f"✅ 从 {file['name']} 解析出 {len(nodes)} 个节点")
-        
-        print(f"\n从 freefq.com 获取到 {len(all_nodes)} 个节点")
-        return all_nodes
-        
+        # 尝试建立TCP连接
+        start_time = time.time()
+        sock = socket.create_connection((server_ip, int(port)), timeout=timeout)
+        sock.close()
+        latency = int((time.time() - start_time) * 1000)  # 计算延迟
+        return latency
     except Exception as e:
-        print(f"⚠️ 抓取 freefq.com 失败: {e}")
-        return []
+        return False
 
-def fetch_reliable_sources():
-    """获取可靠的订阅源"""
-    print("\n" + "="*50)
-    print("获取可靠订阅源")
-    print("="*50)
+def validate_node(node):
+    """验证节点有效性"""
+    # 基本字段检查
+    if not all(key in node for key in ['server', 'port', 'config']):
+        return False
     
-    session = get_session()
-    all_nodes = []
+    # 协议特定验证
+    if node['type'] == 'vmess':
+        if not node.get('id') or not node.get('alterId'):
+            return False
+    elif node['type'] == 'ss':
+        if not node.get('method') or not node.get('password'):
+            return False
     
-    # 更新可靠的订阅源列表 - 使用当前有效的源
-    reliable_sources = [
-        {
-            "name": "freefq-github",
-            "url": "https://raw.githubusercontent.com/freefq/free/master/v2"
-        },
-        {
-            "name": "v2raydy-vless",
-            "url": "https://raw.githubusercontent.com/v2raydy/v2ray/main/sub/vless.yml"
-        },
-        {
-            "name": "alanbobs999",
-            "url": "https://raw.githubusercontent.com/alanbobs999/TopFreeProxies/master/sub/sub_merge.yaml"
-        },
-        {
-            "name": "pojiedi",
-            "url": "https://raw.githubusercontent.com/pojiedi/pojiedi.github.io/master/-static-files-/clash/config.yaml"
-        },
-        {
-            "name": "clashnode-archive",
-            "url": "https://web.archive.org/web/202310/https://clashnode.com/wp-content/uploads/2023/08/20230815.yaml"
-        },
-        {
-            "name": "Leon406-All",
-            "url": "https://raw.githubusercontent.com/Leon406/SubCrawler/main/sub/all_base64.txt"
-        },
-        {
-            "name": "FreeNode",
-            "url": "https://raw.githubusercontent.com/ermaozi/get_subscribe/main/subscribe/clash.yml"
-        }
-    ]
+    # 测试连接性
+    latency = test_node_connectivity(node)
+    if not latency:
+        return False
     
-    for source in reliable_sources:
-        print(f"\n处理订阅源: {source['name']} ({source['url']})")
-        try:
-            nodes = parse_subscription(source['url'], session)
-            if nodes:
-                all_nodes.extend(nodes)
-                print(f"✅ 添加了 {len(nodes)} 个节点")
-            else:
-                print("⚠️ 未解析出节点")
-        except Exception as e:
-            print(f"⚠️ 处理订阅源失败: {e}")
-    
-    print(f"\n从可靠订阅源获取到 {len(all_nodes)} 个节点")
-    return all_nodes
+    # 添加额外信息
+    node['latency'] = latency
+    node['last_checked'] = datetime.utcnow().isoformat() + "Z"
+    return True
+
+def get_city_from_ip(ip):
+    """根据IP获取城市信息（简化版）"""
+    # 实际应用中应使用IP地理定位服务
+    return "未知地区"
 
 def fetch_all_sources():
-    """获取所有来源的节点"""
-    print("开始获取所有来源的免费VPN节点...")
+    """从所有源获取并处理节点"""
+    all_nodes = []
     
-    # 获取 freefq.com 的节点
-    freefq_nodes = crawl_freefq()
+    # 获取所有源数据
+    with concurrent.futures.ThreadPoolExecutor() as executor:
+        futures = [executor.submit(fetch_source, url) for url in SOURCES]
+        for future in concurrent.futures.as_completed(futures):
+            content = future.result()
+            if content:
+                nodes = parse_subscription_content(content)
+                all_nodes.extend(nodes)
     
-    # 获取可靠源的节点
-    reliable_nodes = fetch_reliable_sources()
-    
-    # 合并所有节点
-    all_nodes = freefq_nodes + reliable_nodes
+    print(f"初始节点数: {len(all_nodes)}")
     
     # 去重
     unique_nodes = []
-    seen = set()
+    seen_configs = set()
+    
     for node in all_nodes:
-        # 使用配置或服务器+端口作为唯一标识
-        identifier = node.get('config', None) or f"{node.get('server', '')}:{node.get('port', '')}"
-        if identifier and identifier not in seen:
-            seen.add(identifier)
+        if node['config'] not in seen_configs:
+            seen_configs.add(node['config'])
             unique_nodes.append(node)
     
-    # 确保所有节点都有城市字段
-    for node in unique_nodes:
-        if 'city' not in node or not node['city'] or node['city'] == '未知城市':
-            # 尝试从名称中再提取一次
-            city = extract_city_from_name(node.get('name', ''))
-            if city != '未知城市':
-                node['city'] = city
-    
-    print("\n" + "="*50)
-    print("最终结果统计")
-    print("="*50)
-    print(f"总节点数: {len(all_nodes)}")
     print(f"去重后节点数: {len(unique_nodes)}")
     
-    # 按类型统计
-    type_count = {}
-    for node in unique_nodes:
-        node_type = node.get('type', 'unknown')
-        type_count[node_type] = type_count.get(node_type, 0) + 1
+    # 验证节点有效性
+    valid_nodes = []
+    with concurrent.futures.ThreadPoolExecutor(max_workers=20) as executor:
+        futures = {executor.submit(validate_node, node): node for node in unique_nodes}
+        for future in concurrent.futures.as_completed(futures):
+            node = futures[future]
+            try:
+                if future.result():
+                    # 添加地理位置信息
+                    if re.match(r"\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}", node['server']):
+                        node['city'] = get_city_from_ip(node['server'])
+                    else:
+                        node['city'] = "未知地区"
+                    
+                    valid_nodes.append(node)
+            except Exception as e:
+                print(f"验证节点失败: {node.get('name')} - {str(e)}")
     
-    print("\n节点类型分布:")
-    for t, count in type_count.items():
-        print(f"{t.upper()}: {count} 个")
+    # 按延迟排序
+    valid_nodes.sort(key=lambda x: x.get('latency', 10000))
     
-    return unique_nodes
-
-def save_nodes(nodes, filename="vpn_nodes.txt"):
-    """保存节点到文件"""
-    with open(filename, "w", encoding="utf-8") as f:
-        f.write("免费VPN节点列表\n")
-        f.write("=" * 50 + "\n\n")
-        
-        for i, node in enumerate(nodes, 1):
-            f.write(f"节点 #{i}\n")
-            f.write(f"来源: {node.get('source', '未知')}\n")
-            f.write(f"名称: {node.get('name', '未知')}\n")
-            f.write(f"类型: {node.get('type', '未知')}\n")
-            f.write(f"城市: {node.get('city', '未知城市')}\n")
-            
-            if 'server' in node and 'port' in node:
-                f.write(f"地址: {node['server']}:{node['port']}\n")
-            elif 'config' in node:
-                f.write(f"配置: {node['config']}\n")
-            
-            f.write("-" * 50 + "\n")
+    print(f"有效节点数: {len(valid_nodes)}")
     
-    print(f"\n已保存 {len(nodes)} 个节点到 {filename}")
+    # 保存到文件
+    with open('nodes.json', 'w') as f:
+        json.dump(valid_nodes, f, indent=2)
+    
+    return valid_nodes
 
 if __name__ == "__main__":
-    # 当直接运行此脚本时
+    print("开始获取节点...")
     nodes = fetch_all_sources()
-    save_nodes(nodes)
-    print("\n抓取完成!")
+    print(f"成功获取 {len(nodes)} 个有效节点")
