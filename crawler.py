@@ -12,6 +12,7 @@ import argparse
 from datetime import datetime, timezone
 from urllib.parse import urlparse
 import concurrent.futures
+import yaml
 
 # 配置日志
 logging.basicConfig(
@@ -84,6 +85,38 @@ def safe_base64_decode(base64_str):
         logging.warning(f"Base64解码失败: {str(e)}")
         return None
 
+def clean_node_name(name):
+    """清洗节点名称"""
+    if not name:
+        return "未知节点"
+    
+    # 移除源信息
+    name = re.sub(r'github\.com/[^\-]+\-', '', name)
+    
+    # 移除速度信息
+    name = re.sub(r'\d+\.\d+MB/s\|\d+%\|.*', '', name)
+    
+    # 移除多余符号
+    name = re.sub(r'[|\\]', ' ', name)
+    
+    # 标准化国家/地区名称
+    name = re.sub(r'([a-zA-Z]+)\d+', r'\1', name)  # 移除数字后缀
+    
+    # 提取国家/地区信息
+    country_match = re.search(r'(美国|日本|韩国|新加坡|台湾|香港|英国|德国|加拿大|俄罗斯|印度|巴西|澳大利亚|法国|荷兰|瑞士|瑞典|意大利|西班牙|土耳其|南非)', name)
+    country = country_match.group(1) if country_match else "未知地区"
+    
+    # 提取服务商信息
+    provider_match = re.search(r'(CloudFlare|Fastly|AWS|Azure|Google Cloud|Akamai|DigitalOcean|Linode|Vultr)', name, re.IGNORECASE)
+    provider = provider_match.group(1) if provider_match else "未知服务商"
+    
+    # 提取节点类型
+    type_match = re.search(r'(CDN节点|Anycast节点|中转节点|直连节点|优质线路|普通线路|高速节点)', name)
+    node_type = type_match.group(1) if type_match else "节点"
+    
+    # 构建标准化名称
+    return f"[{country}] {provider} - {node_type}"
+
 def parse_clash_config(content):
     """解析Clash配置文件"""
     nodes = []
@@ -130,49 +163,54 @@ def parse_clash_config(content):
             
             # 确保有必要的字段
             if "name" in node_dict and "server" in node_dict and "port" in node_dict:
+                # 清洗节点名称
+                node_dict["name"] = clean_node_name(node_dict["name"])
+                
                 # 生成节点配置字符串
                 node_type = node_dict.get("type", "unknown").lower()
-                config = ""
+                
+                # 生成Clash配置
+                clash_config = {
+                    "name": node_dict["name"],
+                    "type": node_type,
+                    "server": node_dict["server"],
+                    "port": int(node_dict["port"]),
+                    "udp": True
+                }
                 
                 # VMess节点
                 if node_type == "vmess":
-                    vmess_config = {
-                        "v": "2",
-                        "ps": node_dict["name"],
-                        "add": node_dict["server"],
-                        "port": node_dict["port"],
-                        "id": node_dict.get("uuid", node_dict.get("password", "")),
-                        "aid": node_dict.get("alterId", "0"),
-                        "scy": node_dict.get("cipher", "auto"),
-                        "net": node_dict.get("network", "tcp"),
-                        "type": node_dict.get("type", "none"),
-                        "host": node_dict.get("servername", node_dict.get("host", "")),
-                        "path": node_dict.get("ws-path", node_dict.get("path", "")),
-                        "tls": node_dict.get("tls", "")
-                    }
-                    json_str = json.dumps(vmess_config, ensure_ascii=False)
-                    config = "vmess://" + base64.b64encode(json_str.encode()).decode()
+                    clash_config.update({
+                        "uuid": node_dict.get("uuid", ""),
+                        "alterId": int(node_dict.get("alterId", "0")),
+                        "cipher": node_dict.get("cipher", "auto"),
+                        "tls": node_dict.get("tls", False),
+                        "skip-cert-verify": True
+                    })
+                    
+                    # 网络类型相关设置
+                    network = node_dict.get("network", "tcp")
+                    if network == "ws":
+                        clash_config["network"] = "ws"
+                        clash_config["ws-path"] = node_dict.get("ws-path", "/")
+                        clash_config["ws-headers"] = {"Host": node_dict.get("host", "")}
                 
                 # Shadowsocks节点
                 elif node_type == "ss":
-                    password = node_dict.get("password", "")
-                    method = node_dict.get("cipher", "aes-256-gcm")
-                    server = node_dict["server"]
-                    port = node_dict["port"]
-                    ss_config = f"{method}:{password}@{server}:{port}"
-                    config = "ss://" + base64.b64encode(ss_config.encode()).decode()
-                
-                # 如果有有效的配置，添加到节点列表
-                if config:
-                    nodes.append({
-                        "id": str(uuid.uuid4()),
-                        "type": node_type,
-                        "server": node_dict["server"],
-                        "port": node_dict["port"],
-                        "name": node_dict["name"],
-                        "config": config,
-                        "source": "clash_config"
+                    clash_config.update({
+                        "cipher": node_dict.get("cipher", "aes-256-gcm"),
+                        "password": node_dict.get("password", "")
                     })
+                
+                nodes.append({
+                    "id": str(uuid.uuid4()),
+                    "type": node_type,
+                    "server": node_dict["server"],
+                    "port": node_dict["port"],
+                    "name": node_dict["name"],
+                    "clash_config": clash_config,
+                    "source": "clash_config"
+                })
         except Exception as e:
             logging.error(f"解析Clash节点失败: {str(e)}")
     
@@ -234,19 +272,40 @@ def parse_subscription_content(content, source_url):
                     
                     server = config.get("add", config.get("host", config.get("address", "")))
                     port = config.get("port", "443")
-                    name = config.get("ps", config.get("name", f"vmess-{server}:{port}"))
+                    name = clean_node_name(config.get("ps", config.get("name", f"vmess-{server}:{port}")))
                     
                     # 跳过无效节点
                     if not server or not port:
                         continue
                         
+                    # 生成Clash配置
+                    clash_config = {
+                        "name": name,
+                        "type": "vmess",
+                        "server": server,
+                        "port": int(port),
+                        "uuid": config.get("id", ""),
+                        "alterId": int(config.get("aid", "0")),
+                        "cipher": config.get("scy", "auto"),
+                        "udp": True,
+                        "tls": config.get("tls", "") == "tls",
+                        "skip-cert-verify": True
+                    }
+                    
+                    # 网络类型
+                    network = config.get("net", "tcp")
+                    if network == "ws":
+                        clash_config["network"] = "ws"
+                        clash_config["ws-path"] = config.get("path", "/")
+                        clash_config["ws-headers"] = {"Host": config.get("host", "")}
+                    
                     node = {
                         "id": str(uuid.uuid4()),
-                        "name": name[:100],  # 限制名称长度
+                        "name": name,
                         "type": "vmess",
                         "server": server,
                         "port": port,
-                        "config": line,
+                        "clash_config": clash_config,
                         "source": source_url
                     }
                     nodes.append(node)
@@ -262,9 +321,10 @@ def parse_subscription_content(content, source_url):
                     
                     # 获取节点名称
                     name_match = re.search(r'#(.+)$', line)
-                    name = name_match.group(1) if name_match else f"ss-{line[5:15]}"
+                    name = clean_node_name(name_match.group(1)) if name_match else f"ss-{line[5:15]}"
                     
                     # 处理不同的SS格式
+                    method, password, server, port = "", "", "", ""
                     if '@' in decoded:
                         method_password, server_port = decoded.split('@', 1)
                         if ':' in method_password:
@@ -291,14 +351,25 @@ def parse_subscription_content(content, source_url):
                     # 跳过无效节点
                     if not server or not port:
                         continue
-                        
+                    
+                    # 生成Clash配置
+                    clash_config = {
+                        "name": name,
+                        "type": "ss",
+                        "server": server,
+                        "port": int(port),
+                        "cipher": method,
+                        "password": password,
+                        "udp": True
+                    }
+                    
                     node = {
                         "id": str(uuid.uuid4()),
-                        "name": name[:100],  # 限制名称长度
+                        "name": name,
                         "type": "ss",
                         "server": server,
                         "port": port,
-                        "config": line,
+                        "clash_config": clash_config,
                         "source": source_url
                     }
                     nodes.append(node)
@@ -345,6 +416,41 @@ def test_node_connectivity(node, timeout=3):
         logging.warning(f"连接失败: {node['name']} - {server}:{port} - {str(e)}")
         return None
 
+def generate_clash_config(nodes):
+    """生成Clash配置文件"""
+    config = {
+        "port": 7890,
+        "socks-port": 7891,
+        "allow-lan": False,
+        "mode": "Rule",
+        "log-level": "info",
+        "external-controller": "127.0.0.1:9090",
+        "proxies": [],
+        "proxy-groups": [
+            {
+                "name": "自动选择",
+                "type": "url-test",
+                "proxies": [],
+                "url": "http://www.gstatic.com/generate_204",
+                "interval": 300
+            }
+        ],
+        "rules": [
+            "DOMAIN-SUFFIX,google.com,自动选择",
+            "DOMAIN-KEYWORD,github,自动选择",
+            "IP-CIDR,91.108.56.0/22,自动选择",
+            "GEOIP,CN,DIRECT",
+            "MATCH,自动选择"
+        ]
+    }
+    
+    for node in nodes:
+        if "clash_config" in node:
+            config["proxies"].append(node["clash_config"])
+            config["proxy-groups"][0]["proxies"].append(node["name"])
+    
+    return yaml.dump(config, allow_unicode=True, sort_keys=False)
+
 def fetch_all_sources(output_file):
     """从所有源获取并处理节点"""
     all_nodes = []
@@ -375,12 +481,11 @@ def fetch_all_sources(output_file):
     
     # 去重
     unique_nodes = []
-    seen_configs = set()
+    seen_names = set()
     
     for node in all_nodes:
-        config = node.get("config", "")
-        if config and config not in seen_configs:
-            seen_configs.add(config)
+        if node["name"] not in seen_names:
+            seen_names.add(node["name"])
             unique_nodes.append(node)
     
     logging.info(f"去重后节点数: {len(unique_nodes)}")
@@ -413,11 +518,27 @@ def fetch_all_sources(output_file):
     
     # 保存到文件
     try:
+        # 保存节点数据
         with open(output_file, 'w', encoding='utf-8') as f:
             json.dump(valid_nodes, f, indent=2, ensure_ascii=False)
         logging.info(f"节点数据已保存到 {output_file}")
+        
+        # 生成Clash配置文件
+        if valid_nodes:
+            clash_config = generate_clash_config(valid_nodes)
+            with open('clash_subscription.yaml', 'w', encoding='utf-8') as f:
+                f.write(clash_config)
+            logging.info("Clash配置文件已生成")
+            
+            # 生成Shadowrocket订阅
+            shadowrocket_config = "\n".join([node.get("config", "") for node in valid_nodes if "config" in node])
+            shadowrocket_base64 = base64.b64encode(shadowrocket_config.encode()).decode()
+            with open('shadowrocket_subscription.txt', 'w', encoding='utf-8') as f:
+                f.write(shadowrocket_base64)
+            logging.info("Shadowrocket订阅文件已生成")
+        
     except Exception as e:
-        logging.error(f"保存节点数据失败: {str(e)}")
+        logging.error(f"保存文件失败: {str(e)}")
     
     return valid_nodes
 
