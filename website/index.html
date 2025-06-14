@@ -208,6 +208,115 @@
             color: white;
         }
         
+        /* 广告区域 */
+        .ad-section {
+            padding: 40px 0;
+            text-align: center;
+        }
+        
+        .ad-container {
+            background: rgba(30, 41, 59, 0.8);
+            border-radius: 16px;
+            padding: 25px;
+            max-width: 800px;
+            margin: 0 auto;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        
+        .ad-title {
+            font-size: 1.2rem;
+            margin-bottom: 15px;
+            color: #e2e8f0;
+        }
+        
+        .ad-content {
+            width: 100%;
+            height: 250px;
+            background: linear-gradient(45deg, #1e293b, #0f172a);
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #94a3b8;
+            font-size: 1.1rem;
+            margin-bottom: 20px;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .ad-content::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: repeating-linear-gradient(
+                45deg,
+                rgba(99, 102, 241, 0.1),
+                rgba(99, 102, 241, 0.1) 10px,
+                rgba(79, 70, 229, 0.05) 10px,
+                rgba(79, 70, 229, 0.05) 20px
+            );
+            z-index: 1;
+        }
+        
+        .ad-content-inner {
+            position: relative;
+            z-index: 2;
+            text-align: center;
+            padding: 20px;
+        }
+        
+        .ad-note {
+            font-size: 0.85rem;
+            color: #94a3b8;
+            margin-top: 10px;
+        }
+        
+        /* 订阅区域 */
+        .subscription-section {
+            padding: 60px 0;
+            background: rgba(15, 23, 42, 0.6);
+            border-radius: 16px;
+            margin: 40px 0;
+        }
+        
+        .subscription-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 30px;
+        }
+        
+        .subscription-card {
+            background: rgba(30, 41, 59, 0.6);
+            border-radius: 16px;
+            padding: 30px;
+            text-align: center;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        
+        .subscription-card h3 {
+            font-size: 1.5rem;
+            margin-bottom: 20px;
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+        }
+        
+        .subscription-card p {
+            margin-bottom: 25px;
+            color: #cbd5e1;
+        }
+        
+        .client-icon {
+            font-size: 2.5rem;
+            color: var(--primary);
+            margin-bottom: 15px;
+        }
+        
         /* 节点列表 */
         .nodes-section {
             padding: 80px 0;
@@ -359,93 +468,6 @@
             color: white;
         }
         
-        /* 教程区域 */
-        .tutorial-section {
-            padding: 80px 0;
-        }
-        
-        .tutorial-steps {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-            gap: 20px;
-            margin: 40px 0;
-        }
-        
-        .step {
-            text-align: center;
-            padding: 25px;
-            background: rgba(30, 41, 59, 0.6);
-            border-radius: 16px;
-            transition: all 0.3s;
-            border: 1px solid rgba(255, 255, 255, 0.05);
-        }
-        
-        .step:hover {
-            transform: translateY(-5px);
-            border-color: rgba(99, 102, 241, 0.3);
-        }
-        
-        .step-number {
-            width: 40px;
-            height: 40px;
-            background: var(--primary);
-            color: white;
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-weight: bold;
-            margin: 0 auto 15px;
-        }
-        
-        .step h3 {
-            margin-bottom: 10px;
-            color: white;
-        }
-        
-        .video-tutorial {
-            margin-top: 50px;
-        }
-        
-        .video-placeholder {
-            width: 100%;
-            height: 400px;
-            background: linear-gradient(to right, #1e293b, #0f172a);
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            border-radius: 16px;
-            cursor: pointer;
-            position: relative;
-            overflow: hidden;
-            border: 1px solid rgba(255, 255, 255, 0.05);
-        }
-        
-        .video-placeholder i {
-            font-size: 80px;
-            color: var(--primary);
-            margin-bottom: 20px;
-            z-index: 2;
-        }
-        
-        .video-placeholder p {
-            font-size: 1.5rem;
-            color: white;
-            z-index: 2;
-        }
-        
-        .video-placeholder::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: radial-gradient(circle, rgba(99, 102, 241, 0.1) 0%, transparent 70%);
-            z-index: 1;
-        }
-        
         /* 页脚 */
         footer {
             padding: 60px 0 30px;
@@ -530,10 +552,10 @@
                 <nav>
                     <ul>
                         <li><a href="#" class="active">首页</a></li>
+                        <li><a href="#subscription">订阅下载</a></li>
                         <li><a href="#nodes">节点列表</a></li>
                         <li><a href="#clients">客户端下载</a></li>
-                        <li><a href="#tutorial">使用教程</a></li>
-                        <li><a href="#">支持我们</a></li>
+                        <li><a href="#support">支持我们</a></li>
                     </ul>
                 </nav>
                 
@@ -549,43 +571,65 @@
     <section class="hero">
         <div class="container">
             <h1>安全、快速、免费的全球VPN服务</h1>
-            <p>随时随地访问全球内容，保护您的网络隐私和安全，完全免费使用</p>
+            <p>专为Clash和Shadowrocket用户优化的免费VPN节点订阅服务</p>
             
             <div class="hero-btns">
-                <a href="#nodes" class="btn">查看可用节点</a>
-                <a href="#clients" class="btn btn-outline">下载客户端</a>
+                <a href="#subscription" class="btn">获取订阅</a>
+                <a href="#nodes" class="btn btn-outline">查看节点</a>
             </div>
         </div>
     </section>
 
-    <!-- 特性区域 -->
-    <section class="features">
+    <!-- 广告区域 -->
+    <section class="ad-section">
         <div class="container">
-            <h2 class="section-title">我们的优势</h2>
-            
-            <div class="features-grid">
-                <div class="feature-card">
-                    <div class="feature-icon">
-                        <i class="fas fa-shield-alt"></i>
+            <div class="ad-container">
+                <h3 class="ad-title">赞助商广告</h3>
+                <div class="ad-content">
+                    <div class="ad-content-inner">
+                        <i class="fas fa-ad" style="font-size: 3rem; margin-bottom: 15px;"></i>
+                        <p>广告位招租<br>联系: ads@cloakaccess.com</p>
+                        <!-- 实际部署时替换为您的广告代码 -->
+                        <!-- <iframe src="https://otieu.com/4/9373564" width="100%" height="100%"></iframe> -->
                     </div>
-                    <h3>高级加密</h3>
-                    <p>使用AES-256加密技术保护您的所有网络流量，防止数据泄露和窃听</p>
                 </div>
-                
-                <div class="feature-card">
-                    <div class="feature-icon">
+                <p class="ad-note">广告收入用于维持服务器运行，感谢您的支持</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- 订阅区域 -->
+    <section class="subscription-section" id="subscription">
+        <div class="container">
+            <h2 class="section-title">客户端订阅</h2>
+            
+            <div class="subscription-grid">
+                <div class="subscription-card">
+                    <div class="client-icon">
                         <i class="fas fa-bolt"></i>
                     </div>
-                    <h3>超快速度</h3>
-                    <p>全球多节点分布，智能路由优化，提供低延迟高速连接体验</p>
+                    <h3><i class="fas fa-shield-alt"></i> Clash 订阅</h3>
+                    <p>专为Clash客户端优化的订阅配置，包含所有可用节点和自动选择策略</p>
+                    <a href="clash_subscription.yaml" class="btn" download="clash_config.yaml">
+                        <i class="fas fa-download"></i> 下载Clash订阅
+                    </a>
+                    <div class="subscription-note">
+                        <p>在Clash客户端中使用URL:<br>https://your-domain.com/clash_subscription.yaml</p>
+                    </div>
                 </div>
                 
-                <div class="feature-card">
-                    <div class="feature-icon">
-                        <i class="fas fa-globe"></i>
+                <div class="subscription-card">
+                    <div class="client-icon">
+                        <i class="fas fa-rocket"></i>
                     </div>
-                    <h3>全球覆盖</h3>
-                    <p>30+国家/地区节点，轻松访问全球内容和服务</p>
+                    <h3><i class="fas fa-mobile-alt"></i> Shadowrocket 订阅</h3>
+                    <p>专为Shadowrocket优化的订阅配置，Base64编码格式，一键导入</p>
+                    <a href="shadowrocket_subscription.txt" class="btn" download="shadowrocket_sub.txt">
+                        <i class="fas fa-download"></i> 下载Shadowrocket订阅
+                    </a>
+                    <div class="subscription-note">
+                        <p>在Shadowrocket中使用URL:<br>https://your-domain.com/shadowrocket_subscription.txt</p>
+                    </div>
                 </div>
             </div>
         </div>
@@ -618,8 +662,8 @@
             <div class="clients-grid">
                 <div class="client-card">
                     <img src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAyNCAyNCI+PHBhdGggZD0iTTE4LDE4SDZWNkgxOFYxOE0xOCw0SDZBMjIsMjIgMCwwLDAsNCw2VjE4QTIsMiwwLDAsMCw2LDIwSDE4QTIsMiwwLDAsMCwyMCwxOFY2QTIsMiwwLDAsMCwxOCw0WiIgZmlsbD0id2hpdGUiLz48L3N2Zz4=" alt="Windows">
-                    <h3>V2RayN (Windows)</h3>
-                    <a href="https://github.com/2dust/v2rayN/releases" class="btn">下载</a>
+                    <h3>Clash (Windows)</h3>
+                    <a href="https://github.com/Fndroid/clash_for_windows_pkg/releases" class="btn">下载</a>
                 </div>
                 
                 <div class="client-card">
@@ -630,8 +674,8 @@
                 
                 <div class="client-card">
                     <img src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAyNCAyNCI+PHBhdGggZD0iTTE3LjI0LDIwLjgzNEg2Ljc2Yy0yLjA0LDAtMy43MDYtMS42NjctMy43MDYtMy43MDdWNi44NzZjMC0yLjA0LDEuNjY3LTMuNzA2LDMuNzA2LTMuNzA2aDEwLjQ4YzIuMDQsMCwzLjcwNiwxLjY2NywzLjcwNiwzLjcwNnYxMC4yNTFDMjAuOTQ2LDE5LjE2NywxOS4yOCwyMC44MzQsMTcuMjQsMjAuODM0WiIgZmlsbD0id2hpdGUiLz48cGF0aCBkPSJNMTIuMDAxLDE4LjI3OWMtMy40MjMsMC02LjIwNi0yLjc4My02LjIwNi02LjIwNnMyLjc4My02LjIwNiw2LjIwNi02LjIwNiw2LjIwNiwyLjc4Myw2LjIwNiw2LjIwNVMxNS40MjQsMTguMjc5LDEyLjAwMSwxOC4yNzlaIiBmaWxsPSIjZmZmIi8+PC9zdmc+" alt="Android">
-                    <h3>Shadowsocks (Android)</h3>
-                    <a href="https://github.com/shadowsocks/shadowsocks-android/releases" class="btn">下载</a>
+                    <h3>Clash (Android)</h3>
+                    <a href="https://github.com/Kr328/ClashForAndroid/releases" class="btn">下载</a>
                 </div>
                 
                 <div class="client-card">
@@ -643,42 +687,34 @@
         </div>
     </section>
 
-    <!-- 使用教程 -->
-    <section class="tutorial-section" id="tutorial">
+    <!-- 支持我们 -->
+    <section class="features" id="support">
         <div class="container">
-            <h2 class="section-title">使用教程</h2>
+            <h2 class="section-title">支持我们</h2>
             
-            <div class="tutorial-steps">
-                <div class="step">
-                    <div class="step-number">1</div>
-                    <h3>下载配置文件</h3>
-                    <p>在节点列表中选择可用节点，点击"下载"按钮获取配置文件</p>
+            <div class="features-grid">
+                <div class="feature-card">
+                    <div class="feature-icon">
+                        <i class="fas fa-ad"></i>
+                    </div>
+                    <h3>查看广告</h3>
+                    <p>浏览我们的赞助商广告，您的每一次点击都能帮助我们维持服务</p>
                 </div>
                 
-                <div class="step">
-                    <div class="step-number">2</div>
-                    <h3>安装客户端</h3>
-                    <p>根据您的设备系统下载并安装对应的VPN客户端</p>
+                <div class="feature-card">
+                    <div class="feature-icon">
+                        <i class="fas fa-share-alt"></i>
+                    </div>
+                    <h3>分享给朋友</h3>
+                    <p>将我们的服务分享给更多需要的人，扩大我们的用户群体</p>
                 </div>
                 
-                <div class="step">
-                    <div class="step-number">3</div>
-                    <h3>导入配置</h3>
-                    <p>在客户端中找到"导入配置"选项，选择下载的配置文件</p>
-                </div>
-                
-                <div class="step">
-                    <div class="step-number">4</div>
-                    <h3>连接使用</h3>
-                    <p>选择导入的节点，点击"连接"按钮开始使用</p>
-                </div>
-            </div>
-            
-            <div class="video-tutorial">
-                <h3>视频教程</h3>
-                <div class="video-placeholder">
-                    <i class="fas fa-play-circle"></i>
-                    <p>Windows 使用教程</p>
+                <div class="feature-card">
+                    <div class="feature-icon">
+                        <i class="fas fa-donate"></i>
+                    </div>
+                    <h3>捐赠支持</h3>
+                    <p>直接捐赠帮助我们购买更好的服务器提供更稳定的服务</p>
                 </div>
             </div>
         </div>
@@ -700,9 +736,9 @@
                 <div class="footer-col">
                     <h3>资源</h3>
                     <ul>
-                        <li><a href="#">节点列表</a></li>
-                        <li><a href="#">客户端下载</a></li>
-                        <li><a href="#">使用教程</a></li>
+                        <li><a href="#subscription">订阅下载</a></li>
+                        <li><a href="#nodes">节点列表</a></li>
+                        <li><a href="#clients">客户端下载</a></li>
                         <li><a href="#">常见问题</a></li>
                     </ul>
                 </div>
@@ -782,25 +818,18 @@
                 nodeCard.className = 'node-card';
                 nodeCard.dataset.protocol = node.type;
                 
-                // 格式化时间
-                const lastChecked = new Date(node.last_checked);
-                const formattedTime = lastChecked.toLocaleString('zh-CN', {
-                    month: '2-digit',
-                    day: '2-digit',
-                    hour: '2-digit',
-                    minute: '2-digit'
-                });
+                // 状态指示器
+                const isActive = node.latency < 500;
                 
                 nodeCard.innerHTML = `
                     <div class="node-status">
-                        <span class="status-indicator active"></span>
-                        <span class="status-text">延迟: ${node.latency}ms</span>
-                        <span class="last-checked">更新: ${formattedTime}</span>
+                        <span class="status-indicator ${isActive ? 'active' : 'inactive'}"></span>
+                        <span class="status-text">${isActive ? `延迟: ${node.latency}ms` : '已失效'}</span>
                     </div>
                     
                     <h3 class="node-name">${node.name}</h3>
                     <div class="node-meta">
-                        <span><i class="fas fa-map-marker-alt"></i> ${node.city}</span>
+                        <span><i class="fas fa-server"></i> ${node.server}:${node.port}</span>
                         <span><i class="fas fa-plug"></i> ${node.type.toUpperCase()}</span>
                     </div>
                     
@@ -811,9 +840,6 @@
                         <button class="btn btn-download" data-config="${btoa(node.config)}" 
                                 data-filename="${node.name}.${node.type === 'vmess' ? 'vmess' : 'ss'}">
                             <i class="fas fa-download"></i> 下载
-                        </button>
-                        <button class="btn btn-feedback" data-node-id="${node.id}">
-                            <i class="fas fa-flag"></i> 报告
                         </button>
                     </div>
                 `;
@@ -830,21 +856,14 @@
             const validNodes = nodes.filter(node => node.latency < 500);
             
             if (validNodes.length > 0) {
-                // 按延迟排序
                 validNodes.sort((a, b) => a.latency - b.latency);
                 const bestNode = validNodes[0];
                 
-                // 标记为推荐节点
                 const nodeCards = document.querySelectorAll('.node-card');
                 nodeCards.forEach(card => {
                     const nodeName = card.querySelector('.node-name').textContent;
                     if (nodeName === bestNode.name) {
                         card.classList.add('recommended');
-                        
-                        // 滚动到推荐节点
-                        setTimeout(() => {
-                            card.scrollIntoView({ behavior: 'smooth', block: 'center' });
-                        }, 1000);
                     }
                 });
             }
@@ -893,54 +912,6 @@
                     }, 100);
                 });
             });
-            
-            // 反馈功能
-            document.querySelectorAll('.btn-feedback').forEach(btn => {
-                btn.addEventListener('click', function() {
-                    const nodeId = this.dataset.nodeId;
-                    const nodeCard = this.closest('.node-card');
-                    const nodeName = nodeCard.querySelector('.node-name').textContent;
-                    
-                    // 反馈选项
-                    const options = [
-                        '无法连接',
-                        '连接速度慢',
-                        '配置导入失败',
-                        '其他问题'
-                    ];
-                    
-                    let feedbackText = `请报告节点问题:\n节点: ${nodeName}\n问题类型:\n`;
-                    options.forEach((opt, i) => {
-                        feedbackText += `${i+1}. ${opt}\n`;
-                    });
-                    
-                    const problemType = prompt(feedbackText, '1');
-                    if (problemType !== null) {
-                        const comment = prompt('请补充问题详情:');
-                        if (comment !== null) {
-                            sendFeedback(nodeId, problemType, comment);
-                        }
-                    }
-                });
-            });
-        }
-        
-        // 发送反馈
-        function sendFeedback(nodeId, problemType, comment) {
-            // 实际应用中应发送到后端API
-            console.log('发送反馈:', { nodeId, problemType, comment });
-            
-            // 临时前端存储
-            const feedbacks = JSON.parse(localStorage.getItem('nodeFeedbacks') || '[]');
-            feedbacks.push({
-                nodeId,
-                problemType,
-                comment,
-                timestamp: new Date().toISOString()
-            });
-            localStorage.setItem('nodeFeedbacks', JSON.stringify(feedbacks));
-            
-            alert('感谢您的反馈！我们将尽快处理该问题。');
         }
         
         // 初始化页面
@@ -976,12 +947,34 @@
                     renderNodes(filteredNodes);
                 });
             });
-            
-            // 视频占位符点击事件
-            document.querySelector('.video-placeholder').addEventListener('click', function() {
-                alert('实际应用中应嵌入教程视频');
-            });
         });
+    </script>
+    
+    <!-- 实际部署时添加广告联盟代码 -->
+    <script>
+        // 广告联盟代码可以放在这里
+        // 例如: 加载您提供的广告联盟链接
+        // const adScript = document.createElement('script');
+        // adScript.src = 'https://otieu.com/4/9373564';
+        // document.head.appendChild(adScript);
+        
+        // 或者使用iframe展示广告
+        function loadAd() {
+            const adContainer = document.querySelector('.ad-content');
+            if (adContainer) {
+                const iframe = document.createElement('iframe');
+                iframe.src = 'https://otieu.com/4/9373564';
+                iframe.style.width = '100%';
+                iframe.style.height = '100%';
+                iframe.style.border = 'none';
+                iframe.style.borderRadius = '12px';
+                adContainer.innerHTML = '';
+                adContainer.appendChild(iframe);
+            }
+        }
+        
+        // 页面加载后加载广告
+        // window.addEventListener('load', loadAd);
     </script>
 </body>
 </html>
