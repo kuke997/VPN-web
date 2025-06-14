@@ -50,87 +50,90 @@ def fetch_source(url):
 
 def parse_clash_config(content):
     """解析Clash配置文件"""
-    try:
-        # 尝试手动解析Clash配置
-        nodes = []
-        proxies_start = content.find("proxies:")
-        if proxies_start == -1:
-            return []
-        
-        proxies_content = content[proxies_start:]
-        node_pattern = r"- {.*?}\n"
-        matches = re.findall(node_pattern, proxies_content, re.DOTALL)
-        
-        for match in matches:
-            try:
-                node_data = match.strip()[2:]  # 移除 "- "
-                node_dict = {}
-                
-                for line in node_data.split("\n"):
-                    line = line.strip()
-                    if not line:
-                        continue
-                    if ":" in line:
-                        key, value = line.split(":", 1)
-                        key = key.strip()
-                        value = value.strip()
-                        
-                        # 移除引号
-                        if value.startswith("'") and value.endswith("'"):
-                            value = value[1:-1]
-                        elif value.startswith('"') and value.endswith('"'):
-                            value = value[1:-1]
-                            
-                        node_dict[key] = value
-                
-                if "name" in node_dict and "server" in node_dict and "port" in node_dict:
-                    # 生成节点配置字符串
-                    node_type = node_dict.get("type", "unknown").lower()
-                    config = ""
-                    
-                    if node_type == "vmess":
-                        vmess_config = {
-                            "v": "2",
-                            "ps": node_dict["name"],
-                            "add": node_dict["server"],
-                            "port": node_dict["port"],
-                            "id": node_dict.get("uuid", node_dict.get("password", "")),
-                            "aid": node_dict.get("alterId", "0"),
-                            "scy": node_dict.get("cipher", "auto"),
-                            "net": node_dict.get("network", "tcp"),
-                            "type": node_dict.get("type", "none"),
-                            "host": node_dict.get("servername", node_dict.get("host", "")),
-                            "path": node_dict.get("ws-path", node_dict.get("path", "")),
-                            "tls": node_dict.get("tls", "")
-                        }
-                        json_str = json.dumps(vmess_config, ensure_ascii=False)
-                        config = "vmess://" + base64.b64encode(json_str.encode()).decode()
-                    
-                    elif node_type == "ss":
-                        password = node_dict.get("password", "")
-                        method = node_dict.get("cipher", "aes-256-gcm")
-                        server = node_dict["server"]
-                        port = node_dict["port"]
-                        ss_config = f"{method}:{password}@{server}:{port}"
-                        config = "ss://" + base64.b64encode(ss_config.encode()).decode()
-                    
-                    if config:
-                        nodes.append({
-                            "id": str(uuid.uuid4()),
-                            "type": node_type,
-                            "server": node_dict["server"],
-                            "port": node_dict["port"],
-                            "name": node_dict["name"],
-                            "config": config,
-                            "source": "clash_config"
-                        })
-            except Exception as e:
-                print(f"解析Clash节点失败: {str(e)}")
-        
+    nodes = []
+    
+    # 查找proxies部分
+    proxies_start = content.find("proxies:")
+    if proxies_start == -1:
         return nodes
-    except Exception as e:
-        print(f"解析Clash配置失败: {str(e)}")
-        return []
+        
+    proxies_content = content[proxies_start:]
+    
+    # 使用正则表达式匹配每个节点
+    node_pattern = r"- {.*?}\n"
+    matches = re.findall(node_pattern, proxies_content, re.DOTALL)
+    
+    for match in matches:
+        try:
+            node_data = match.strip()[2:]  # 移除 "- "
+            node_dict = {}
+            
+            for line in node_data.split("\n"):
+                line = line.strip()
+                if not line:
+                    continue
+                if ":" in line:
+                    key, value = line.split(":", 1)
+                    key = key.strip()
+                    value = value.strip()
+                    
+                    # 移除值两端的引号
+                    if value.startswith("'") and value.endswith("'"):
+                        value = value[1:-1]
+                    elif value.startswith('"') and value.endswith('"'):
+                        value = value[1:-1]
+                        
+                    node_dict[key] = value
+            
+            # 确保有必要的字段
+            if "name" in node_dict and "server" in node_dict and "port" in node_dict:
+                # 生成节点配置字符串
+                node_type = node_dict.get("type", "unknown").lower()
+                config = ""
+                
+                # VMess节点
+                if node_type == "vmess":
+                    vmess_config = {
+                        "v": "2",
+                        "ps": node_dict["name"],
+                        "add": node_dict["server"],
+                        "port": node_dict["port"],
+                        "id": node_dict.get("uuid", node_dict.get("password", "")),
+                        "aid": node_dict.get("alterId", "0"),
+                        "scy": node_dict.get("cipher", "auto"),
+                        "net": node_dict.get("network", "tcp"),
+                        "type": node_dict.get("type", "none"),
+                        "host": node_dict.get("servername", node_dict.get("host", "")),
+                        "path": node_dict.get("ws-path", node_dict.get("path", "")),
+                        "tls": node_dict.get("tls", "")
+                    }
+                    json_str = json.dumps(vmess_config, ensure_ascii=False)
+                    config = "vmess://" + base64.b64encode(json_str.encode()).decode()
+                
+                # Shadowsocks节点
+                elif node_type == "ss":
+                    password = node_dict.get("password", "")
+                    method = node_dict.get("cipher", "aes-256-gcm")
+                    server = node_dict["server"]
+                    port = node_dict["port"]
+                    ss_config = f"{method}:{password}@{server}:{port}"
+                    config = "ss://" + base64.b64encode(ss_config.encode()).decode()
+                
+                # 如果有有效的配置，添加到节点列表
+                if config:
+                    nodes.append({
+                        "id": str(uuid.uuid4()),
+                        "type": node_type,
+                        "server": node_dict["server"],
+                        "port": node_dict["port"],
+                        "name": node_dict["name"],
+                        "config": config,
+                        "source": "clash_config"
+                    })
+        except Exception as e:
+            print(f"解析Clash节点失败: {str(e)}")
+    
+    return nodes
 
 def parse_subscription_content(content, source_url):
     """解析订阅内容"""
@@ -156,22 +159,31 @@ def parse_subscription_content(content, source_url):
                 continue
                 
             try:
+                # VMess节点
                 if line.startswith("vmess://"):
                     # 解析VMess
                     base64_str = line[8:]
                     if len(base64_str) % 4 != 0:
                         base64_str += '=' * (4 - len(base64_str) % 4)
                     
+                    # 处理URL安全的Base64
+                    base64_str = base64_str.replace('-', '+').replace('_', '/')
                     try:
                         decoded = base64.b64decode(base64_str).decode('utf-8')
+                    except:
+                        # 如果仍然失败，尝试直接解码
+                        decoded = base64.b64decode(base64_str + '=' * (-len(base64_str) % 4)).decode('utf-8')
+                    
+                    try:
                         config = json.loads(decoded)
                     except:
-                        # 尝试URL安全的Base64
-                        base64_str = base64_str.replace('-', '+').replace('_', '/')
-                        if len(base64_str) % 4 != 0:
-                            base64_str += '=' * (4 - len(base64_str) % 4)
-                        decoded = base64.b64decode(base64_str).decode('utf-8')
-                        config = json.loads(decoded)
+                        # 尝试更宽松的解析
+                        config = {
+                            "add": "",
+                            "port": "",
+                            "ps": "",
+                            "id": ""
+                        }
                     
                     server = config.get("add", config.get("host", config.get("address", "")))
                     port = config.get("port", "443")
@@ -188,18 +200,19 @@ def parse_subscription_content(content, source_url):
                     }
                     nodes.append(node)
                 
+                # Shadowsocks节点
                 elif line.startswith("ss://"):
                     # 解析Shadowsocks
                     base64_str = line[5:].split('#')[0]
                     if len(base64_str) % 4 != 0:
                         base64_str += '=' * (4 - len(base64_str) % 4)
                     
+                    # 处理URL安全的Base64
+                    base64_str = base64_str.replace('-', '+').replace('_', '/')
                     try:
-                        # 尝试URL安全的Base64
-                        base64_str = base64_str.replace('-', '+').replace('_', '/')
                         decoded = base64.b64decode(base64_str).decode('utf-8')
                     except:
-                        decoded = base64.b64decode(base64_str).decode('utf-8')
+                        decoded = base64.b64decode(base64_str + '=' * (-len(base64_str) % 4)).decode('utf-8')
                     
                     if '@' in decoded:
                         method_password, server_port = decoded.split('@', 1)
@@ -238,7 +251,7 @@ def parse_subscription_content(content, source_url):
         return [], "unknown"
 
 def test_node_connectivity(node):
-    """测试节点连接性"""
+    """测试节点连接性 - 更严格的测试"""
     server = node.get("server", "")
     port = str(node.get("port", ""))
     
@@ -258,6 +271,15 @@ def test_node_connectivity(node):
         # 测试TCP连接
         start_time = time.time()
         sock = socket.create_connection((server_ip, int(port)), timeout=5)
+        
+        # 发送测试数据
+        if node["type"] == "ss":
+            # Shadowsocks测试数据
+            sock.send(b"\x05\x01\x00")
+            response = sock.recv(2)
+            if response != b"\x05\x00":
+                return None
+        
         sock.close()
         return int((time.time() - start_time) * 1000)
     except Exception as e:
@@ -404,13 +426,20 @@ proxies:
                     base64_str += '=' * (4 - len(base64_str) % 4)
                 
                 # 处理URL安全的Base64
-                base64_str = base64_str.replace('-', '+').replace('_', '/')
+                base64_str = base64.b64encode(base64.b64decode(base64_str)).decode()  # 标准化base64
                 decoded = base64.b64decode(base64_str).decode('utf-8')
                 
                 if '@' in decoded:
                     method_password, server_port = decoded.split('@', 1)
-                    method, password = method_password.split(':', 1)
-                    server, port = server_port.split(':', 1)
+                    if ':' in method_password:
+                        method, password = method_password.split(':', 1)
+                    else:
+                        method, password = method_password, ""
+                    
+                    if ':' in server_port:
+                        server, port = server_port.split(':', 1)
+                    else:
+                        server, port = server_port, "443"
                 else:
                     method, password, server, port = "", "", "", ""
                 
