@@ -14,6 +14,9 @@ if not all([ftp_host, ftp_user, ftp_pass]):
 LOCAL_UPLOAD_DIR = "website"
 FTP_BASE_DIR = "domains/cloakaccess.com/public_html"
 
+# 确保日志目录存在
+os.makedirs(os.path.dirname("logs/"), exist_ok=True)
+
 def upload_dir(local_dir, ftp_dir, ftp):
     for item in os.listdir(local_dir):
         local_path = os.path.join(local_dir, item)
@@ -40,25 +43,28 @@ def upload_dir(local_dir, ftp_dir, ftp):
             file_size = os.path.getsize(local_path)
             print(f"准备上传: {local_path} -> {ftp_path} ({file_size} 字节)")
             
-            try:
-                with open(local_path, "rb") as f:
-                    # 使用二进制模式上传
-                    ftp.storbinary(f"STOR {ftp_path}", f)
-                    print(f"[SUCCESS] 上传成功: {ftp_path}")
-            except Exception as e:
-                print(f"[ERROR] 上传文件失败: {e}")
-                # 重试一次
+            retry_count = 0
+            max_retries = 3
+            last_error = None
+            
+            while retry_count < max_retries:
                 try:
-                    print("尝试重新上传...")
-                    time.sleep(2)
                     with open(local_path, "rb") as f:
+                        # 使用二进制模式上传
                         ftp.storbinary(f"STOR {ftp_path}", f)
-                        print(f"[SUCCESS] 重新上传成功: {ftp_path}")
-                except Exception as e2:
-                    print(f"[FATAL] 重新上传失败: {e2}")
-                    # 记录错误文件
-                    with open("upload_errors.log", "a") as log:
-                        log.write(f"{time.ctime()} | {local_path} -> {ftp_path} | {e2}\n")
+                        print(f"[SUCCESS] 上传成功: {ftp_path}")
+                        break  # 成功则跳出循环
+                except Exception as e:
+                    retry_count += 1
+                    last_error = e
+                    print(f"[ERROR] 上传文件失败 (尝试 {retry_count}/{max_retries}): {e}")
+                    time.sleep(2 ** retry_count)  # 指数退避
+            
+            if retry_count == max_retries:
+                print(f"[FATAL] 上传失败: {local_path} -> {ftp_path} (最后错误: {last_error})")
+                # 记录错误文件
+                with open("logs/upload_errors.log", "a") as log:
+                    log.write(f"{time.ctime()} | {local_path} -> {ftp_path} | {last_error}\n")
 
 def main():
     try:
@@ -76,8 +82,21 @@ def main():
             print(f"切换到 FTP 目录: {FTP_BASE_DIR}")
         except ftplib.error_perm as e:
             print(f"目录不存在，尝试创建: {FTP_BASE_DIR}")
-            ftp.mkd(FTP_BASE_DIR)
-            ftp.cwd(FTP_BASE_DIR)
+            # 递归创建目录
+            parts = FTP_BASE_DIR.split('/')
+            path = ""
+            for part in parts:
+                if not part:
+                    continue
+                path += "/" + part
+                try:
+                    ftp.cwd(path)
+                except:
+                    try:
+                        ftp.mkd(path)
+                        ftp.cwd(path)
+                    except:
+                        print(f"创建目录失败: {path}")
             print(f"创建并切换到目录: {FTP_BASE_DIR}")
 
         if not os.path.exists(LOCAL_UPLOAD_DIR):
