@@ -1,6 +1,6 @@
 [
   {
-    "id": "5397bbac-afaf-4ede-8936-c590e29eb367",
+    "id": "1feef9e1-2736-481c-a350-cc59f326aeda",
     "name": "[美国] Fastly - Anycast节点",
     "type": "vmess",
     "server": "gov.uk",
@@ -24,10 +24,37 @@
     },
     "source": "https://raw.githubusercontent.com/freefq/free/master/v2",
     "latency": 2,
-    "last_checked": "2025-06-15T02:36:51.800114+00:00"
+    "last_checked": "2025-06-15T02:51:57.435740+00:00"
   },
   {
-    "id": "6e2a2511-bbd6-46b2-b7f3-3961f6a5e72d",
+    "id": "60de1392-5e43-4590-9f78-18f7204c37cc",
+    "name": "[美国] CloudFlare - 节点",
+    "type": "vmess",
+    "server": "de01.sh-cloudflare.sbs",
+    "port": 2096,
+    "clash_config": {
+      "name": "[美国] CloudFlare - 节点",
+      "type": "vmess",
+      "server": "de01.sh-cloudflare.sbs",
+      "port": 2096,
+      "uuid": "dc127c5e-c6f4-4665-a4b9-4ddef9a5403d",
+      "alterId": 0,
+      "cipher": "auto",
+      "udp": true,
+      "tls": true,
+      "skip-cert-verify": true,
+      "network": "ws",
+      "ws-path": "/",
+      "ws-headers": {
+        "Host": "de01.sh-cloudflare.sbs"
+      }
+    },
+    "source": "https://raw.githubusercontent.com/Pawdroid/Free-servers/main/sub",
+    "latency": 1,
+    "last_checked": "2025-06-15T02:51:57.442293+00:00"
+  },
+  {
+    "id": "6e3dc6c1-b4e4-47dc-af87-b00fbe8b2aad",
     "name": "[日本] 未知服务商 - 节点",
     "type": "vmess",
     "server": "140.227.28.92",
@@ -44,12 +71,12 @@
       "tls": false,
       "skip-cert-verify": true
     },
-    "source": "https://raw.githubusercontent.com/peasoft/NoMoreWalls/master/list.txt",
-    "latency": 142,
-    "last_checked": "2025-06-15T02:36:51.842989+00:00"
+    "source": "https://raw.githubusercontent.com/aiboboxx/v2rayfree/main/v2",
+    "latency": 156,
+    "last_checked": "2025-06-15T02:51:57.573265+00:00"
   },
   {
-    "id": "dba6b16c-5e50-4368-90f9-0d30d6e89e8f",
+    "id": "c62089ce-aa18-4925-ad8b-48ac07cb310f",
     "name": "[韩国] 未知服务商 - 节点",
     "type": "vmess",
     "server": "203.227.44.74",
@@ -66,8 +93,8 @@
       "tls": false,
       "skip-cert-verify": true
     },
-    "source": "https://raw.githubusercontent.com/peasoft/NoMoreWalls/master/list.txt",
-    "latency": 164,
-    "last_checked": "2025-06-15T02:36:51.864081+00:00"
+    "source": "https://raw.githubusercontent.com/aiboboxx/v2rayfree/main/v2",
+    "latency": 182,
+    "last_checked": "2025-06-15T02:51:57.599571+00:00"
   }
 ]
