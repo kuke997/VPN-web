@@ -1073,7 +1073,24 @@
                 
                 // 社交
                 "social.share_twitter": "Share on Twitter",
-                "social.share_telegram": "Share on Telegram"
+                "social.share_telegram": "Share on Telegram",
+                
+                // 地区翻译
+                "region.us": "United States",
+                "region.jp": "Japan",
+                "region.kr": "South Korea",
+                "region.sg": "Singapore",
+                "region.hk": "Hong Kong",
+                "region.tw": "Taiwan",
+                "region.uk": "United Kingdom",
+                "region.de": "Germany",
+                "region.fr": "France",
+                "region.ca": "Canada",
+                "region.ru": "Russia",
+                "region.au": "Australia",
+                "region.in": "India",
+                "region.br": "Brazil",
+                "region.unknown": "Unknown Region"
             },
             hi: {
                 // 导航
@@ -1167,7 +1184,24 @@
                 
                 // 社交
                 "social.share_twitter": "Twitter पर साझा करें",
-                "social.share_telegram": "Telegram पर साझा करें"
+                "social.share_telegram": "Telegram पर साझा करें",
+                
+                // 地区翻译
+                "region.us": "अमेरिका",
+                "region.jp": "जापान",
+                "region.kr": "दक्षिण कोरिया",
+                "region.sg": "सिंगापुर",
+                "region.hk": "हांगकांग",
+                "region.tw": "ताइवान",
+                "region.uk": "यूनाइटेड किंगडम",
+                "region.de": "जर्मनी",
+                "region.fr": "फ्रांस",
+                "region.ca": "कनाडा",
+                "region.ru": "रूस",
+                "region.au": "ऑस्ट्रेलिया",
+                "region.in": "भारत",
+                "region.br": "ब्राज़ील",
+                "region.unknown": "अज्ञात क्षेत्र"
             },
             pt: {
                 // 导航
@@ -1261,7 +1295,24 @@
                 
                 // 社交
                 "social.share_twitter": "Compartilhar no Twitter",
-                "social.share_telegram": "Compartilhar no Telegram"
+                "social.share_telegram": "Compartilhar no Telegram",
+                
+                // 地区翻译
+                "region.us": "Estados Unidos",
+                "region.jp": "Japão",
+                "region.kr": "Coreia do Sul",
+                "region.sg": "Singapura",
+                "region.hk": "Hong Kong",
+                "region.tw": "Taiwan",
+                "region.uk": "Reino Unido",
+                "region.de": "Alemanha",
+                "region.fr": "França",
+                "region.ca": "Canadá",
+                "region.ru": "Rússia",
+                "region.au": "Austrália",
+                "region.in": "Índia",
+                "region.br": "Brasil",
+                "region.unknown": "Região Desconhecida"
             },
             zh: {
                 // 导航
@@ -1369,7 +1420,24 @@
                 
                 // 社交
                 "social.share_twitter": "分享到Twitter",
-                "social.share_telegram": "分享到Telegram"
+                "social.share_telegram": "分享到Telegram",
+                
+                // 地区翻译
+                "region.us": "美国",
+                "region.jp": "日本",
+                "region.kr": "韩国",
+                "region.sg": "新加坡",
+                "region.hk": "香港",
+                "region.tw": "台湾",
+                "region.uk": "英国",
+                "region.de": "德国",
+                "region.fr": "法国",
+                "region.ca": "加拿大",
+                "region.ru": "俄罗斯",
+                "region.au": "澳大利亚",
+                "region.in": "印度",
+                "region.br": "巴西",
+                "region.unknown": "未知地区"
             }
         };
 
@@ -1509,21 +1577,54 @@
         
         // 国家/地区代码映射
         const countryFlags = {
-            '美国': 'us',
-            '日本': 'jp',
-            '韩国': 'kr',
-            '新加坡': 'sg',
-            '香港': 'hk',
-            '台湾': 'tw',
-            '英国': 'gb',
-            '德国': 'de',
-            '法国': 'fr',
-            '加拿大': 'ca',
-            '俄罗斯': 'ru',
-            '澳大利亚': 'au',
-            '印度': 'in',
-            '巴西': 'br'
+            'us': 'us',
+            'jp': 'jp',
+            'kr': 'kr',
+            'sg': 'sg',
+            'hk': 'hk',
+            'tw': 'tw',
+            'uk': 'gb',
+            'de': 'de',
+            'fr': 'fr',
+            'ca': 'ca',
+            'ru': 'ru',
+            'au': 'au',
+            'in': 'in',
+            'br': 'br'
         };
+        
+        // 从节点名称中提取地区
+        function extractRegion(nodeName) {
+            if (!nodeName) return 'unknown';
+            
+            // 尝试匹配 [地区] 格式
+            let regionMatch = nodeName.match(/\[([^\]]+)\]/);
+            if (regionMatch) {
+                return regionMatch[1].toLowerCase().replace(' ', '');
+            }
+            
+            // 尝试匹配 (地区) 格式
+            regionMatch = nodeName.match(/\(([^)]+)\)/);
+            if (regionMatch) {
+                return regionMatch[1].toLowerCase().replace(' ', '');
+            }
+            
+            // 尝试匹配常见地区关键词
+            const regionKeywords = ['us', 'jp', 'kr', 'sg', 'hk', 'tw', 'uk', 'de', 'fr', 'ca', 'ru', 'au', 'in', 'br'];
+            for (const region of regionKeywords) {
+                if (nodeName.toLowerCase().includes(region)) {
+                    return region;
+                }
+            }
+            
+            return 'unknown';
+        }
+        
+        // 获取地区翻译
+        function getRegionTranslation(regionCode) {
+            const key = `region.${regionCode}`;
+            return translations[currentLang][key] || regionCode;
+        }
         
         // 加载节点数据
         async function loadNodes() {
@@ -1603,21 +1704,14 @@
                 const nameCell = document.createElement('td');
                 nameCell.className = 'node-name';
                 
-                // 提取地区名称
-                const regionMatch = node.name.match(/\[([^\]]+)\]/);
-                let regionName = regionMatch ? regionMatch[1] : '未知地区';
-                let countryCode = 'globe';
+                // 提取地区代码
+                const regionCode = extractRegion(node.name);
                 
-                // 查找国旗代码
-                if (regionName in countryFlags) {
-                    countryCode = countryFlags[regionName];
-                } else {
-                    // 尝试简化地区名称
-                    const simplifiedName = regionName.replace(/地区|节点|服务商/g, '');
-                    if (simplifiedName in countryFlags) {
-                        countryCode = countryFlags[simplifiedName];
-                    }
-                }
+                // 获取国旗代码
+                const countryCode = countryFlags[regionCode] || 'globe';
+                
+                // 获取地区翻译
+                const regionName = getRegionTranslation(regionCode);
                 
                 nameCell.innerHTML = `
                     <span class="flag-icon fi fi-${countryCode}"></span>
