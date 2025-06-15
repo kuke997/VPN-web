@@ -313,1146 +313,1426 @@
         }
         
         /* 订阅区域 */
-        <section class="subscription-section" id="subscription">
-            <div class="container">
-                <h2 class="section-title" data-i18n="subscription.title">客户端订阅</h2>
+        .subscription-section {
+            padding: 80px 0;
+            background: rgba(15, 23, 42, 0.4);
+        }
+        
+        .subscription-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 30px;
+            margin-top: 40px;
+        }
+        
+        .subscription-card {
+            background: rgba(30, 41, 59, 0.6);
+            border-radius: 16px;
+            padding: 30px;
+            text-align: center;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            transition: all 0.3s;
+        }
+        
+        .subscription-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+            border-color: rgba(99, 102, 241, 0.3);
+        }
+        
+        .client-icon {
+            width: 80px;
+            height: 80px;
+            background: rgba(99, 102, 241, 0.1);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 20px;
+        }
+        
+        .client-icon i {
+            font-size: 2.5rem;
+            color: var(--primary);
+        }
+        
+        .subscription-card h3 {
+            font-size: 1.5rem;
+            margin-bottom: 15px;
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+        }
+        
+        .subscription-card p {
+            color: #cbd5e1;
+            margin-bottom: 20px;
+            min-height: 60px;
+        }
+        
+        .subscription-card .btn {
+            margin-top: 15px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+        }
+        
+        .subscription-note {
+            background: rgba(15, 23, 42, 0.6);
+            border-radius: 8px;
+            padding: 15px;
+            margin-top: 20px;
+            text-align: left;
+            font-size: 0.9rem;
+        }
+        
+        .subscription-note p {
+            margin-bottom: 0;
+        }
+        
+        /* 节点区域 */
+        .nodes-section {
+            padding: 80px 0;
+        }
+        
+        .filters {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin: 30px 0;
+        }
+        
+        .filter-btn {
+            background: rgba(30, 41, 59, 0.6);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            color: var(--gray);
+            padding: 8px 15px;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        
+        .filter-btn:hover, .filter-btn.active {
+            background: rgba(99, 102, 241, 0.1);
+            border-color: var(--primary);
+            color: white;
+        }
+        
+        .server-table {
+            width: 100%;
+            border-collapse: collapse;
+            background: rgba(30, 41, 59, 0.6);
+            border-radius: 8px;
+            overflow: hidden;
+        }
+        
+        .server-table th, .server-table td {
+            padding: 15px 20px;
+            text-align: left;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        
+        .server-table th {
+            background: rgba(15, 23, 42, 0.8);
+            color: var(--primary);
+            font-weight: 600;
+        }
+        
+        .server-table tr:last-child td {
+            border-bottom: none;
+        }
+        
+        .server-table tr:hover {
+            background: rgba(99, 102, 241, 0.05);
+        }
+        
+        .status-indicator {
+            display: inline-block;
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            margin-right: 8px;
+        }
+        
+        .status-indicator.active {
+            background: var(--success);
+        }
+        
+        .status-indicator.inactive {
+            background: var(--danger);
+        }
+        
+        .download-link {
+            background: transparent;
+            border: 1px solid var(--primary);
+            color: var(--primary);
+            padding: 6px 12px;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        
+        .download-link:hover {
+            background: rgba(99, 102, 241, 0.1);
+        }
+        
+        .loader {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 40px;
+        }
+        
+        .spinner {
+            width: 40px;
+            height: 40px;
+            border: 4px solid rgba(99, 102, 241, 0.2);
+            border-top: 4px solid var(--primary);
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin-bottom: 15px;
+        }
+        
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        
+        .error-message {
+            text-align: center;
+            padding: 40px;
+            background: rgba(239, 68, 68, 0.1);
+            border-radius: 8px;
+            border: 1px solid var(--danger);
+        }
+        
+        .social-sharing {
+            display: flex;
+            gap: 15px;
+            margin-top: 40px;
+            justify-content: center;
+        }
+        
+        .share-btn {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 10px 20px;
+            border-radius: 8px;
+            border: none;
+            cursor: pointer;
+            font-weight: 500;
+            transition: all 0.3s;
+        }
+        
+        .share-btn.twitter {
+            background: #1da1f2;
+            color: white;
+        }
+        
+        .share-btn.telegram {
+            background: #0088cc;
+            color: white;
+        }
+        
+        .share-btn:hover {
+            opacity: 0.9;
+            transform: translateY(-2px);
+        }
+        
+        .seo-footer {
+            text-align: center;
+            padding: 20px;
+            background: rgba(15, 23, 42, 0.8);
+            color: var(--gray);
+            font-size: 0.9rem;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        
+        /* 页脚 */
+        footer {
+            padding: 60px 0 30px;
+            background: rgba(15, 23, 42, 0.8);
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        
+        .footer-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 40px;
+        }
+        
+        .footer-col h3 {
+            font-size: 1.2rem;
+            margin-bottom: 20px;
+            color: white;
+        }
+        
+        .footer-col ul {
+            list-style: none;
+        }
+        
+        .footer-col li {
+            margin-bottom: 12px;
+        }
+        
+        .footer-col a {
+            color: var(--gray);
+            text-decoration: none;
+            transition: color 0.3s;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .footer-col a:hover {
+            color: white;
+        }
+        
+        .copyright {
+            text-align: center;
+            margin-top: 50px;
+            padding-top: 20px;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+            color: var(--gray);
+            font-size: 0.9rem;
+        }
+    </style>
+</head>
+<body>
+    <!-- 头部导航 -->
+    <header>
+        <div class="container">
+            <div class="header-inner">
+                <a href="/" class="logo">
+                    <i class="fas fa-shield-alt"></i>
+                    <span>CloakAccess</span>
+                </a>
                 
-                <div class="subscription-grid">
-                    <div class="subscription-card">
-                        <div class="client-icon">
-                            <i class="fas fa-bolt"></i>
-                        </div>
-                        <h3><i class="fas fa-shield-alt"></i> <span data-i18n="subscription.clash">Clash 订阅</span></h3>
-                        <p data-i18n="subscription.clash_desc">专为Clash客户端优化的订阅配置，包含所有可用节点和自动选择策略</p>
-                        <a href="clash_subscription.yaml" class="btn" download="clash_config.yaml">
-                            <i class="fas fa-download"></i> <span data-i18n="subscription.download_clash">下载Clash订阅</span>
-                        </a>
-                        <div class="subscription-note">
-                            <p data-i18n="subscription.clash_url">在Clash客户端中使用URL:<br>https://cloakaccess.com/clash_subscription.yaml</p>
-                        </div>
-                    </div>
-                    
-                    <div class="subscription-card">
-                        <div class="client-icon">
-                            <i class="fas fa-rocket"></i>
-                        </div>
-                        <h3><i class="fas fa-mobile-alt"></i> <span data-i18n="subscription.shadowrocket">Shadowrocket 订阅</span></h3>
-                        <p data-i18n="subscription.shadowrocket_desc">专为Shadowrocket优化的订阅配置，Base64编码格式，一键导入</p>
-                        <a href="shadowrocket_subscription.txt" class="btn" download="shadowrocket_sub.txt">
-                            <i class="fas fa-download"></i> <span data-i18n="subscription.download_shadowrocket">下载Shadowrocket订阅</span>
-                        </a>
-                        <div class="subscription-note">
-                            <p data-i18n="subscription.shadowrocket_url">在Shadowrocket中使用URL:<br>https://cloakaccess.com/shadowrocket_subscription.txt</p>
-                        </div>
-                    </div>
-                </div>
+                <nav>
+                    <ul>
+                        <li><a href="#" class="active" data-i18n="nav.home">首页</a></li>
+                        <li><a href="#subscription" data-i18n="nav.subscription">订阅下载</a></li>
+                        <li><a href="#nodes" data-i18n="nav.nodes">节点列表</a></li>
+                        <li><a href="#" onclick="showAuthModal('login')" data-i18n="nav.login">登录/注册</a></li>
+                        <li class="language-switcher">
+                            <div class="language-btn">
+                                <span data-i18n="lang.zh">中文</span>
+                                <i class="fas fa-chevron-down"></i>
+                            </div>
+                            <div class="language-dropdown">
+                                <a href="?lang=en" data-lang="en" data-i18n="lang.en">English</a>
+                                <a href="?lang=hi" data-lang="hi" data-i18n="lang.hi">हिन्दी</a>
+                                <a href="?lang=pt" data-lang="pt" data-i18n="lang.pt">Português</a>
+                                <a href="?lang=zh" data-lang="zh" data-i18n="lang.zh">中文</a>
+                            </div>
+                        </li>
+                    </ul>
+                </nav>
             </div>
-        </section>
-
-        <!-- 节点列表 -->
-        <section class="nodes-section" id="nodes">
-            <div class="container">
-                <h2 class="section-title" data-i18n="nodes.title">可用节点</h2>
-                
-                <div class="filters">
-                    <button class="filter-btn active" data-protocol="all" data-i18n="filters.all">全部节点</button>
-                    <button class="filter-btn" data-protocol="vmess" data-i18n="filters.vmess">VMess</button>
-                    <button class="filter-btn" data-protocol="ss" data-i18n="filters.shadowsocks">Shadowsocks</button>
-                    <button class="filter-btn" data-sort="fastest" data-i18n="filters.fastest">最快节点</button>
-                    <button class="filter-btn" data-sort="newest" data-i18n="filters.newest">最新添加</button>
-                </div>
-                
-                <div id="server-list">
-                    <div class="loader">
-                        <div class="spinner"></div>
-                        <p data-i18n="nodes.loading">正在加载节点数据...</p>
-                    </div>
-                </div>
-                
-                <!-- 社交分享 -->
-                <div class="social-sharing">
-                    <button class="share-btn twitter">
-                        <i class="fab fa-twitter"></i> <span data-i18n="social.share_twitter">分享到Twitter</span>
-                    </button>
-                    <button class="share-btn telegram">
-                        <i class="fab fa-telegram"></i> <span data-i18n="social.share_telegram">分享到Telegram</span>
-                    </button>
-                </div>
-            </div>
-        </section>
-
-        <!-- SEO页脚 -->
-        <div class="seo-footer">
-            免费VPN节点 | Clash配置下载 | Shadowrocket订阅 | 美国VPN节点 | 日本VPN节点 | 香港VPN节点 | 翻墙工具 | 科学上网
         </div>
+    </header>
 
-        <!-- 登录/注册模态框 -->
-        <div id="auth-modal" class="modal">
-            <div class="modal-content">
-                <span class="close" onclick="closeAuthModal()">&times;</span>
-                
-                <div id="login-form" class="auth-form">
-                    <h2 data-i18n="auth.login_title">登录账户</h2>
-                    <div class="form-group">
-                        <label for="login-email" data-i18n="auth.email">邮箱地址</label>
-                        <input type="email" id="login-email" placeholder="输入您的邮箱">
+    <!-- 英雄区域 -->
+    <section class="hero">
+        <div class="container">
+            <h1 data-i18n="hero.title">安全、快速、免费的全球VPN服务</h1>
+            <p data-i18n="hero.subtitle">专为Clash和Shadowrocket用户优化的免费VPN节点订阅服务</p>
+            <div class="hero-btns">
+                <button id="cta-btn" class="btn" data-i18n="hero.get_subscription">获取订阅</button>
+                <a href="#nodes" class="btn btn-outline" data-i18n="hero.view_nodes">查看节点</a>
+            </div>
+        </div>
+    </section>
+
+    <!-- 订阅区域 -->
+    <section class="subscription-section" id="subscription">
+        <div class="container">
+            <h2 class="section-title" data-i18n="subscription.title">客户端订阅</h2>
+            
+            <div class="subscription-grid">
+                <div class="subscription-card">
+                    <div class="client-icon">
+                        <i class="fas fa-bolt"></i>
                     </div>
-                    <div class="form-group">
-                        <label for="login-password" data-i18n="auth.password">密码</label>
-                        <input type="password" id="login-password" placeholder="输入密码">
+                    <h3><i class="fas fa-shield-alt"></i> <span data-i18n="subscription.clash">Clash 订阅</span></h3>
+                    <p data-i18n="subscription.clash_desc">专为Clash客户端优化的订阅配置，包含所有可用节点和自动选择策略</p>
+                    <a href="clash_subscription.yaml" class="btn" download="clash_config.yaml">
+                        <i class="fas fa-download"></i> <span data-i18n="subscription.download_clash">下载Clash订阅</span>
+                    </a>
+                    <div class="subscription-note">
+                        <p data-i18n="subscription.clash_url">在Clash客户端中使用URL:<br>https://cloakaccess.com/clash_subscription.yaml</p>
                     </div>
-                    <button class="btn" onclick="login()" data-i18n="auth.login">登录</button>
-                    <div class="google-login">
-                        <button class="btn google-btn" onclick="googleLogin()">
-                            <i class="fab fa-google"></i> <span data-i18n="auth.google_login">使用 Google 登录</span>
-                        </button>
-                    </div>
-                    <p class="auth-switch">
-                        <span data-i18n="auth.no_account">还没有账户？</span> <a href="#" onclick="showAuthForm('register')" data-i18n="auth.register_now">立即注册</a>
-                    </p>
                 </div>
                 
-                <div id="register-form" class="auth-form" style="display:none;">
-                    <h2 data-i18n="auth.register_title">创建账户</h2>
-                    <div class="form-group">
-                        <label for="register-email" data-i18n="auth.email">邮箱地址</label>
-                        <input type="email" id="register-email" placeholder="输入您的邮箱">
+                <div class="subscription-card">
+                    <div class="client-icon">
+                        <i class="fas fa-rocket"></i>
                     </div>
-                    <div class="form-group">
-                        <label for="register-password" data-i18n="auth.password">密码</label>
-                        <input type="password" id="register-password" placeholder="创建密码（至少8位）">
+                    <h3><i class="fas fa-mobile-alt"></i> <span data-i18n="subscription.shadowrocket">Shadowrocket 订阅</span></h3>
+                    <p data-i18n="subscription.shadowrocket_desc">专为Shadowrocket优化的订阅配置，Base64编码格式，一键导入</p>
+                    <a href="shadowrocket_subscription.txt" class="btn" download="shadowrocket_sub.txt">
+                        <i class="fas fa-download"></i> <span data-i18n="subscription.download_shadowrocket">下载Shadowrocket订阅</span>
+                    </a>
+                    <div class="subscription-note">
+                        <p data-i18n="subscription.shadowrocket_url">在Shadowrocket中使用URL:<br>https://cloakaccess.com/shadowrocket_subscription.txt</p>
                     </div>
-                    <div class="form-group">
-                        <label for="register-confirm" data-i18n="auth.confirm_password">确认密码</label>
-                        <input type="password" id="register-confirm" placeholder="再次输入密码">
-                    </div>
-                    <button class="btn" onclick="register()" data-i18n="auth.register">注册</button>
-                    <div class="google-login">
-                        <button class="btn google-btn" onclick="googleLogin()">
-                            <i class="fab fa-google"></i> <span data-i18n="auth.google_register">使用 Google 注册</span>
-                        </button>
-                    </div>
-                    <p class="auth-switch">
-                        <span data-i18n="auth.have_account">已有账户？</span> <a href="#" onclick="showAuthForm('login')" data-i18n="auth.login_now">立即登录</a>
-                    </p>
                 </div>
             </div>
         </div>
+    </section>
 
-        <!-- 页脚 -->
-        <footer>
-            <div class="container">
-                <div class="footer-grid">
-                    <div class="footer-col">
-                        <h3>CloakAccess</h3>
-                        <ul>
-                            <li><a href="#" data-i18n="footer.about">关于我们</a></li>
-                            <li><a href="#" data-i18n="footer.terms">服务条款</a></li>
-                            <li><a href="#" data-i18n="footer.privacy">隐私政策</a></li>
-                        </ul>
-                    </div>
-                    
-                    <div class="footer-col">
-                        <h3 data-i18n="footer.resources">资源</h3>
-                        <ul>
-                            <li><a href="#subscription" data-i18n="footer.subscriptions">订阅下载</a></li>
-                            <li><a href="#nodes" data-i18n="footer.nodes">节点列表</a></li>
-                            <li><a href="#" data-i18n="footer.faq">常见问题</a></li>
-                        </ul>
-                    </div>
-                    
-                    <div class="footer-col">
-                        <h3 data-i18n="footer.support">支持</h3>
-                        <ul>
-                            <li><a href="#" data-i18n="footer.contact">联系我们</a></li>
-                            <li><a href="#" data-i18n="footer.report">报告问题</a></li>
-                            <li><a href="#" data-i18n="footer.feedback">提交反馈</a></li>
-                        </ul>
-                    </div>
-                    
-                    <div class="footer-col">
-                        <h3 data-i18n="footer.follow">关注我们</h3>
-                        <ul>
-                            <li><a href="#"><i class="fab fa-telegram"></i> Telegram</a></li>
-                            <li><a href="#"><i class="fab fa-github"></i> GitHub</a></li>
-                            <li><a href="#"><i class="fab fa-twitter"></i> Twitter</a></li>
-                        </ul>
-                    </div>
-                </div>
-                
-                <div class="copyright" data-i18n="footer.copyright">
-                    &copy; 2023 CloakAccess. 保留所有权利。本服务仅提供技术演示，请遵守当地法律法规。
+    <!-- 节点列表 -->
+    <section class="nodes-section" id="nodes">
+        <div class="container">
+            <h2 class="section-title" data-i18n="nodes.title">可用节点</h2>
+            
+            <div class="filters">
+                <button class="filter-btn active" data-protocol="all" data-i18n="filters.all">全部节点</button>
+                <button class="filter-btn" data-protocol="vmess" data-i18n="filters.vmess">VMess</button>
+                <button class="filter-btn" data-protocol="ss" data-i18n="filters.shadowsocks">Shadowsocks</button>
+                <button class="filter-btn" data-sort="fastest" data-i18n="filters.fastest">最快节点</button>
+                <button class="filter-btn" data-sort="newest" data-i18n="filters.newest">最新添加</button>
+            </div>
+            
+            <div id="server-list">
+                <div class="loader">
+                    <div class="spinner"></div>
+                    <p data-i18n="nodes.loading">正在加载节点数据...</p>
                 </div>
             </div>
-        </footer>
+            
+            <!-- 社交分享 -->
+            <div class="social-sharing">
+                <button class="share-btn twitter">
+                    <i class="fab fa-twitter"></i> <span data-i18n="social.share_twitter">分享到Twitter</span>
+                </button>
+                <button class="share-btn telegram">
+                    <i class="fab fa-telegram"></i> <span data-i18n="social.share_telegram">分享到Telegram</span>
+                </button>
+            </div>
+        </div>
+    </section>
 
-        <style>
-            /* 模态框样式 */
-            .modal {
-                display: none;
-                position: fixed;
-                z-index: 1000;
-                left: 0;
-                top: 0;
-                width: 100%;
-                height: 100%;
-                overflow: auto;
-                background-color: rgba(0,0,0,0.7);
-            }
-            
-            .modal-content {
-                background: #1e293b;
-                margin: 10% auto;
-                padding: 30px;
-                border-radius: 16px;
-                width: 100%;
-                max-width: 400px;
-                position: relative;
-                border: 1px solid rgba(99, 102, 241, 0.3);
-            }
-            
-            .close {
-                color: #aaa;
-                position: absolute;
-                top: 15px;
-                right: 20px;
-                font-size: 28px;
-                font-weight: bold;
-                cursor: pointer;
-            }
-            
-            .close:hover,
-            .close:focus {
-                color: white;
-                text-decoration: none;
-            }
-            
-            .auth-form {
-                padding: 20px;
-            }
-            
-            .auth-form h2 {
-                text-align: center;
-                margin-bottom: 25px;
-                color: white;
-            }
-            
-            .form-group {
-                margin-bottom: 20px;
-            }
-            
-            .form-group label {
-                display: block;
-                margin-bottom: 8px;
-                color: #cbd5e1;
-            }
-            
-            .form-group input {
-                width: 100%;
-                padding: 12px 15px;
-                border-radius: 8px;
-                background: rgba(15, 23, 42, 0.6);
-                border: 1px solid rgba(255, 255, 255, 0.1);
-                color: white;
-                font-size: 1rem;
-            }
-            
-            .auth-form .btn {
-                width: 100%;
-                padding: 12px;
-                margin-top: 10px;
-            }
-            
-            .google-login {
-                margin: 20px 0;
-                position: relative;
-                text-align: center;
-            }
-            
-            .google-login::before,
-            .google-login::after {
-                content: '';
-                position: absolute;
-                top: 50%;
-                width: 30%;
-                height: 1px;
-                background: rgba(255, 255, 255, 0.1);
-            }
-            
-            .google-login::before {
-                left: 0;
-            }
-            
-            .google-login::after {
-                right: 0;
-            }
-            
-            .google-btn {
-                background: #fff !important;
-                color: #4285F4 !important;
-                border: none !important;
-                display: flex;
-                align-items: center;
-                justify-content: center;
-                gap: 10px;
-            }
-            
-            .google-btn i {
-                color: #4285F4;
-            }
-            
-            .auth-switch {
-                text-align: center;
-                margin-top: 20px;
-                color: #94a3b8;
-            }
-            
-            .auth-switch a {
-                color: var(--primary);
-                text-decoration: none;
-            }
-        </style>
+    <!-- SEO页脚 -->
+    <div class="seo-footer">
+        免费VPN节点 | Clash配置下载 | Shadowrocket订阅 | 美国VPN节点 | 日本VPN节点 | 香港VPN节点 | 翻墙工具 | 科学上网
+    </div>
 
-        <script>
-            // 多语言翻译
-            const translations = {
-                en: {
-                    // 导航
-                    "nav.home": "Home",
-                    "nav.subscription": "Subscriptions",
-                    "nav.nodes": "Nodes",
-                    "nav.login": "Login/Register",
-                    "lang.en": "English",
-                    "lang.hi": "Hindi",
-                    "lang.pt": "Portuguese",
-                    "lang.zh": "Chinese",
-                    
-                    // 认证
-                    "auth.login": "Login",
-                    "auth.register": "Register",
-                    "auth.login_title": "Login to Account",
-                    "auth.email": "Email Address",
-                    "auth.email_placeholder": "Enter your email",
-                    "auth.password": "Password",
-                    "auth.password_placeholder": "Enter password",
-                    "auth.google_login": "Login with Google",
-                    "auth.no_account": "Don't have an account?",
-                    "auth.register_now": "Register Now",
-                    "auth.register_title": "Create Account",
-                    "auth.create_password": "Create password (at least 8 characters)",
-                    "auth.confirm_password": "Confirm Password",
-                    "auth.confirm_password_placeholder": "Re-enter password",
-                    "auth.register": "Register",
-                    "auth.google_register": "Register with Google",
-                    "auth.have_account": "Already have an account?",
-                    "auth.login_now": "Login Now",
-                    
-                    // 英雄区域
-                    "hero.title": "Secure, Fast & Free Global VPN Service",
-                    "hero.subtitle": "Free VPN node subscription service optimized for Clash and Shadowrocket users",
-                    "hero.get_subscription": "Get Subscription",
-                    "hero.view_nodes": "View Nodes",
-                    
-                    // 订阅
-                    "subscription.title": "Client Subscriptions",
-                    "subscription.clash": "Clash Subscription",
-                    "subscription.clash_desc": "Subscription configuration optimized for Clash client, includes all available nodes and auto-select strategy",
-                    "subscription.download_clash": "Download Clash Subscription",
-                    "subscription.clash_url": "In Clash client use URL:<br>https://cloakaccess.com/clash_subscription.yaml",
-                    "subscription.shadowrocket": "Shadowrocket Subscription",
-                    "subscription.shadowrocket_desc": "Subscription configuration optimized for Shadowrocket, Base64 encoded, one-click import",
-                    "subscription.download_shadowrocket": "Download Shadowrocket Subscription",
-                    "subscription.shadowrocket_url": "In Shadowrocket use URL:<br>https://cloakaccess.com/shadowrocket_subscription.txt",
-                    
-                    // 节点
-                    "nodes.title": "Available Nodes",
-                    "filters.all": "All Nodes",
-                    "filters.vmess": "VMess",
-                    "filters.shadowsocks": "Shadowsocks",
-                    "filters.fastest": "Fastest",
-                    "filters.newest": "Newest",
-                    "nodes.name": "Name",
-                    "nodes.type": "Type",
-                    "nodes.status": "Status",
-                    "nodes.operation": "Operation",
-                    "nodes.loading": "Loading node data...",
-                    "nodes.latency": "Latency",
-                    "nodes.inactive": "Inactive",
-                    "nodes.unnamed": "Unnamed Node",
-                    "nodes.unknown_server": "Unknown Server",
-                    "nodes.unknown_port": "Unknown Port",
-                    "nodes.unknown_protocol": "Unknown Protocol",
-                    "nodes.copy_config": "Copy Config",
-                    "nodes.download": "Download",
-                    "nodes.copy_address": "Copy Address",
-                    "nodes.copied": "Copied!",
-                    "nodes.copy_failed": "Copy Failed",
-                    "nodes.download_failed": "Download Failed",
-                    "nodes.no_action": "No Action",
-                    "nodes.load_failed": "Failed to load node data",
-                    "nodes.load_failed_title": "Node Loading Failed",
-                    "nodes.load_failed_message": "Please refresh or try again later",
-                    "nodes.refresh": "Refresh Page",
-                    "nodes.no_nodes_title": "No Nodes Available",
-                    "nodes.no_nodes_message": "Please try again later or contact admin",
-                    "protocol.vmess": "VMess",
-                    "protocol.vless": "VLESS",
-                    "protocol.ss": "Shadowsocks",
-                    "protocol.trojan": "Trojan",
-                    "protocol.ssr": "ShadowsocksR",
-                    "protocol.hysteria": "Hysteria",
-                    "protocol.unknown": "Unknown Protocol",
-                    
-                    // 页脚
-                    "footer.about": "About Us",
-                    "footer.terms": "Terms of Service",
-                    "footer.privacy": "Privacy Policy",
-                    "footer.resources": "Resources",
-                    "footer.subscriptions": "Subscriptions",
-                    "footer.nodes": "Nodes List",
-                    "footer.faq": "FAQ",
-                    "footer.guide_clash": "Clash Guide",
-                    "footer.guide_shadowrocket": "Shadowrocket Guide",
-                    "footer.support": "Support",
-                    "footer.contact": "Contact Us",
-                    "footer.report": "Report Issue",
-                    "footer.feedback": "Submit Feedback",
-                    "footer.follow": "Follow Us",
-                    "footer.copyright": "&copy; 2023 CloakAccess. All rights reserved. This service is for technical demonstration only, please comply with local laws and regulations.",
-                    
-                    // 社交
-                    "social.share_twitter": "Share on Twitter",
-                    "social.share_telegram": "Share on Telegram"
-                },
-                hi: {
-                    // 导航
-                    "nav.home": "होम",
-                    "nav.subscription": "सब्सक्रिप्शन",
-                    "nav.nodes": "नोड्स",
-                    "nav.login": "लॉगिन/रजिस्टर",
-                    "lang.en": "अंग्रेज़ी",
-                    "lang.hi": "हिन्दी",
-                    "lang.pt": "पुर्तगाली",
-                    "lang.zh": "चीनी",
-                    
-                    // 认证
-                    "auth.login": "लॉग इन करें",
-                    "auth.register": "रजिस्टर करें",
-                    "auth.login_title": "अकाउंट में लॉग इन करें",
-                    "auth.email": "ईमेल पता",
-                    "auth.password": "पासवर्ड",
-                    "auth.google_login": "Google से लॉग इन करें",
-                    "auth.no_account": "खाता नहीं है?",
-                    "auth.register_now": "अभी पंजीकरण करें",
-                    "auth.register_title": "खाता बनाएं",
-                    "auth.confirm_password": "पासवर्ड की पुष्टि करें",
-                    "auth.register": "रजिस्टर करें",
-                    "auth.google_register": "Google से पंजीकरण करें",
-                    "auth.have_account": "क्या आपके पास पहले से एक खाता है?",
-                    "auth.login_now": "अभी लॉग इन करें",
-                    
-                    // 英雄区域
-                    "hero.title": "सुरक्षित, तेज़ और मुफ्त वैश्विक वीपीएन सेवा",
-                    "hero.subtitle": "क्लैश और शैडोरॉकेट उपयोगकर्ताओं के लिए अनुकूलित मुफ्त वीपीएन नोड सब्सक्रिप्शन सेवा",
-                    "hero.get_subscription": "सब्सक्रिप्शन प्राप्त करें",
-                    "hero.view_nodes": "नोड्स देखें",
-                    
-                    // 订阅
-                    "subscription.title": "क्लाइंट सब्सक्रिप्शन",
-                    "subscription.clash": "क्लैश सब्सक्रिप्शन",
-                    "subscription.clash_desc": "क्लैश क्लाइंट के लिए अनुकूलित सब्सक्रिप्शन कॉन्फ़िगरेशन",
-                    "subscription.download_clash": "क्लैश सब्सक्रिप्शन डाउनलोड करें",
-                    "subscription.clash_url": "क्लैश क्लाइंट में URL का उपयोग करें:<br>https://cloakaccess.com/clash_subscription.yaml",
-                    "subscription.shadowrocket": "शैडोरॉकेट सब्सक्रिप्शन",
-                    "subscription.shadowrocket_desc": "शैडोरॉकेट के लिए अनुकूलित सब्सक्रिप्शन कॉन्फ़िगरेशन",
-                    "subscription.download_shadowrocket": "शैडोरॉकेट सब्सक्रिप्शन डाउनलोड करें",
-                    "subscription.shadowrocket_url": "शैडोरॉकेट में URL का उपयोग करें:<br>https://cloakaccess.com/shadowrocket_subscription.txt",
-                    
-                    // 节点
-                    "nodes.title": "उपलब्ध नोड्स",
-                    "filters.all": "सभी नोड्स",
-                    "filters.vmess": "वीमेस",
-                    "filters.shadowsocks": "शैडोसॉक्स",
-                    "filters.fastest": "सबसे तेज़",
-                    "filters.newest": "नवीनतम",
-                    "nodes.name": "नाम",
-                    "nodes.type": "प्रकार",
-                    "nodes.status": "स्थिति",
-                    "nodes.operation": "क्रिया",
-                    "nodes.loading": "नोड डेटा लोड हो रहा है...",
-                    "nodes.latency": "विलंबता",
-                    "nodes.inactive": "निष्क्रिय",
-                    "nodes.unnamed": "अनाम नोड",
-                    "nodes.copy_address": "पता कॉपी करें",
-                    "nodes.copied": "कॉपी किया गया!",
-                    "nodes.copy_failed": "कॉपी विफल",
-                    "nodes.download": "डाउनलोड",
-                    "nodes.download_failed": "डाउनलोड विफल",
-                    "nodes.no_action": "कोई क्रिया नहीं",
-                    "nodes.load_failed": "नोड डेटा लोड करने में विफल",
-                    "nodes.load_failed_title": "नोड लोडिंग विफल",
-                    "nodes.load_failed_message": "कृपया पृष्ठ ताज़ा करें या बाद में पुन: प्रयास करें",
-                    "nodes.refresh": "पृष्ठ ताज़ा करें",
-                    "nodes.no_nodes_title": "कोई नोड उपलब्ध नहीं",
-                    "nodes.no_nodes_message": "कृपया बाद में पुन: प्रयास करें या व्यवस्थापक से संपर्क करें",
-                    "protocol.vmess": "वीमेस",
-                    "protocol.ss": "शैडोसॉक्स",
-                    "protocol.trojan": "ट्रोजन",
-                    
-                    // 页脚
-                    "footer.about": "हमारे बारे में",
-                    "footer.terms": "सेवा की शर्तें",
-                    "footer.privacy": "गोपनीयता नीति",
-                    "footer.resources": "संसाधन",
-                    "footer.subscriptions": "सब्सक्रिप्शन",
-                    "footer.nodes": "नोड्स सूची",
-                    "footer.faq": "सामान्य प्रश्न",
-                    "footer.support": "सहायता",
-                    "footer.contact": "हमसे संपर्क करें",
-                    "footer.report": "समस्या रिपोर्ट करें",
-                    "footer.feedback": "प्रतिक्रिया दें",
-                    "footer.follow": "हमें फॉलो करें",
-                    "footer.copyright": "© 2023 CloakAccess. सर्वाधिकार सुरक्षित। यह सेवा केवल तकनीकी प्रदर्शन के लिए है, कृपया स्थानीय कानूनों का पालन करें।",
-                    
-                    // 社交
-                    "social.share_twitter": "Twitter पर साझा करें",
-                    "social.share_telegram": "Telegram पर साझा करें"
-                },
-                pt: {
-                    // 导航
-                    "nav.home": "Início",
-                    "nav.subscription": "Subscrições",
-                    "nav.nodes": "Nós",
-                    "nav.login": "Login/Registro",
-                    "lang.en": "Inglês",
-                    "lang.hi": "Hindi",
-                    "lang.pt": "Português",
-                    "lang.zh": "Chinês",
-                    
-                    // 认证
-                    "auth.login": "Login",
-                    "auth.register": "Registrar",
-                    "auth.login_title": "Entrar na Conta",
-                    "auth.email": "E-mail",
-                    "auth.password": "Senha",
-                    "auth.google_login": "Entrar com Google",
-                    "auth.no_account": "Não tem uma conta?",
-                    "auth.register_now": "Registrar Agora",
-                    "auth.register_title": "Criar Conta",
-                    "auth.confirm_password": "Confirmar Senha",
-                    "auth.register": "Registrar",
-                    "auth.google_register": "Registrar com Google",
-                    "auth.have_account": "Já tem uma conta?",
-                    "auth.login_now": "Entrar Agora",
-                    
-                    // 英雄区域
-                    "hero.title": "Serviço VPN Global Seguro, Rápido e Gratuito",
-                    "hero.subtitle": "Serviço de assinatura de nó VPN gratuito otimizado para usuários Clash e Shadowrocket",
-                    "hero.get_subscription": "Obter Assinatura",
-                    "hero.view_nodes": "Ver Nós",
-                    
-                    // 订阅
-                    "subscription.title": "Assinaturas de Cliente",
-                    "subscription.clash": "Assinatura Clash",
-                    "subscription.clash_desc": "Configuração de assinatura otimizada para cliente Clash",
-                    "subscription.download_clash": "Baixar Assinatura Clash",
-                    "subscription.clash_url": "No cliente Clash, use o URL:<br>https://cloakaccess.com/clash_subscription.yaml",
-                    "subscription.shadowrocket": "Assinatura Shadowrocket",
-                    "subscription.shadowrocket_desc": "Configuração de assinatura otimizada para Shadowrocket",
-                    "subscription.download_shadowrocket": "Baixar Assinatura Shadowrocket",
-                    "subscription.shadowrocket_url": "No Shadowrocket, use o URL:<br>https://cloakaccess.com/shadowrocket_subscription.txt",
-                    
-                    // 节点
-                    "nodes.title": "Nós Disponíveis",
-                    "filters.all": "Todos os Nós",
-                    "filters.vmess": "VMess",
-                    "filters.shadowsocks": "Shadowsocks",
-                    "filters.fastest": "Mais Rápido",
-                    "filters.newest": "Mais Recente",
-                    "nodes.name": "Nome",
-                    "nodes.type": "Tipo",
-                    "nodes.status": "Status",
-                    "nodes.operation": "Operação",
-                    "nodes.loading": "Carregando dados do nó...",
-                    "nodes.latency": "Latência",
-                    "nodes.inactive": "Inativo",
-                    "nodes.unnamed": "Nó Sem Nome",
-                    "nodes.copy_address": "Copiar Endereço",
-                    "nodes.copied": "Copiado!",
-                    "nodes.copy_failed": "Falha ao Copiar",
-                    "nodes.download": "Baixar",
-                    "nodes.download_failed": "Falha ao Baixar",
-                    "nodes.no_action": "Nenhuma Ação",
-                    "nodes.load_failed": "Falha ao carregar dados do nó",
-                    "nodes.load_failed_title": "Falha no Carregamento de Nós",
-                    "nodes.load_failed_message": "Atualize a página ou tente novamente mais tarde",
-                    "nodes.refresh": "Atualizar Página",
-                    "nodes.no_nodes_title": "Nenhum Nó Disponível",
-                    "nodes.no_nodes_message": "Tente novamente mais tarde ou entre em contato com o administrador",
-                    "protocol.vmess": "VMess",
-                    "protocol.ss": "Shadowsocks",
-                    "protocol.trojan": "Trojan",
-                    
-                    // 页脚
-                    "footer.about": "Sobre Nós",
-                    "footer.terms": "Termos de Serviço",
-                    "footer.privacy": "Política de Privacidade",
-                    "footer.resources": "Recursos",
-                    "footer.subscriptions": "Assinaturas",
-                    "footer.nodes": "Lista de Nós",
-                    "footer.faq": "Perguntas Frequentes",
-                    "footer.support": "Suporte",
-                    "footer.contact": "Contate-nos",
-                    "footer.report": "Reportar Problema",
-                    "footer.feedback": "Enviar Feedback",
-                    "footer.follow": "Siga-nos",
-                    "footer.copyright": "© 2023 CloakAccess. Todos os direitos reservados. Este serviço é apenas para demonstração técnica, por favor cumpra as leis locais.",
-                    
-                    // 社交
-                    "social.share_twitter": "Compartilhar no Twitter",
-                    "social.share_telegram": "Compartilhar no Telegram"
-                },
-                zh: {
-                    // 导航
-                    "nav.home": "首页",
-                    "nav.subscription": "订阅下载",
-                    "nav.nodes": "节点列表",
-                    "nav.login": "登录/注册",
-                    "lang.en": "English",
-                    "lang.hi": "हिन्दी",
-                    "lang.pt": "Português",
-                    "lang.zh": "中文",
-                    
-                    // 认证
-                    "auth.login": "登录",
-                    "auth.register": "注册",
-                    "auth.login_title": "登录账户",
-                    "auth.email": "邮箱地址",
-                    "auth.email_placeholder": "输入您的邮箱",
-                    "auth.password": "密码",
-                    "auth.password_placeholder": "输入密码",
-                    "auth.google_login": "使用 Google 登录",
-                    "auth.no_account": "还没有账户？",
-                    "auth.register_now": "立即注册",
-                    "auth.register_title": "创建账户",
-                    "auth.create_password": "创建密码（至少8位）",
-                    "auth.confirm_password": "确认密码",
-                    "auth.confirm_password_placeholder": "再次输入密码",
-                    "auth.register": "注册",
-                    "auth.google_register": "使用 Google 注册",
-                    "auth.have_account": "已有账户？",
-                    "auth.login_now": "立即登录",
-                    
-                    // 英雄区域
-                    "hero.title": "安全、快速、免费的全球VPN服务",
-                    "hero.subtitle": "专为Clash和Shadowrocket用户优化的免费VPN节点订阅服务",
-                    "hero.get_subscription": "获取订阅",
-                    "hero.view_nodes": "查看节点",
-                    
-                    // 订阅
-                    "subscription.title": "客户端订阅",
-                    "subscription.clash": "Clash 订阅",
-                    "subscription.clash_desc": "专为Clash客户端优化的订阅配置，包含所有可用节点和自动选择策略",
-                    "subscription.download_clash": "下载Clash订阅",
-                    "subscription.clash_url": "在Clash客户端中使用URL:<br>https://cloakaccess.com/clash_subscription.yaml",
-                    "subscription.shadowrocket": "Shadowrocket 订阅",
-                    "subscription.shadowrocket_desc": "专为Shadowrocket优化的订阅配置，Base64编码格式，一键导入",
-                    "subscription.download_shadowrocket": "下载Shadowrocket订阅",
-                    "subscription.shadowrocket_url": "在Shadowrocket中使用URL:<br>https://cloakaccess.com/shadowrocket_subscription.txt",
-                    
-                    // 节点
-                    "nodes.title": "可用节点",
-                    "filters.all": "全部节点",
-                    "filters.vmess": "VMess",
-                    "filters.shadowsocks": "Shadowsocks",
-                    "filters.fastest": "最快节点",
-                    "filters.newest": "最新添加",
-                    "nodes.name": "名称",
-                    "nodes.type": "类型",
-                    "nodes.status": "状态",
-                    "nodes.operation": "操作",
-                    "nodes.loading": "正在加载节点数据...",
-                    "nodes.latency": "延迟",
-                    "nodes.inactive": "已失效",
-                    "nodes.unnamed": "未命名节点",
-                    "nodes.unknown_server": "未知服务器",
-                    "nodes.unknown_port": "未知端口",
-                    "nodes.unknown_protocol": "未知协议",
-                    "nodes.copy_config": "复制配置",
-                    "nodes.download": "下载",
-                    "nodes.copy_address": "复制地址",
-                    "nodes.copied": "已复制!",
-                    "nodes.copy_failed": "复制失败",
-                    "nodes.download_failed": "下载失败",
-                    "nodes.no_action": "无操作",
-                    "nodes.load_failed": "加载节点数据失败",
-                    "nodes.load_failed_title": "节点加载失败",
-                    "nodes.load_failed_message": "请刷新页面重试或稍后再访问",
-                    "nodes.refresh": "刷新页面",
-                    "nodes.no_nodes_title": "暂无可用节点",
-                    "nodes.no_nodes_message": "请稍后再尝试或联系管理员",
-                    "protocol.vmess": "VMess",
-                    "protocol.vless": "VLESS",
-                    "protocol.ss": "Shadowsocks",
-                    "protocol.trojan": "Trojan",
-                    "protocol.ssr": "ShadowsocksR",
-                    "protocol.hysteria": "Hysteria",
-                    "protocol.unknown": "未知协议",
-                    
-                    // 页脚
-                    "footer.about": "关于我们",
-                    "footer.terms": "服务条款",
-                    "footer.privacy": "隐私政策",
-                    "footer.resources": "资源",
-                    "footer.subscriptions": "订阅下载",
-                    "footer.nodes": "节点列表",
-                    "footer.faq": "常见问题",
-                    "footer.guide_clash": "Clash使用教程",
-                    "footer.guide_shadowrocket": "Shadowrocket配置指南",
-                    "footer.support": "支持",
-                    "footer.contact": "联系我们",
-                    "footer.report": "报告问题",
-                    "footer.feedback": "提交反馈",
-                    "footer.follow": "关注我们",
-                    "footer.copyright": "&copy; 2023 CloakAccess. 保留所有权利。本服务仅提供技术演示，请遵守当地法律法规。",
-                    
-                    // 社交
-                    "social.share_twitter": "分享到Twitter",
-                    "social.share_telegram": "分享到Telegram"
-                }
-            };
+    <!-- 登录/注册模态框 -->
+    <div id="auth-modal" class="modal">
+        <div class="modal-content">
+            <span class="close" onclick="closeAuthModal()">&times;</span>
+            
+            <div id="login-form" class="auth-form">
+                <h2 data-i18n="auth.login_title">登录账户</h2>
+                <div class="form-group">
+                    <label for="login-email" data-i18n="auth.email">邮箱地址</label>
+                    <input type="email" id="login-email" placeholder="输入您的邮箱">
+                </div>
+                <div class="form-group">
+                    <label for="login-password" data-i18n="auth.password">密码</label>
+                    <input type="password" id="login-password" placeholder="输入密码">
+                </div>
+                <button class="btn" onclick="login()" data-i18n="auth.login">登录</button>
+                <div class="google-login">
+                    <button class="btn google-btn" onclick="googleLogin()">
+                        <i class="fab fa-google"></i> <span data-i18n="auth.google_login">使用 Google 登录</span>
+                    </button>
+                </div>
+                <p class="auth-switch">
+                    <span data-i18n="auth.no_account">还没有账户？</span> <a href="#" onclick="showAuthForm('register')" data-i18n="auth.register_now">立即注册</a>
+                </p>
+            </div>
+            
+            <div id="register-form" class="auth-form" style="display:none;">
+                <h2 data-i18n="auth.register_title">创建账户</h2>
+                <div class="form-group">
+                    <label for="register-email" data-i18n="auth.email">邮箱地址</label>
+                    <input type="email" id="register-email" placeholder="输入您的邮箱">
+                </div>
+                <div class="form-group">
+                    <label for="register-password" data-i18n="auth.password">密码</label>
+                    <input type="password" id="register-password" placeholder="创建密码（至少8位）">
+                </div>
+                <div class="form-group">
+                    <label for="register-confirm" data-i18n="auth.confirm_password">确认密码</label>
+                    <input type="password" id="register-confirm" placeholder="再次输入密码">
+                </div>
+                <button class="btn" onclick="register()" data-i18n="auth.register">注册</button>
+                <div class="google-login">
+                    <button class="btn google-btn" onclick="googleLogin()">
+                        <i class="fab fa-google"></i> <span data-i18n="auth.google_register">使用 Google 注册</span>
+                    </button>
+                </div>
+                <p class="auth-switch">
+                    <span data-i18n="auth.have_account">已有账户？</span> <a href="#" onclick="showAuthForm('login')" data-i18n="auth.login_now">立即登录</a>
+                </p>
+            </div>
+        </div>
+    </div>
 
-            // 当前语言
-            let currentLang = 'zh';
-            const urlParams = new URLSearchParams(window.location.search);
-            const langParam = urlParams.get('lang');
-            if (langParam && translations[langParam]) {
-                currentLang = langParam;
-            } else {
-                // 根据浏览器语言设置默认语言
-                const browserLang = navigator.language || navigator.userLanguage;
-                if (browserLang.startsWith('en')) currentLang = 'en';
-                if (browserLang.startsWith('hi')) currentLang = 'hi';
-                if (browserLang.startsWith('pt')) currentLang = 'pt';
-            }
+    <!-- 页脚 -->
+    <footer>
+        <div class="container">
+            <div class="footer-grid">
+                <div class="footer-col">
+                    <h3>CloakAccess</h3>
+                    <ul>
+                        <li><a href="#" data-i18n="footer.about">关于我们</a></li>
+                        <li><a href="#" data-i18n="footer.terms">服务条款</a></li>
+                        <li><a href="#" data-i18n="footer.privacy">隐私政策</a></li>
+                    </ul>
+                </div>
+                
+                <div class="footer-col">
+                    <h3 data-i18n="footer.resources">资源</h3>
+                    <ul>
+                        <li><a href="#subscription" data-i18n="footer.subscriptions">订阅下载</a></li>
+                        <li><a href="#nodes" data-i18n="footer.nodes">节点列表</a></li>
+                        <li><a href="#" data-i18n="footer.faq">常见问题</a></li>
+                    </ul>
+                </div>
+                
+                <div class="footer-col">
+                    <h3 data-i18n="footer.support">支持</h3>
+                    <ul>
+                        <li><a href="#" data-i18n="footer.contact">联系我们</a></li>
+                        <li><a href="#" data-i18n="footer.report">报告问题</a></li>
+                        <li><a href="#" data-i18n="footer.feedback">提交反馈</a></li>
+                    </ul>
+                </div>
+                
+                <div class="footer-col">
+                    <h3 data-i18n="footer.follow">关注我们</h3>
+                    <ul>
+                        <li><a href="#"><i class="fab fa-telegram"></i> Telegram</a></li>
+                        <li><a href="#"><i class="fab fa-github"></i> GitHub</a></li>
+                        <li><a href="#"><i class="fab fa-twitter"></i> Twitter</a></li>
+                    </ul>
+                </div>
+            </div>
+            
+            <div class="copyright" data-i18n="footer.copyright">
+                &copy; 2023 CloakAccess. 保留所有权利。本服务仅提供技术演示，请遵守当地法律法规。
+            </div>
+        </div>
+    </footer>
 
-            // 应用翻译
-            function applyTranslations() {
-                // 更新所有带data-i18n属性的元素
-                document.querySelectorAll('[data-i18n]').forEach(el => {
-                    const key = el.getAttribute('data-i18n');
-                    if (translations[currentLang][key]) {
-                        if (el.tagName === 'INPUT' && el.placeholder) {
-                            el.placeholder = translations[currentLang][key];
-                        } else {
-                            el.innerHTML = translations[currentLang][key];
-                        }
-                    }
-                });
-                
-                // 更新语言选择器
-                document.querySelector('.language-btn span').innerHTML = translations[currentLang]['lang.' + currentLang];
-                
-                // 更新语言下拉菜单激活状态
-                document.querySelectorAll('.language-dropdown a').forEach(a => {
-                    a.classList.remove('active');
-                    if (a.getAttribute('data-lang') === currentLang) {
-                        a.classList.add('active');
-                    }
-                });
-                
-                // 更新HTML lang属性
-                document.documentElement.lang = currentLang;
-            }
+    <!-- 模态框样式 -->
+    <style>
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            overflow: auto;
+            background-color: rgba(0,0,0,0.7);
+        }
+        
+        .modal-content {
+            background: #1e293b;
+            margin: 10% auto;
+            padding: 30px;
+            border-radius: 16px;
+            width: 100%;
+            max-width: 400px;
+            position: relative;
+            border: 1px solid rgba(99, 102, 241, 0.3);
+        }
+        
+        .close {
+            color: #aaa;
+            position: absolute;
+            top: 15px;
+            right: 20px;
+            font-size: 28px;
+            font-weight: bold;
+            cursor: pointer;
+        }
+        
+        .close:hover,
+        .close:focus {
+            color: white;
+            text-decoration: none;
+        }
+        
+        .auth-form {
+            padding: 20px;
+        }
+        
+        .auth-form h2 {
+            text-align: center;
+            margin-bottom: 25px;
+            color: white;
+        }
+        
+        .form-group {
+            margin-bottom: 20px;
+        }
+        
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            color: #cbd5e1;
+        }
+        
+        .form-group input {
+            width: 100%;
+            padding: 12px 15px;
+            border-radius: 8px;
+            background: rgba(15, 23, 42, 0.6);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            color: white;
+            font-size: 1rem;
+        }
+        
+        .auth-form .btn {
+            width: 100%;
+            padding: 12px;
+            margin-top: 10px;
+        }
+        
+        .google-login {
+            margin: 20px 0;
+            position: relative;
+            text-align: center;
+        }
+        
+        .google-login::before,
+        .google-login::after {
+            content: '';
+            position: absolute;
+            top: 50%;
+            width: 30%;
+            height: 1px;
+            background: rgba(255, 255, 255, 0.1);
+        }
+        
+        .google-login::before {
+            left: 0;
+        }
+        
+        .google-login::after {
+            right: 0;
+        }
+        
+        .google-btn {
+            background: #fff !important;
+            color: #4285F4 !important;
+            border: none !important;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+        }
+        
+        .google-btn i {
+            color: #4285F4;
+        }
+        
+        .auth-switch {
+            text-align: center;
+            margin-top: 20px;
+            color: #94a3b8;
+        }
+        
+        .auth-switch a {
+            color: var(--primary);
+            text-decoration: none;
+        }
+    </style>
 
-            // 节点数据
-            let nodes = [];
-            
-            // DOM元素
-            const nodesContainer = document.getElementById('nodes-container');
-            const filterButtons = document.querySelectorAll('.filter-btn');
-            const serverList = document.getElementById('server-list');
-            
-            // 模态框相关
-            const authModal = document.getElementById('auth-modal');
-            const loginForm = document.getElementById('login-form');
-            const registerForm = document.getElementById('register-form');
-            
-            // 显示认证模态框
-            function showAuthModal(type = 'login') {
-                authModal.style.display = 'block';
-                showAuthForm(type);
+    <script>
+        // 多语言翻译
+        const translations = {
+            en: {
+                // 导航
+                "nav.home": "Home",
+                "nav.subscription": "Subscriptions",
+                "nav.nodes": "Nodes",
+                "nav.login": "Login/Register",
+                "lang.en": "English",
+                "lang.hi": "Hindi",
+                "lang.pt": "Portuguese",
+                "lang.zh": "Chinese",
+                
+                // 认证
+                "auth.login": "Login",
+                "auth.register": "Register",
+                "auth.login_title": "Login to Account",
+                "auth.email": "Email Address",
+                "auth.email_placeholder": "Enter your email",
+                "auth.password": "Password",
+                "auth.password_placeholder": "Enter password",
+                "auth.google_login": "Login with Google",
+                "auth.no_account": "Don't have an account?",
+                "auth.register_now": "Register Now",
+                "auth.register_title": "Create Account",
+                "auth.create_password": "Create password (at least 8 characters)",
+                "auth.confirm_password": "Confirm Password",
+                "auth.confirm_password_placeholder": "Re-enter password",
+                "auth.register": "Register",
+                "auth.google_register": "Register with Google",
+                "auth.have_account": "Already have an account?",
+                "auth.login_now": "Login Now",
+                
+                // 英雄区域
+                "hero.title": "Secure, Fast & Free Global VPN Service",
+                "hero.subtitle": "Free VPN node subscription service optimized for Clash and Shadowrocket users",
+                "hero.get_subscription": "Get Subscription",
+                "hero.view_nodes": "View Nodes",
+                
+                // 订阅
+                "subscription.title": "Client Subscriptions",
+                "subscription.clash": "Clash Subscription",
+                "subscription.clash_desc": "Subscription configuration optimized for Clash client, includes all available nodes and auto-select strategy",
+                "subscription.download_clash": "Download Clash Subscription",
+                "subscription.clash_url": "In Clash client use URL:<br>https://cloakaccess.com/clash_subscription.yaml",
+                "subscription.shadowrocket": "Shadowrocket Subscription",
+                "subscription.shadowrocket_desc": "Subscription configuration optimized for Shadowrocket, Base64 encoded, one-click import",
+                "subscription.download_shadowrocket": "Download Shadowrocket Subscription",
+                "subscription.shadowrocket_url": "In Shadowrocket use URL:<br>https://cloakaccess.com/shadowrocket_subscription.txt",
+                
+                // 节点
+                "nodes.title": "Available Nodes",
+                "filters.all": "All Nodes",
+                "filters.vmess": "VMess",
+                "filters.shadowsocks": "Shadowsocks",
+                "filters.fastest": "Fastest",
+                "filters.newest": "Newest",
+                "nodes.name": "Name",
+                "nodes.type": "Type",
+                "nodes.status": "Status",
+                "nodes.operation": "Operation",
+                "nodes.loading": "Loading node data...",
+                "nodes.latency": "Latency",
+                "nodes.inactive": "Inactive",
+                "nodes.unnamed": "Unnamed Node",
+                "nodes.unknown_server": "Unknown Server",
+                "nodes.unknown_port": "Unknown Port",
+                "nodes.unknown_protocol": "Unknown Protocol",
+                "nodes.copy_config": "Copy Config",
+                "nodes.download": "Download",
+                "nodes.copy_address": "Copy Address",
+                "nodes.copied": "Copied!",
+                "nodes.copy_failed": "Copy Failed",
+                "nodes.download_failed": "Download Failed",
+                "nodes.no_action": "No Action",
+                "nodes.load_failed": "Failed to load node data",
+                "nodes.load_failed_title": "Node Loading Failed",
+                "nodes.load_failed_message": "Please refresh or try again later",
+                "nodes.refresh": "Refresh Page",
+                "nodes.no_nodes_title": "No Nodes Available",
+                "nodes.no_nodes_message": "Please try again later or contact admin",
+                "protocol.vmess": "VMess",
+                "protocol.vless": "VLESS",
+                "protocol.ss": "Shadowsocks",
+                "protocol.trojan": "Trojan",
+                "protocol.ssr": "ShadowsocksR",
+                "protocol.hysteria": "Hysteria",
+                "protocol.unknown": "Unknown Protocol",
+                
+                // 页脚
+                "footer.about": "About Us",
+                "footer.terms": "Terms of Service",
+                "footer.privacy": "Privacy Policy",
+                "footer.resources": "Resources",
+                "footer.subscriptions": "Subscriptions",
+                "footer.nodes": "Nodes List",
+                "footer.faq": "FAQ",
+                "footer.guide_clash": "Clash Guide",
+                "footer.guide_shadowrocket": "Shadowrocket Guide",
+                "footer.support": "Support",
+                "footer.contact": "Contact Us",
+                "footer.report": "Report Issue",
+                "footer.feedback": "Submit Feedback",
+                "footer.follow": "Follow Us",
+                "footer.copyright": "&copy; 2023 CloakAccess. All rights reserved. This service is for technical demonstration only, please comply with local laws and regulations.",
+                
+                // 社交
+                "social.share_twitter": "Share on Twitter",
+                "social.share_telegram": "Share on Telegram"
+            },
+            hi: {
+                // 导航
+                "nav.home": "होम",
+                "nav.subscription": "सब्सक्रिप्शन",
+                "nav.nodes": "नोड्स",
+                "nav.login": "लॉगिन/रजिस्टर",
+                "lang.en": "अंग्रेज़ी",
+                "lang.hi": "हिन्दी",
+                "lang.pt": "पुर्तगाली",
+                "lang.zh": "चीनी",
+                
+                // 认证
+                "auth.login": "लॉग इन करें",
+                "auth.register": "रजिस्टर करें",
+                "auth.login_title": "अकाउंट में लॉग इन करें",
+                "auth.email": "ईमेल पता",
+                "auth.password": "पासवर्ड",
+                "auth.google_login": "Google से लॉग इन करें",
+                "auth.no_account": "खाता नहीं है?",
+                "auth.register_now": "अभी पंजीकरण करें",
+                "auth.register_title": "खाता बनाएं",
+                "auth.confirm_password": "पासवर्ड की पुष्टि करें",
+                "auth.register": "रजिस्टर करें",
+                "auth.google_register": "Google से पंजीकरण करें",
+                "auth.have_account": "क्या आपके पास पहले से एक खाता है?",
+                "auth.login_now": "अभी लॉग इन करें",
+                
+                // 英雄区域
+                "hero.title": "सुरक्षित, तेज़ और मुफ्त वैश्विक वीपीएन सेवा",
+                "hero.subtitle": "क्लैश और शैडोरॉकेट उपयोगकर्ताओं के लिए अनुकूलित मुफ्त वीपीएन नोड सब्सक्रिप्शन सेवा",
+                "hero.get_subscription": "सब्सक्रिप्शन प्राप्त करें",
+                "hero.view_nodes": "नोड्स देखें",
+                
+                // 订阅
+                "subscription.title": "क्लाइंट सब्सक्रिप्शन",
+                "subscription.clash": "क्लैश सब्सक्रिप्शन",
+                "subscription.clash_desc": "क्लैश क्लाइंट के लिए अनुकूलित सब्सक्रिप्शन कॉन्फ़िगरेशन",
+                "subscription.download_clash": "क्लैश सब्सक्रिप्शन डाउनलोड करें",
+                "subscription.clash_url": "क्लैश क्लाइंट में URL का उपयोग करें:<br>https://cloakaccess.com/clash_subscription.yaml",
+                "subscription.shadowrocket": "शैडोरॉकेट सब्सक्रिप्शन",
+                "subscription.shadowrocket_desc": "शैडोरॉकेट के लिए अनुकूलित सब्सक्रिप्शन कॉन्फ़िगरेशन",
+                "subscription.download_shadowrocket": "शैडोरॉकेट सब्सक्रिप्शन डाउनलोड करें",
+                "subscription.shadowrocket_url": "शैडोरॉकेट में URL का उपयोग करें:<br>https://cloakaccess.com/shadowrocket_subscription.txt",
+                
+                // 节点
+                "nodes.title": "उपलब्ध नोड्स",
+                "filters.all": "सभी नोड्स",
+                "filters.vmess": "वीमेस",
+                "filters.shadowsocks": "शैडोसॉक्स",
+                "filters.fastest": "सबसे तेज़",
+                "filters.newest": "नवीनतम",
+                "nodes.name": "नाम",
+                "nodes.type": "प्रकार",
+                "nodes.status": "स्थिति",
+                "nodes.operation": "क्रिया",
+                "nodes.loading": "नोड डेटा लोड हो रहा है...",
+                "nodes.latency": "विलंबता",
+                "nodes.inactive": "निष्क्रिय",
+                "nodes.unnamed": "अनाम नोड",
+                "nodes.copy_address": "पता कॉपी करें",
+                "nodes.copied": "कॉपी किया गया!",
+                "nodes.copy_failed": "कॉपी विफल",
+                "nodes.download": "डाउनलोड",
+                "nodes.download_failed": "डाउनलोड विफल",
+                "nodes.no_action": "कोई क्रिया नहीं",
+                "nodes.load_failed": "नोड डेटा लोड करने में विफल",
+                "nodes.load_failed_title": "नोड लोडिंग विफल",
+                "nodes.load_failed_message": "कृपया पृष्ठ ताज़ा करें या बाद में पुन: प्रयास करें",
+                "nodes.refresh": "पृष्ठ ताज़ा करें",
+                "nodes.no_nodes_title": "कोई नोड उपलब्ध नहीं",
+                "nodes.no_nodes_message": "कृपया बाद में पुन: प्रयास करें या व्यवस्थापक से संपर्क करें",
+                "protocol.vmess": "वीमेस",
+                "protocol.ss": "शैडोसॉक्स",
+                "protocol.trojan": "ट्रोजन",
+                
+                // 页脚
+                "footer.about": "हमारे बारे में",
+                "footer.terms": "सेवा की शर्तें",
+                "footer.privacy": "गोपनीयता नीति",
+                "footer.resources": "संसाधन",
+                "footer.subscriptions": "सब्सक्रिप्शन",
+                "footer.nodes": "नोड्स सूची",
+                "footer.faq": "सामान्य प्रश्न",
+                "footer.support": "सहायता",
+                "footer.contact": "हमसे संपर्क करें",
+                "footer.report": "समस्या रिपोर्ट करें",
+                "footer.feedback": "प्रतिक्रिया दें",
+                "footer.follow": "हमें फॉलो करें",
+                "footer.copyright": "© 2023 CloakAccess. सर्वाधिकार सुरक्षित। यह सेवा केवल तकनीकी प्रदर्शन के लिए है, कृपया स्थानीय कानूनों का पालन करें।",
+                
+                // 社交
+                "social.share_twitter": "Twitter पर साझा करें",
+                "social.share_telegram": "Telegram पर साझा करें"
+            },
+            pt: {
+                // 导航
+                "nav.home": "Início",
+                "nav.subscription": "Subscrições",
+                "nav.nodes": "Nós",
+                "nav.login": "Login/Registro",
+                "lang.en": "Inglês",
+                "lang.hi": "Hindi",
+                "lang.pt": "Português",
+                "lang.zh": "Chinês",
+                
+                // 认证
+                "auth.login": "Login",
+                "auth.register": "Registrar",
+                "auth.login_title": "Entrar na Conta",
+                "auth.email": "E-mail",
+                "auth.password": "Senha",
+                "auth.google_login": "Entrar com Google",
+                "auth.no_account": "Não tem uma conta?",
+                "auth.register_now": "Registrar Agora",
+                "auth.register_title": "Criar Conta",
+                "auth.confirm_password": "Confirmar Senha",
+                "auth.register": "Registrar",
+                "auth.google_register": "Registrar com Google",
+                "auth.have_account": "Já tem uma conta?",
+                "auth.login_now": "Entrar Agora",
+                
+                // 英雄区域
+                "hero.title": "Serviço VPN Global Seguro, Rápido e Gratuito",
+                "hero.subtitle": "Serviço de assinatura de nó VPN gratuito otimizado para usuários Clash e Shadowrocket",
+                "hero.get_subscription": "Obter Assinatura",
+                "hero.view_nodes": "Ver Nós",
+                
+                // 订阅
+                "subscription.title": "Assinaturas de Cliente",
+                "subscription.clash": "Assinatura Clash",
+                "subscription.clash_desc": "Configuração de assinatura otimizada para cliente Clash",
+                "subscription.download_clash": "Baixar Assinatura Clash",
+                "subscription.clash_url": "No cliente Clash, use o URL:<br>https://cloakaccess.com/clash_subscription.yaml",
+                "subscription.shadowrocket": "Assinatura Shadowrocket",
+                "subscription.shadowrocket_desc": "Configuração de assinatura otimizada para Shadowrocket",
+                "subscription.download_shadowrocket": "Baixar Assinatura Shadowrocket",
+                "subscription.shadowrocket_url": "No Shadowrocket, use o URL:<br>https://cloakaccess.com/shadowrocket_subscription.txt",
+                
+                // 节点
+                "nodes.title": "Nós Disponíveis",
+                "filters.all": "Todos os Nós",
+                "filters.vmess": "VMess",
+                "filters.shadowsocks": "Shadowsocks",
+                "filters.fastest": "Mais Rápido",
+                "filters.newest": "Mais Recente",
+                "nodes.name": "Nome",
+                "nodes.type": "Tipo",
+                "nodes.status": "Status",
+                "nodes.operation": "Operação",
+                "nodes.loading": "Carregando dados do nó...",
+                "nodes.latency": "Latência",
+                "nodes.inactive": "Inativo",
+                "nodes.unnamed": "Nó Sem Nome",
+                "nodes.copy_address": "Copiar Endereço",
+                "nodes.copied": "Copiado!",
+                "nodes.copy_failed": "Falha ao Copiar",
+                "nodes.download": "Baixar",
+                "nodes.download_failed": "Falha ao Baixar",
+                "nodes.no_action": "Nenhuma Ação",
+                "nodes.load_failed": "Falha ao carregar dados do nó",
+                "nodes.load_failed_title": "Falha no Carregamento de Nós",
+                "nodes.load_failed_message": "Atualize a página ou tente novamente mais tarde",
+                "nodes.refresh": "Atualizar Página",
+                "nodes.no_nodes_title": "Nenhum Nó Disponível",
+                "nodes.no_nodes_message": "Tente novamente mais tarde ou entre em contato com o administrador",
+                "protocol.vmess": "VMess",
+                "protocol.ss": "Shadowsocks",
+                "protocol.trojan": "Trojan",
+                
+                // 页脚
+                "footer.about": "Sobre Nós",
+                "footer.terms": "Termos de Serviço",
+                "footer.privacy": "Política de Privacidade",
+                "footer.resources": "Recursos",
+                "footer.subscriptions": "Assinaturas",
+                "footer.nodes": "Lista de Nós",
+                "footer.faq": "Perguntas Frequentes",
+                "footer.support": "Suporte",
+                "footer.contact": "Contate-nos",
+                "footer.report": "Reportar Problema",
+                "footer.feedback": "Enviar Feedback",
+                "footer.follow": "Siga-nos",
+                "footer.copyright": "© 2023 CloakAccess. Todos os direitos reservados. Este serviço é apenas para demonstração técnica, por favor cumpra as leis locais.",
+                
+                // 社交
+                "social.share_twitter": "Compartilhar no Twitter",
+                "social.share_telegram": "Compartilhar no Telegram"
+            },
+            zh: {
+                // 导航
+                "nav.home": "首页",
+                "nav.subscription": "订阅下载",
+                "nav.nodes": "节点列表",
+                "nav.login": "登录/注册",
+                "lang.en": "English",
+                "lang.hi": "हिन्दी",
+                "lang.pt": "Português",
+                "lang.zh": "中文",
+                
+                // 认证
+                "auth.login": "登录",
+                "auth.register": "注册",
+                "auth.login_title": "登录账户",
+                "auth.email": "邮箱地址",
+                "auth.email_placeholder": "输入您的邮箱",
+                "auth.password": "密码",
+                "auth.password_placeholder": "输入密码",
+                "auth.google_login": "使用 Google 登录",
+                "auth.no_account": "还没有账户？",
+                "auth.register_now": "立即注册",
+                "auth.register_title": "创建账户",
+                "auth.create_password": "创建密码（至少8位）",
+                "auth.confirm_password": "确认密码",
+                "auth.confirm_password_placeholder": "再次输入密码",
+                "auth.register": "注册",
+                "auth.google_register": "使用 Google 注册",
+                "auth.have_account": "已有账户？",
+                "auth.login_now": "立即登录",
+                
+                // 英雄区域
+                "hero.title": "安全、快速、免费的全球VPN服务",
+                "hero.subtitle": "专为Clash和Shadowrocket用户优化的免费VPN节点订阅服务",
+                "hero.get_subscription": "获取订阅",
+                "hero.view_nodes": "查看节点",
+                
+                // 订阅
+                "subscription.title": "客户端订阅",
+                "subscription.clash": "Clash 订阅",
+                "subscription.clash_desc": "专为Clash客户端优化的订阅配置，包含所有可用节点和自动选择策略",
+                "subscription.download_clash": "下载Clash订阅",
+                "subscription.clash_url": "在Clash客户端中使用URL:<br>https://cloakaccess.com/clash_subscription.yaml",
+                "subscription.shadowrocket": "Shadowrocket 订阅",
+                "subscription.shadowrocket_desc": "专为Shadowrocket优化的订阅配置，Base64编码格式，一键导入",
+                "subscription.download_shadowrocket": "下载Shadowrocket订阅",
+                "subscription.shadowrocket_url": "在Shadowrocket中使用URL:<br>https://cloakaccess.com/shadowrocket_subscription.txt",
+                
+                // 节点
+                "nodes.title": "可用节点",
+                "filters.all": "全部节点",
+                "filters.vmess": "VMess",
+                "filters.shadowsocks": "Shadowsocks",
+                "filters.fastest": "最快节点",
+                "filters.newest": "最新添加",
+                "nodes.name": "名称",
+                "nodes.type": "类型",
+                "nodes.status": "状态",
+                "nodes.operation": "操作",
+                "nodes.loading": "正在加载节点数据...",
+                "nodes.latency": "延迟",
+                "nodes.inactive": "已失效",
+                "nodes.unnamed": "未命名节点",
+                "nodes.unknown_server": "未知服务器",
+                "nodes.unknown_port": "未知端口",
+                "nodes.unknown_protocol": "未知协议",
+                "nodes.copy_config": "复制配置",
+                "nodes.download": "下载",
+                "nodes.copy_address": "复制地址",
+                "nodes.copied": "已复制!",
+                "nodes.copy_failed": "复制失败",
+                "nodes.download_failed": "下载失败",
+                "nodes.no_action": "无操作",
+                "nodes.load_failed": "加载节点数据失败",
+                "nodes.load_failed_title": "节点加载失败",
+                "nodes.load_failed_message": "请刷新页面重试或稍后再访问",
+                "nodes.refresh": "刷新页面",
+                "nodes.no_nodes_title": "暂无可用节点",
+                "nodes.no_nodes_message": "请稍后再尝试或联系管理员",
+                "protocol.vmess": "VMess",
+                "protocol.vless": "VLESS",
+                "protocol.ss": "Shadowsocks",
+                "protocol.trojan": "Trojan",
+                "protocol.ssr": "ShadowsocksR",
+                "protocol.hysteria": "Hysteria",
+                "protocol.unknown": "未知协议",
+                
+                // 页脚
+                "footer.about": "关于我们",
+                "footer.terms": "服务条款",
+                "footer.privacy": "隐私政策",
+                "footer.resources": "资源",
+                "footer.subscriptions": "订阅下载",
+                "footer.nodes": "节点列表",
+                "footer.faq": "常见问题",
+                "footer.guide_clash": "Clash使用教程",
+                "footer.guide_shadowrocket": "Shadowrocket配置指南",
+                "footer.support": "支持",
+                "footer.contact": "联系我们",
+                "footer.report": "报告问题",
+                "footer.feedback": "提交反馈",
+                "footer.follow": "关注我们",
+                "footer.copyright": "&copy; 2023 CloakAccess. 保留所有权利。本服务仅提供技术演示，请遵守当地法律法规。",
+                
+                // 社交
+                "social.share_twitter": "分享到Twitter",
+                "social.share_telegram": "分享到Telegram"
             }
-            
-            // 关闭模态框
-            function closeAuthModal() {
-                authModal.style.display = 'none';
-            }
-            
-            // 切换登录/注册表单
-            function showAuthForm(type) {
-                if (type === 'login') {
-                    loginForm.style.display = 'block';
-                    registerForm.style.display = 'none';
-                } else {
-                    loginForm.style.display = 'none';
-                    registerForm.style.display = 'block';
-                }
-            }
-            
-            // 登录函数
-            function login() {
-                const email = document.getElementById('login-email').value;
-                const password = document.getElementById('login-password').value;
-                
-                if (!email || !password) {
-                    alert(translations[currentLang]['auth.email_password_required'] || '请填写邮箱和密码');
-                    return;
-                }
-                
-                // 模拟登录成功
-                document.getElementById('auth-buttons').innerHTML = `
-                    <div class="user-profile">
-                        <span>${email}</span>
-                        <button class="btn" onclick="logout()">${translations[currentLang]['auth.logout'] || '退出'}</button>
-                    </div>
-                `;
-                
-                closeAuthModal();
-                alert(translations[currentLang]['auth.login_success'] || '登录成功！');
-            }
-            
-            // 注册函数
-            function register() {
-                const email = document.getElementById('register-email').value;
-                const password = document.getElementById('register-password').value;
-                const confirm = document.getElementById('register-confirm').value;
-                
-                if (!email || !password || !confirm) {
-                    alert(translations[currentLang]['auth.all_fields_required'] || '请填写所有字段');
-                    return;
-                }
-                
-                if (password !== confirm) {
-                    alert(translations[currentLang]['auth.password_mismatch'] || '两次输入的密码不一致');
-                    return;
-                }
-                
-                if (password.length < 8) {
-                    alert(translations[currentLang]['auth.password_length'] || '密码长度至少为8位');
-                    return;
-                }
-                
-                // 模拟注册成功
-                document.getElementById('auth-buttons').innerHTML = `
-                    <div class="user-profile">
-                        <span>${email}</span>
-                        <button class="btn" onclick="logout()">${translations[currentLang]['auth.logout'] || '退出'}</button>
-                    </div>
-                `;
-                
-                closeAuthModal();
-                alert(translations[currentLang]['auth.register_success'] || '注册成功！');
-            }
-            
-            // Google登录/注册
-            function googleLogin() {
-                // 这里应该是调用Google OAuth API
-                // 模拟成功
-                const email = "user@gmail.com";
-                
-                document.getElementById('auth-buttons').innerHTML = `
-                    <div class="user-profile">
-                        <span>${email}</span>
-                        <button class="btn" onclick="logout()">${translations[currentLang]['auth.logout'] || '退出'}</button>
-                    </div>
-                `;
-                
-                closeAuthModal();
-                alert(translations[currentLang]['auth.google_login_success'] || 'Google登录成功！');
-            }
-            
-            // 退出登录
-            function logout() {
-                document.getElementById('auth-buttons').innerHTML = `
-                    <button class="btn" onclick="showAuthModal('login')">${translations[currentLang]['auth.login'] || '登录'}</button>
-                    <button class="btn" onclick="showAuthModal('register')">${translations[currentLang]['auth.register'] || '注册'}</button>
-                `;
-            }
-            
-            // 获取协议类型名称
-            function getProtocolType(type) {
-                const key = `protocol.${type}`;
-                return translations[currentLang][key] || type;
-            }
-            
-            // 加载节点数据
-            async function loadNodes() {
-                try {
-                    // 显示加载状态
-                    const loading = serverList.querySelector('.loader');
-                    if (loading) {
-                        loading.querySelector('p').textContent = translations[currentLang]['nodes.loading'] || '正在加载节点数据...';
-                    }
-                    
-                    const timestamp = new Date().getTime();
-                    const res = await fetch(`/nodes.json?t=${timestamp}`, { 
-                        cache: 'no-store',
-                        credentials: 'same-origin'
-                    });
-                    
-                    if (!res.ok) {
-                        throw new Error(translations[currentLang]['nodes.load_failed'] || '网络响应异常');
-                    }
-                    
-                    nodes = await res.json();
-                    renderNodes(nodes);
-                    selectBestNode();
-                } catch (error) {
-                    console.error('加载节点失败:', error);
-                    serverList.innerHTML = `
-                        <div class="error-message" style="grid-column: 1/-1; text-align: center; padding: 40px;">
-                            <i class="fas fa-exclamation-triangle" style="font-size: 3rem; color: var(--warning); margin-bottom: 20px;"></i>
-                            <h3>${translations[currentLang]['nodes.load_failed_title'] || '节点加载失败'}</h3>
-                            <p>${error.message || translations[currentLang]['nodes.load_failed_message'] || '请刷新页面重试或稍后再访问'}</p>
-                            <button class="btn" onclick="location.reload()" style="margin-top: 20px;">
-                                ${translations[currentLang]['nodes.refresh'] || '刷新页面'}
-                            </button>
-                        </div>
-                    `;
-                }
-            }
-            
-            // 渲染节点
-            function renderNodes(nodesToRender) {
-                if (!nodesToRender || nodesToRender.length === 0) {
-                    serverList.innerHTML = `
-                        <div style="grid-column: 1/-1; text-align: center; padding: 40px;">
-                            <i class="fas fa-frown" style="font-size: 3rem; color: var(--gray); margin-bottom: 20px;"></i>
-                            <h3>${translations[currentLang]['nodes.no_nodes_title'] || '暂无可用节点'}</h3>
-                            <p>${translations[currentLang]['nodes.no_nodes_message'] || '请稍后再尝试或联系管理员'}</p>
-                        </div>
-                    `;
-                    return;
-                }
-                
-                // 创建表格
-                const table = document.createElement('table');
-                table.className = 'server-table';
-                
-                // 创建表头（使用翻译）
-                const thead = document.createElement('thead');
-                thead.innerHTML = `
-                    <tr>
-                        <th>${translations[currentLang]['nodes.name'] || '名称'}</th>
-                        <th>${translations[currentLang]['nodes.type'] || '类型'}</th>
-                        <th>${translations[currentLang]['nodes.status'] || '状态'}</th>
-                        <th>${translations[currentLang]['nodes.operation'] || '操作'}</th>
-                    </tr>
-                `;
-                table.appendChild(thead);
-                
-                // 创建表格主体
-                const tbody = document.createElement('tbody');
-                
-                nodesToRender.forEach(node => {
-                    const row = document.createElement('tr');
-                    
-                    // 名称列
-                    const nameCell = document.createElement('td');
-                    nameCell.textContent = node.name || translations[currentLang]['nodes.unnamed'] || '未命名节点';
-                    row.appendChild(nameCell);
-                    
-                    // 类型列
-                    const typeCell = document.createElement('td');
-                    const protocolType = getProtocolType(node.type || '');
-                    typeCell.textContent = protocolType;
-                    row.appendChild(typeCell);
-                    
-                    // 状态列
-                    const statusCell = document.createElement('td');
-                    const isActive = node.latency && node.latency < 500;
-                    statusCell.innerHTML = `
-                        <span class="status-indicator ${isActive ? 'active' : 'inactive'}"></span>
-                        <span class="status-text">${isActive ? 
-                            (translations[currentLang]['nodes.latency'] || '延迟') + `: ${node.latency}ms` : 
-                            (translations[currentLang]['nodes.inactive'] || '已失效')}</span>
-                    `;
-                    row.appendChild(statusCell);
-                    
-                    // 操作列
-                    const actionCell = document.createElement('td');
-                    
-                    // 根据节点类型创建不同的操作
-                    if (node.clash_config) {
-                        // 配置下载按钮
-                        const downloadBtn = document.createElement('button');
-                        downloadBtn.className = 'download-link';
-                        downloadBtn.textContent = translations[currentLang]['nodes.download'] || '下载配置';
-                        downloadBtn.onclick = () => {
-                            try {
-                                // 生成YAML配置
-                                const yamlConfig = jsyaml.dump([node.clash_config]);
-                                
-                                // 创建有意义的文件名
-                                let fileName = node.name.replace(/[^a-z0-9]/gi, '_') || 'vpn_config';
-                                fileName = fileName.substring(0, 30); // 限制文件名长度
-                                
-                                // 添加扩展名
-                                fileName += '.yaml';
-                                
-                                const blob = new Blob([yamlConfig], { type: 'text/yaml' });
-                                const url = URL.createObjectURL(blob);
-                                const a = document.createElement('a');
-                                a.href = url;
-                                a.download = fileName;
-                                document.body.appendChild(a);
-                                a.click();
-                                document.body.removeChild(a);
-                                URL.revokeObjectURL(url);
-                            } catch (e) {
-                                console.error('下载失败:', e);
-                                alert(`${translations[currentLang]['nodes.download_failed'] || '下载失败'}: ${e.message}`);
-                            }
-                        };
-                        actionCell.appendChild(downloadBtn);
-                    } else if (node.server && node.port) {
-                        // 服务器地址按钮
-                        const copyBtn = document.createElement('button');
-                        copyBtn.className = 'download-link';
-                        copyBtn.textContent = translations[currentLang]['nodes.copy_address'] || '复制地址';
-                        copyBtn.onclick = () => {
-                            navigator.clipboard.writeText(`${node.server}:${node.port}`)
-                              .then(() => {
-                                  copyBtn.textContent = translations[currentLang]['nodes.copied'] || '已复制!';
-                                  setTimeout(() => {
-                                      copyBtn.textContent = translations[currentLang]['nodes.copy_address'] || '复制地址';
-                                  }, 2000);
-                              })
-                              .catch(err => {
-                                  console.error('复制失败:', err);
-                                  copyBtn.textContent = translations[currentLang]['nodes.copy_failed'] || '复制失败';
-                              });
-                        };
-                        actionCell.appendChild(copyBtn);
+        };
+
+        // 当前语言
+        let currentLang = 'zh';
+        const urlParams = new URLSearchParams(window.location.search);
+        const langParam = urlParams.get('lang');
+        if (langParam && translations[langParam]) {
+            currentLang = langParam;
+        } else {
+            // 根据浏览器语言设置默认语言
+            const browserLang = navigator.language || navigator.userLanguage;
+            if (browserLang.startsWith('en')) currentLang = 'en';
+            if (browserLang.startsWith('hi')) currentLang = 'hi';
+            if (browserLang.startsWith('pt')) currentLang = 'pt';
+        }
+
+        // 应用翻译
+        function applyTranslations() {
+            // 更新所有带data-i18n属性的元素
+            document.querySelectorAll('[data-i18n]').forEach(el => {
+                const key = el.getAttribute('data-i18n');
+                if (translations[currentLang][key]) {
+                    if (el.tagName === 'INPUT' && el.placeholder) {
+                        el.placeholder = translations[currentLang][key];
                     } else {
-                        actionCell.textContent = translations[currentLang]['nodes.no_action'] || '无操作';
+                        el.innerHTML = translations[currentLang][key];
                     }
-                    
-                    row.appendChild(actionCell);
-                    tbody.appendChild(row);
-                });
-                
-                table.appendChild(tbody);
-                serverList.innerHTML = '';
-                serverList.appendChild(table);
-            }
-            
-            // 自动选择最佳节点
-            function selectBestNode() {
-                if (!nodes || nodes.length === 0) return;
-                
-                const validNodes = nodes.filter(node => node.latency && node.latency < 500);
-                
-                if (validNodes.length > 0) {
-                    validNodes.sort((a, b) => a.latency - b.latency);
-                    const bestNode = validNodes[0];
-                    
-                    const rows = serverList.querySelectorAll('tr');
-                    rows.forEach(row => {
-                        const nodeName = row.querySelector('td:first-child').textContent;
-                        if (nodeName === bestNode.name) {
-                            row.classList.add('recommended');
-                        }
-                    });
                 }
+            });
+            
+            // 更新语言选择器
+            const langBtn = document.querySelector('.language-btn span');
+            if (langBtn) {
+                langBtn.innerHTML = translations[currentLang]['lang.' + currentLang] || currentLang;
             }
             
-            // 初始化页面
-            document.addEventListener('DOMContentLoaded', () => {
-                // 应用翻译
-                applyTranslations();
-                
-                // 加载节点
-                loadNodes();
-                
-                // 筛选按钮事件
-                filterButtons.forEach(btn => {
-                    btn.addEventListener('click', function() {
-                        // 更新活动状态
-                        filterButtons.forEach(b => b.classList.remove('active'));
-                        this.classList.add('active');
-                        
-                        // 获取筛选条件
-                        const protocol = this.dataset.protocol;
-                        const sort = this.dataset.sort;
-                        
-                        // 应用筛选
-                        let filteredNodes = [...nodes];
-                        
-                        if (protocol && protocol !== 'all') {
-                            filteredNodes = filteredNodes.filter(node => node.type === protocol);
-                        }
-                        
-                        if (sort === 'fastest') {
-                            filteredNodes.sort((a, b) => (a.latency || 9999) - (b.latency || 9999));
-                        } else if (sort === 'newest') {
-                            filteredNodes.sort((a, b) => 
-                                new Date(b.last_checked || 0) - new Date(a.last_checked || 0));
-                        }
-                        
-                        renderNodes(filteredNodes);
-                    });
-                });
-                
-                // 点击模态框外部关闭
-                window.addEventListener('click', (event) => {
-                    if (event.target === authModal) {
-                        closeAuthModal();
+            // 更新语言下拉菜单激活状态
+            document.querySelectorAll('.language-dropdown a').forEach(a => {
+                a.classList.remove('active');
+                if (a.getAttribute('data-lang') === currentLang) {
+                    a.classList.add('active');
+                }
+            });
+            
+            // 更新HTML lang属性
+            document.documentElement.lang = currentLang;
+        }
+
+        // 节点数据
+        let nodes = [];
+        
+        // DOM元素
+        const filterButtons = document.querySelectorAll('.filter-btn');
+        const serverList = document.getElementById('server-list');
+        
+        // 模态框相关
+        const authModal = document.getElementById('auth-modal');
+        const loginForm = document.getElementById('login-form');
+        const registerForm = document.getElementById('register-form');
+        
+        // 显示认证模态框
+        function showAuthModal(type = 'login') {
+            authModal.style.display = 'block';
+            showAuthForm(type);
+        }
+        
+        // 关闭模态框
+        function closeAuthModal() {
+            authModal.style.display = 'none';
+        }
+        
+        // 切换登录/注册表单
+        function showAuthForm(type) {
+            if (type === 'login') {
+                loginForm.style.display = 'block';
+                registerForm.style.display = 'none';
+            } else {
+                loginForm.style.display = 'none';
+                registerForm.style.display = 'block';
+            }
+        }
+        
+        // 登录函数
+        function login() {
+            const email = document.getElementById('login-email').value;
+            const password = document.getElementById('login-password').value;
+            
+            if (!email || !password) {
+                alert(translations[currentLang]['auth.email_password_required'] || '请填写邮箱和密码');
+                return;
+            }
+            
+            // 模拟登录成功
+            closeAuthModal();
+            alert(translations[currentLang]['auth.login_success'] || '登录成功！');
+        }
+        
+        // 注册函数
+        function register() {
+            const email = document.getElementById('register-email').value;
+            const password = document.getElementById('register-password').value;
+            const confirm = document.getElementById('register-confirm').value;
+            
+            if (!email || !password || !confirm) {
+                alert(translations[currentLang]['auth.all_fields_required'] || '请填写所有字段');
+                return;
+            }
+            
+            if (password !== confirm) {
+                alert(translations[currentLang]['auth.password_mismatch'] || '两次输入的密码不一致');
+                return;
+            }
+            
+            if (password.length < 8) {
+                alert(translations[currentLang]['auth.password_length'] || '密码长度至少为8位');
+                return;
+            }
+            
+            // 模拟注册成功
+            closeAuthModal();
+            alert(translations[currentLang]['auth.register_success'] || '注册成功！');
+        }
+        
+        // Google登录/注册
+        function googleLogin() {
+            // 模拟成功
+            closeAuthModal();
+            alert(translations[currentLang]['auth.google_login_success'] || 'Google登录成功！');
+        }
+        
+        // 获取协议类型名称
+        function getProtocolType(type) {
+            const key = `protocol.${type}`;
+            return translations[currentLang][key] || type;
+        }
+        
+        // 加载节点数据
+        async function loadNodes() {
+            try {
+                // 显示加载状态
+                const loading = serverList.querySelector('.loader');
+                if (loading) {
+                    const p = loading.querySelector('p');
+                    if (p) {
+                        p.textContent = translations[currentLang]['nodes.loading'] || '正在加载节点数据...';
                     }
+                }
+                
+                const timestamp = new Date().getTime();
+                const res = await fetch(`/nodes.json?t=${timestamp}`, { 
+                    cache: 'no-store',
+                    credentials: 'same-origin'
                 });
                 
-                // 语言切换
-                document.querySelectorAll('.language-dropdown a').forEach(a => {
-                    a.addEventListener('click', function(e) {
-                        e.preventDefault();
-                        const lang = this.getAttribute('data-lang');
-                        if (lang !== currentLang) {
-                            // 更新URL参数
-                            const url = new URL(window.location.href);
-                            url.searchParams.set('lang', lang);
-                            window.history.replaceState(null, '', url.toString());
+                if (!res.ok) {
+                    throw new Error(translations[currentLang]['nodes.load_failed'] || '网络响应异常');
+                }
+                
+                const data = await res.json();
+                renderNodes(data);
+            } catch (error) {
+                console.error('加载节点失败:', error);
+                serverList.innerHTML = `
+                    <div class="error-message">
+                        <i class="fas fa-exclamation-triangle" style="font-size: 3rem; color: var(--warning); margin-bottom: 20px;"></i>
+                        <h3>${translations[currentLang]['nodes.load_failed_title'] || '节点加载失败'}</h3>
+                        <p>${error.message || translations[currentLang]['nodes.load_failed_message'] || '请刷新页面重试或稍后再访问'}</p>
+                        <button class="btn" onclick="location.reload()" style="margin-top: 20px;">
+                            ${translations[currentLang]['nodes.refresh'] || '刷新页面'}
+                        </button>
+                    </div>
+                `;
+            }
+        }
+        
+        // 渲染节点
+        function renderNodes(nodesToRender) {
+            if (!nodesToRender || nodesToRender.length === 0) {
+                serverList.innerHTML = `
+                    <div class="error-message">
+                        <i class="fas fa-frown" style="font-size: 3rem; color: var(--gray); margin-bottom: 20px;"></i>
+                        <h3>${translations[currentLang]['nodes.no_nodes_title'] || '暂无可用节点'}</h3>
+                        <p>${translations[currentLang]['nodes.no_nodes_message'] || '请稍后再尝试或联系管理员'}</p>
+                    </div>
+                `;
+                return;
+            }
+            
+            // 创建表格
+            const table = document.createElement('table');
+            table.className = 'server-table';
+            
+            // 创建表头（使用翻译）
+            const thead = document.createElement('thead');
+            thead.innerHTML = `
+                <tr>
+                    <th>${translations[currentLang]['nodes.name'] || '名称'}</th>
+                    <th>${translations[currentLang]['nodes.type'] || '类型'}</th>
+                    <th>${translations[currentLang]['nodes.status'] || '状态'}</th>
+                    <th>${translations[currentLang]['nodes.operation'] || '操作'}</th>
+                </tr>
+            `;
+            table.appendChild(thead);
+            
+            // 创建表格主体
+            const tbody = document.createElement('tbody');
+            
+            nodesToRender.forEach(node => {
+                const row = document.createElement('tr');
+                
+                // 名称列
+                const nameCell = document.createElement('td');
+                nameCell.textContent = node.name || translations[currentLang]['nodes.unnamed'] || '未命名节点';
+                row.appendChild(nameCell);
+                
+                // 类型列
+                const typeCell = document.createElement('td');
+                const protocolType = getProtocolType(node.type || '');
+                typeCell.textContent = protocolType;
+                row.appendChild(typeCell);
+                
+                // 状态列
+                const statusCell = document.createElement('td');
+                const isActive = node.latency && node.latency < 500;
+                statusCell.innerHTML = `
+                    <span class="status-indicator ${isActive ? 'active' : 'inactive'}"></span>
+                    <span class="status-text">${isActive ? 
+                        (translations[currentLang]['nodes.latency'] || '延迟') + `: ${node.latency}ms` : 
+                        (translations[currentLang]['nodes.inactive'] || '已失效')}</span>
+                `;
+                row.appendChild(statusCell);
+                
+                // 操作列
+                const actionCell = document.createElement('td');
+                
+                // 根据节点类型创建不同的操作
+                if (node.clash_config) {
+                    // 配置下载按钮
+                    const downloadBtn = document.createElement('button');
+                    downloadBtn.className = 'download-link';
+                    downloadBtn.textContent = translations[currentLang]['nodes.download'] || '下载配置';
+                    downloadBtn.onclick = () => {
+                        try {
+                            // 创建有意义的文件名
+                            let fileName = node.name.replace(/[^a-z0-9]/gi, '_') || 'vpn_config';
+                            fileName = fileName.substring(0, 30); // 限制文件名长度
                             
-                            // 更新语言并重新加载页面
-                            currentLang = lang;
-                            applyTranslations();
-                            loadNodes();
+                            // 根据协议类型添加扩展名
+                            fileName += '.yaml';
+                            
+                            // 创建配置内容
+                            const configContent = jsyaml.dump(node.clash_config, {lineWidth: -1});
+                            
+                            const blob = new Blob([configContent], { type: 'text/yaml' });
+                            const url = URL.createObjectURL(blob);
+                            const a = document.createElement('a');
+                            a.href = url;
+                            a.download = fileName;
+                            document.body.appendChild(a);
+                            a.click();
+                            document.body.removeChild(a);
+                            URL.revokeObjectURL(url);
+                        } catch (e) {
+                            console.error('下载失败:', e);
+                            alert(`${translations[currentLang]['nodes.download_failed'] || '下载失败'}: ${e.message}`);
                         }
-                    });
-                });
+                    };
+                    actionCell.appendChild(downloadBtn);
+                } else if (node.server && node.port) {
+                    // 服务器地址按钮
+                    const copyBtn = document.createElement('button');
+                    copyBtn.className = 'download-link';
+                    copyBtn.textContent = translations[currentLang]['nodes.copy_address'] || '复制地址';
+                    copyBtn.onclick = () => {
+                        navigator.clipboard.writeText(`${node.server}:${node.port}`)
+                          .then(() => {
+                              copyBtn.textContent = translations[currentLang]['nodes.copied'] || '已复制!';
+                              setTimeout(() => {
+                                  copyBtn.textContent = translations[currentLang]['nodes.copy_address'] || '复制地址';
+                              }, 2000);
+                          })
+                          .catch(err => {
+                              console.error('复制失败:', err);
+                              copyBtn.textContent = translations[currentLang]['nodes.copy_failed'] || '复制失败';
+                          });
+                    };
+                    actionCell.appendChild(copyBtn);
+                } else {
+                    actionCell.textContent = translations[currentLang]['nodes.no_action'] || '无操作';
+                }
                 
-                // 社交分享功能
-                document.querySelector('.share-btn.twitter').addEventListener('click', () => {
-                    const url = encodeURIComponent(window.location.href);
-                    const text = encodeURIComponent('免费VPN节点服务 - CloakAccess');
-                    window.open(`https://twitter.com/intent/tweet?text=${text}&url=${url}`);
-                });
-                
-                document.querySelector('.share-btn.telegram').addEventListener('click', () => {
-                    const url = encodeURIComponent(window.location.href);
-                    const text = encodeURIComponent('免费VPN节点服务 - CloakAccess');
-                    window.open(`https://t.me/share/url?url=${url}&text=${text}`);
+                row.appendChild(actionCell);
+                tbody.appendChild(row);
+            });
+            
+            table.appendChild(tbody);
+            serverList.innerHTML = '';
+            serverList.appendChild(table);
+        }
+        
+        // 初始化页面
+        document.addEventListener('DOMContentLoaded', () => {
+            // 应用翻译
+            applyTranslations();
+            
+            // 加载节点
+            loadNodes();
+            
+            // 筛选按钮事件
+            filterButtons.forEach(btn => {
+                btn.addEventListener('click', function() {
+                    // 更新活动状态
+                    filterButtons.forEach(b => b.classList.remove('active'));
+                    this.classList.add('active');
+                    
+                    // 重新加载节点
+                    loadNodes();
                 });
             });
-        </script>
-        
-        <!-- Google Analytics -->
-        <script async src="https://www.googletagmanager.com/gtag/js?id=G-XXXXXX"></script>
-        <script>
-          window.dataLayer = window.dataLayer || [];
-          function gtag(){dataLayer.push(arguments);}
-          gtag('js', new Date());
-          gtag('config', 'G-XXXXXX');
-        </script>
-    </body>
+            
+            // 点击模态框外部关闭
+            window.addEventListener('click', (event) => {
+                if (event.target === authModal) {
+                    closeAuthModal();
+                }
+            });
+            
+            // 语言切换
+            document.querySelectorAll('.language-dropdown a').forEach(a => {
+                a.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    const lang = this.getAttribute('data-lang');
+                    if (lang !== currentLang) {
+                        // 更新URL参数
+                        const url = new URL(window.location.href);
+                        url.searchParams.set('lang', lang);
+                        window.history.replaceState(null, '', url.toString());
+                        
+                        // 更新语言并重新加载页面
+                        currentLang = lang;
+                        applyTranslations();
+                        loadNodes();
+                    }
+                });
+            });
+            
+            // 社交分享功能
+            document.querySelector('.share-btn.twitter')?.addEventListener('click', () => {
+                const url = encodeURIComponent(window.location.href);
+                const text = encodeURIComponent('免费VPN节点服务 - CloakAccess');
+                window.open(`https://twitter.com/intent/tweet?text=${text}&url=${url}`);
+            });
+            
+            document.querySelector('.share-btn.telegram')?.addEventListener('click', () => {
+                const url = encodeURIComponent(window.location.href);
+                const text = encodeURIComponent('免费VPN节点服务 - CloakAccess');
+                window.open(`https://t.me/share/url?url=${url}&text=${text}`);
+            });
+            
+            // 获取免费节点按钮
+            const ctaBtn = document.getElementById('cta-btn');
+            if (ctaBtn) {
+                ctaBtn.onclick = () => {
+                    document.getElementById('nodes').scrollIntoView({ behavior: 'smooth' });
+                };
+            }
+        });
+    </script>
+    
+    <!-- Google Analytics -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-XXXXXX"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+      gtag('config', 'G-XXXXXX');
+    </script>
+</body>
 </html>
