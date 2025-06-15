@@ -1387,7 +1387,8 @@
                 }
                 
                 const timestamp = new Date().getTime();
-                const res = await fetch(`/nodes.json?t=${timestamp}`, { cache: 'no-store' });
+                // 修复节点文件路径
+                const res = await fetch(`/output/nodes.json?t=${timestamp}`, { cache: 'no-store' });
                 
                 if (!res.ok) {
                     throw new Error(translations[currentLang]['nodes.load_failed'] || '网络响应异常');
@@ -1402,7 +1403,7 @@
                     <div class="error-message" style="grid-column: 1/-1; text-align: center; padding: 40px;">
                         <i class="fas fa-exclamation-triangle" style="font-size: 3rem; color: var(--warning); margin-bottom: 20px;"></i>
                         <h3>${translations[currentLang]['nodes.load_failed_title'] || '节点加载失败'}</h3>
-                        <p>${translations[currentLang]['nodes.load_failed_message'] || '请刷新页面重试或稍后再访问'}</p>
+                        <p>${error.message || translations[currentLang]['nodes.load_failed_message'] || '请刷新页面重试或稍后再访问'}</p>
                         <button class="btn" onclick="location.reload()" style="margin-top: 20px;">
                             ${translations[currentLang]['nodes.refresh'] || '刷新页面'}
                         </button>
