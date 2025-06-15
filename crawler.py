@@ -40,6 +40,33 @@ SOURCES = [
     "https://raw.githubusercontent.com/aiboboxx/v2rayfree/main/v2",
     "https://raw.githubusercontent.com/Pawdroid/Free-servers/main/sub",
     "https://raw.githubusercontent.com/peasoft/NoMoreWalls/master/list.txt"
+    "https://raw.githubusercontent.com/learnhard-cn/free_proxy_ss/main/free",
+    "https://raw.githubusercontent.com/ssrsub/ssr/master/ss-sub",
+    "https://raw.githubusercontent.com/colatiger/v2ray-nodes/master/sg.txt",
+    "https://raw.githubusercontent.com/ermaozi/get_subscribe/main/subscribe/v2ray.txt",
+    "https://raw.githubusercontent.com/mianfeifq/share/main/data2023042.txt",
+    "https://raw.githubusercontent.com/Leon406/SubCrawler/main/sub/share/all",
+    "https://raw.githubusercontent.com/pojiezhiyuanjun/freev2/master/v2",
+    "https://raw.githubusercontent.com/vveg26/get_proxy/main/sub",
+    "https://raw.githubusercontent.com/alanbobs999/TopFreeProxies/master/sub/sub_merge.txt",
+    "https://raw.githubusercontent.com/zealson/Zure/master/Config/Config.conf",
+    "https://raw.githubusercontent.com/ripaojiedian/freenode/main/sub",
+    "https://raw.githubusercontent.com/adiwzx/freenode/main/adispeed.txt",
+    "https://raw.githubusercontent.com/baixf-go/baixf/main/README.md",
+    "https://raw.githubusercontent.com/aiboboxx/v2rayfree/main/v2",
+    "https://raw.githubusercontent.com/freefq/free/master/v2",
+    "https://raw.githubusercontent.com/eycorsican/rule-sets/master/geosite/category-ads-all.txt",
+    "https://raw.githubusercontent.com/Jason6111/TopFreeProxies/master/sub/sub_merge.txt",
+    "https://raw.githubusercontent.com/rdp-studio/Free-Node-Merge/main/sub/sub_merge.txt",
+    "https://raw.githubusercontent.com/yu-steven/openit/main/sub/sub_merge.txt",
+    "https://raw.githubusercontent.com/anaer/Sub/main/config.yaml",
+    "https://raw.githubusercontent.com/mksshare/mksshare.github.io/main/README.md",
+    "https://raw.githubusercontent.com/peasoft/NoMoreWalls/master/list.txt",
+    "https://raw.githubusercontent.com/ClashrAuto/Clashr-Auto-Server/master/Clashr-Auto-Server.txt",
+    "https://raw.githubusercontent.com/ssrsub/ssr/master/ss-sub",
+    "https://raw.githubusercontent.com/rdp-studio/Free-Node-Merge/main/sub/sub_merge.txt",
+    "https://raw.githubusercontent.com/yu-steven/openit/main/sub/sub_merge.txt",
+    "https://raw.githubusercontent.com/Jason6111/TopFreeProxies/master/sub/sub_merge.txt"
 ]
 
 USER_AGENTS = [
