@@ -1,38 +1,28 @@
 async function loadNodes() {
   // 显示加载状态
   const loading = document.getElementById('loading');
+  let loadingText = null;
+  
   if (loading) {
     loading.style.display = 'block';
-    const loadingText = loading.querySelector('p');
-    if (loadingText) {
+    const loadingTextEl = loading.querySelector('p');
+    if (loadingTextEl) {
+      // 保存引用而不是直接操作DOM
+      loadingText = loadingTextEl;
       loadingText.textContent = translations[currentLang]['nodes.loading'] || '正在加载节点数据，请稍候...';
     }
   }
   
   try {
-    // 添加时间戳防止缓存
-    const timestamp = new Date().getTime();
-    const res = await fetch(`/nodes.json?t=${timestamp}`, { 
-      cache: 'no-store',
-      credentials: 'same-origin'
-    });
-    
-    if (!res.ok) {
-      throw new Error(translations[currentLang]['nodes.load_failed'] || '加载节点数据失败');
-    }
-    
-    // 获取响应文本
-    const text = await res.text();
-    
-    // 尝试解析JSON
-    const data = JSON.parse(text);
-    
-    return data;
+    // ... 原有代码 ...
   } catch (error) {
     console.error('加载 nodes.json 出错：', error);
     
-    // 更新加载状态为错误信息
-    if (loading) {
+    // 使用保存的引用而不是重新查询DOM
+    if (loadingText) {
+      loadingText.textContent = translations[currentLang]['nodes.load_failed'] || '加载节点数据失败';
+    } else if (loading) {
+      // 回退方案：直接设置整个loading容器的内容
       loading.innerHTML = `
         <div class="error-message">
           <p>⚠️ ${translations[currentLang]['nodes.load_failed_title'] || '加载节点数据失败'}</p>
