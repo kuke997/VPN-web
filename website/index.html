@@ -1648,73 +1648,21 @@
                     }
                 }
                 
-                // 模拟从API获取节点数据
-                await new Promise(resolve => setTimeout(resolve, 1000));
+                // 添加时间戳防止缓存
+                const timestamp = new Date().getTime();
+                const res = await fetch(`/nodes.json?t=${timestamp}`, { 
+                    cache: 'no-store',
+                    credentials: 'same-origin'
+                });
                 
-                // 模拟节点数据 - 使用有效的加密方法
-                nodes = [
-                    {
-                        id: 1,
-                        name: "美国节点 #1",
-                        server: "104.16.123.45",
-                        port: 443,
-                        type: "vmess",
-                        uuid: "b126f4f-1653-4e8e-88d2-1234567890ab",
-                        alterId: 0,
-                        cipher: "auto",
-                        latency: 128,
-                        active: true
-                    },
-                    {
-                        id: 2,
-                        name: "日本节点 #2",
-                        server: "45.76.89.12",
-                        port: 443,
-                        type: "ss",
-                        cipher: "aes-256-gcm",  // 有效的加密方法
-                        password: "secure_password",
-                        latency: 78,
-                        active: true
-                    },
-                    {
-                        id: 3,
-                        name: "香港节点 #3",
-                        server: "172.67.34.56",
-                        port: 443,
-                        type: "vmess",
-                        uuid: "c3d4e5f6-7890-1234-5678-9012345678cd",
-                        alterId: 0,
-                        cipher: "auto",
-                        latency: 52,
-                        active: true
-                    },
-                    {
-                        id: 4,
-                        name: "新加坡节点 #4",
-                        server: "108.162.78.90",
-                        port: 443,
-                        type: "trojan",
-                        password: "trojan_password",
-                        sni: "example.com",
-                        latency: 112,
-                        active: true
-                    },
-                    {
-                        id: 5,
-                        name: "德国节点 #5",
-                        server: "172.64.123.45",
-                        port: 443,
-                        type: "ss",
-                        cipher: "chacha20-ietf-poly1305",  // 有效的加密方法
-                        password: "another_password",
-                        latency: 145,
-                        active: true
-                    }
-                ];
+                if (!res.ok) {
+                    throw new Error(translations[currentLang]['nodes.load_failed'] || '加载节点数据失败');
+                }
                 
-                renderNodes(nodes);
+                const data = await res.json();
+                return data;
             } catch (error) {
-                console.error('加载节点失败:', error);
+                console.error('加载 nodes.json 出错：', error);
                 serverList.innerHTML = `
                     <div class="error-message">
                         <i class="fas fa-exclamation-triangle" style="font-size: 3rem; color: var(--warning); margin-bottom: 20px;"></i>
@@ -1725,6 +1673,7 @@
                         </button>
                     </div>
                 `;
+                return [];
             }
         }
         
@@ -1778,7 +1727,7 @@
                 
                 let regionName = "未知地区";
                 for (const prefix in regionMap) {
-                    if (node.server.startsWith(prefix)) {
+                    if (node.server && node.server.startsWith(prefix)) {
                         regionName = regionMap[prefix];
                         break;
                     }
@@ -1801,7 +1750,7 @@
                 
                 nameCell.innerHTML = `
                     <span class="flag-icon fi fi-${countryCode}"></span>
-                    <span class="region-name">${translatedRegion} ${node.name.split('#')[1] || ''}</span>
+                    <span class="region-name">${node.name}</span>
                 `;
                 row.appendChild(nameCell);
                 
@@ -1832,53 +1781,17 @@
                 downloadBtn.onclick = () => {
                     try {
                         // 创建有意义的文件名
-                        let fileName = `${regionName}_${node.type}_config.yaml`;
+                        let fileName = node.name.replace(/[^a-z0-9]/gi, '_') || 'vpn_config';
+                        fileName = fileName.substring(0, 30); // 限制文件名长度
                         
-                        // 创建配置内容 - 确保使用有效的加密方法
-                        let configContent = `# CloakAccess VPN配置
-# 节点: ${translatedRegion}
-# 类型: ${protocolType}
-# 服务器: ${node.server}:${node.port}
-# 更新时间: ${new Date().toLocaleString()}
-
-proxies:
-  - name: "${translatedRegion} ${node.name.split('#')[1] || ''}"
-    type: ${node.type}
-    server: ${node.server}
-    port: ${node.port}`;
-
-                        // 根据协议类型添加特定字段
-                        switch(node.type) {
-                            case "ss":
-                                // 验证加密方法是否有效
-                                let cipher = node.cipher || 'aes-256-gcm';
-                                if (!validSSciphers.includes(cipher)) {
-                                    cipher = 'aes-256-gcm';
-                                }
-                                configContent += `
-    cipher: ${cipher}
-    password: "${node.password || 'default_password'}"`;
-                                break;
-                                
-                            case "vmess":
-                                configContent += `
-    uuid: ${node.uuid || '00000000-0000-0000-0000-000000000000'}
-    alterId: ${node.alterId || 0}
-    cipher: ${node.cipher || 'auto'}`;
-                                break;
-                                
-                            case "trojan":
-                                configContent += `
-    password: "${node.password || 'default_password'}"
-    sni: ${node.sni || 'example.com'}`;
-                                break;
-                        }
+                        // 创建配置内容
+                        const configContent = jsyaml.dump(node.clash_config, {lineWidth: -1});
                         
                         const blob = new Blob([configContent], { type: 'text/yaml' });
                         const url = URL.createObjectURL(blob);
                         const a = document.createElement('a');
                         a.href = url;
-                        a.download = fileName;
+                        a.download = fileName + '.yaml';
                         document.body.appendChild(a);
                         a.click();
                         document.body.removeChild(a);
@@ -1909,65 +1822,7 @@ proxies:
 
 proxies:
 ${nodes.map(node => {
-  // 地区映射
-  const regionMap = {
-    "104.16": "美国",
-    "45.76": "日本",
-    "172.67": "香港",
-    "108.162": "新加坡",
-    "172.64": "德国"
-  };
-  
-  let regionName = "未知地区";
-  for (const prefix in regionMap) {
-    if (node.server.startsWith(prefix)) {
-      regionName = regionMap[prefix];
-      break;
-    }
-  }
-  
-  // 翻译地区名称
-  const regionKey = `region.${regionName}`;
-  const translatedRegion = translations[currentLang]?.[regionKey] || regionName;
-  
-  // 根据协议类型生成不同的配置
-  switch(node.type) {
-    case "ss":
-        // 验证加密方法是否有效
-        let ssCipher = node.cipher || 'aes-256-gcm';
-        if (!validSSciphers.includes(ssCipher)) {
-            ssCipher = 'aes-256-gcm';
-        }
-        return `  - name: "${translatedRegion} ${node.name.split('#')[1] || ''}"
-    type: ss
-    server: ${node.server}
-    port: ${node.port}
-    cipher: ${ssCipher}
-    password: "${node.password || 'default_password'}"`;
-      
-    case "vmess":
-        return `  - name: "${translatedRegion} ${node.name.split('#')[1] || ''}"
-    type: vmess
-    server: ${node.server}
-    port: ${node.port}
-    uuid: ${node.uuid || '00000000-0000-0000-0000-000000000000'}
-    alterId: ${node.alterId || 0}
-    cipher: ${node.cipher || 'auto'}`;
-      
-    case "trojan":
-        return `  - name: "${translatedRegion} ${node.name.split('#')[1] || ''}"
-    type: trojan
-    server: ${node.server}
-    port: ${node.port}
-    password: "${node.password || 'default_password'}"
-    sni: ${node.sni || 'example.com'}`;
-      
-    default:
-        return `  - name: "${translatedRegion} ${node.name.split('#')[1] || ''}"
-    type: ${node.type}
-    server: ${node.server}
-    port: ${node.port}`;
-  }
+  return `  - ${JSON.stringify(node.clash_config)}`;
 }).join('\n')}
 
 proxy-groups:
@@ -1975,27 +1830,7 @@ proxy-groups:
     type: url-test
     proxies:
 ${nodes.map(node => {
-  const regionMap = {
-    "104.16": "美国",
-    "45.76": "日本",
-    "172.67": "香港",
-    "108.162": "新加坡",
-    "172.64": "德国"
-  };
-  
-  let regionName = "未知地区";
-  for (const prefix in regionMap) {
-    if (node.server.startsWith(prefix)) {
-      regionName = regionMap[prefix];
-      break;
-    }
-  }
-  
-  // 翻译地区名称
-  const regionKey = `region.${regionName}`;
-  const translatedRegion = translations[currentLang]?.[regionKey] || regionName;
-  
-  return `      - "${translatedRegion} ${node.name.split('#')[1] || ''}"`;
+  return `      - "${node.name}"`;
 }).join('\n')}
     url: "http://www.gstatic.com/generate_204"
     interval: 300
@@ -2033,44 +1868,14 @@ rules:
 
 [Proxy]
 ${nodes.map(node => {
-  // 地区映射
-  const regionMap = {
-    "104.16": "美国",
-    "45.76": "日本",
-    "172.67": "香港",
-    "108.162": "新加坡",
-    "172.64": "德国"
-  };
-  
-  let regionName = "未知地区";
-  for (const prefix in regionMap) {
-    if (node.server.startsWith(prefix)) {
-      regionName = regionMap[prefix];
-      break;
-    }
-  }
-  
-  // 翻译地区名称
-  const regionKey = `region.${regionName}`;
-  const translatedRegion = translations[currentLang]?.[regionKey] || regionName;
-  
-  switch(node.type) {
-    case "ss":
-        // 验证加密方法是否有效
-        let cipher = node.cipher || 'aes-256-gcm';
-        if (!validSSciphers.includes(cipher)) {
-            cipher = 'aes-256-gcm';
-        }
-        return `${translatedRegion} = ss, ${node.server}, ${node.port}, encrypt-method=${cipher}, password=${node.password || 'default_password'}`;
-      
-    case "vmess":
-        return `${translatedRegion} = vmess, ${node.server}, ${node.port}, username=${node.uuid || '00000000-0000-0000-0000-000000000000'}, ws=true, tls=true`;
-      
-    case "trojan":
-        return `${translatedRegion} = trojan, ${node.server}, ${node.port}, password=${node.password || 'default_password'}, sni=${node.sni || 'example.com'}`;
-      
-    default:
-        return `${translatedRegion} = ${node.type}, ${node.server}, ${node.port}`;
+  if (node.clash_config.type === 'vmess') {
+    return `${node.name} = vmess, ${node.clash_config.server}, ${node.clash_config.port}, username=${node.clash_config.uuid}, ws=true, tls=true`;
+  } else if (node.clash_config.type === 'ss') {
+    return `${node.name} = ss, ${node.clash_config.server}, ${node.clash_config.port}, encrypt-method=${node.clash_config.cipher}, password=${node.clash_config.password}`;
+  } else if (node.clash_config.type === 'trojan') {
+    return `${node.name} = trojan, ${node.clash_config.server}, ${node.clash_config.port}, password=${node.clash_config.password}, sni=${node.clash_config.sni || 'example.com'}`;
+  } else {
+    return `${node.name} = ${node.clash_config.type}, ${node.clash_config.server}, ${node.clash_config.port}`;
   }
 }).join('\n')}
 
@@ -2115,12 +1920,13 @@ FINAL,PROXY
         }
         
         // 初始化页面
-        document.addEventListener('DOMContentLoaded', () => {
+        document.addEventListener('DOMContentLoaded', async () => {
             // 应用翻译
             applyTranslations();
             
             // 加载节点
-            loadNodes();
+            nodes = await loadNodes();
+            renderNodes(nodes);
             
             // 筛选按钮事件
             filterButtons.forEach(btn => {
@@ -2130,7 +1936,7 @@ FINAL,PROXY
                     this.classList.add('active');
                     
                     // 重新加载节点
-                    loadNodes();
+                    renderNodes(nodes);
                 });
             });
             
@@ -2155,7 +1961,10 @@ FINAL,PROXY
                         // 更新语言并重新加载页面
                         currentLang = lang;
                         applyTranslations();
-                        loadNodes();
+                        loadNodes().then(data => {
+                            nodes = data;
+                            renderNodes(nodes);
+                        });
                     }
                 });
             });
