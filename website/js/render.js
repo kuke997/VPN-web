@@ -136,19 +136,14 @@ function createServerTable(nodes) {
           let fileName = node.name.replace(/[^a-z0-9]/gi, '_') || 'vpn_config';
           fileName = fileName.substring(0, 30); // 限制文件名长度
           
-          // 根据协议类型添加扩展名
-          if (node.type === 'vmess') fileName += '.yaml';
-          else if (node.type === 'ss') fileName += '.yaml';
-          else fileName += '.yaml';
-          
           // 创建配置内容
-          const configContent = yaml.dump(node.clash_config, {lineWidth: -1});
+          const configContent = jsyaml.dump(node.clash_config, {lineWidth: -1});
           
           const blob = new Blob([configContent], { type: 'text/yaml' });
           const url = URL.createObjectURL(blob);
           const a = document.createElement('a');
           a.href = url;
-          a.download = fileName;
+          a.download = fileName + '.yaml';
           document.body.appendChild(a);
           a.click();
           document.body.removeChild(a);
