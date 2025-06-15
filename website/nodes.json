@@ -1,28 +1,6 @@
 [
   {
-    "id": "c461df7b-cb73-42ae-bf5d-7c3d04d4f687",
-    "name": "[韩国] 未知服务商 - 节点",
-    "type": "vmess",
-    "server": "203.227.44.74",
-    "port": 31945,
-    "clash_config": {
-      "name": "[韩国] 未知服务商 - 节点",
-      "type": "vmess",
-      "server": "203.227.44.74",
-      "port": 31945,
-      "uuid": "7ccbb147-38b8-4d7c-9201-2ad4ae8b8761",
-      "alterId": 0,
-      "cipher": "auto",
-      "udp": true,
-      "tls": false,
-      "skip-cert-verify": true
-    },
-    "source": "https://raw.githubusercontent.com/peasoft/NoMoreWalls/master/list.txt",
-    "latency": 130,
-    "last_checked": "2025-06-15T02:04:30.276164+00:00"
-  },
-  {
-    "id": "a1f24df2-3464-4b13-98fd-54aa6dbe9462",
+    "id": "5397bbac-afaf-4ede-8936-c590e29eb367",
     "name": "[美国] Fastly - Anycast节点",
     "type": "vmess",
     "server": "gov.uk",
@@ -45,29 +23,51 @@
       }
     },
     "source": "https://raw.githubusercontent.com/freefq/free/master/v2",
-    "latency": 8,
-    "last_checked": "2025-06-15T02:04:30.315760+00:00"
+    "latency": 2,
+    "last_checked": "2025-06-15T02:36:51.800114+00:00"
   },
   {
-    "id": "254536a8-6d45-484c-a439-5a162ddaaad1",
-    "name": "[香港] 未知服务商 - 节点",
+    "id": "6e2a2511-bbd6-46b2-b7f3-3961f6a5e72d",
+    "name": "[日本] 未知服务商 - 节点",
     "type": "vmess",
-    "server": "43.247.135.2",
-    "port": 20332,
+    "server": "140.227.28.92",
+    "port": 20452,
     "clash_config": {
-      "name": "[香港] 未知服务商 - 节点",
+      "name": "[日本] 未知服务商 - 节点",
       "type": "vmess",
-      "server": "43.247.135.2",
-      "port": 20332,
-      "uuid": "8037ce00-c860-4213-b888-be5c7ed6ea48",
+      "server": "140.227.28.92",
+      "port": 20452,
+      "uuid": "52aba3eb-0a6f-4c2f-29c6-d4b18a1d7c3e",
       "alterId": 0,
       "cipher": "auto",
       "udp": true,
       "tls": false,
       "skip-cert-verify": true
     },
-    "source": "https://raw.githubusercontent.com/aiboboxx/v2rayfree/main/v2",
-    "latency": 1064,
-    "last_checked": "2025-06-15T02:04:31.208678+00:00"
+    "source": "https://raw.githubusercontent.com/peasoft/NoMoreWalls/master/list.txt",
+    "latency": 142,
+    "last_checked": "2025-06-15T02:36:51.842989+00:00"
+  },
+  {
+    "id": "dba6b16c-5e50-4368-90f9-0d30d6e89e8f",
+    "name": "[韩国] 未知服务商 - 节点",
+    "type": "vmess",
+    "server": "203.227.44.74",
+    "port": 31945,
+    "clash_config": {
+      "name": "[韩国] 未知服务商 - 节点",
+      "type": "vmess",
+      "server": "203.227.44.74",
+      "port": 31945,
+      "uuid": "7ccbb147-38b8-4d7c-9201-2ad4ae8b8761",
+      "alterId": 0,
+      "cipher": "auto",
+      "udp": true,
+      "tls": false,
+      "skip-cert-verify": true
+    },
+    "source": "https://raw.githubusercontent.com/peasoft/NoMoreWalls/master/list.txt",
+    "latency": 164,
+    "last_checked": "2025-06-15T02:36:51.864081+00:00"
   }
 ]
