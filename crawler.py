@@ -67,6 +67,24 @@ SOURCES = [
     "https://raw.githubusercontent.com/rdp-studio/Free-Node-Merge/main/sub/sub_merge.txt",
     "https://raw.githubusercontent.com/yu-steven/openit/main/sub/sub_merge.txt",
     "https://raw.githubusercontent.com/Jason6111/TopFreeProxies/master/sub/sub_merge.txt"
+    "https://raw.githubusercontent.com/rdp-studio/Free-Node-Merge/main/sub/sub_merge.txt",
+    "https://raw.githubusercontent.com/yu-steven/openit/main/sub/sub_merge.txt",
+    "https://raw.githubusercontent.com/anaer/Sub/main/config.yaml",
+    "https://raw.githubusercontent.com/mksshare/mksshare.github.io/main/README.md",
+    "https://raw.githubusercontent.com/ClashrAuto/Clashr-Auto-Server/master/Clashr-Auto-Server.txt",
+    "https://raw.githubusercontent.com/ssrsub/ssr/master/ss-sub",
+    "https://raw.githubusercontent.com/ssrsub/ssr/master/V2Ray",
+    "https://raw.githubusercontent.com/ssrsub/ssr/master/trojan",
+    "https://raw.githubusercontent.com/ssrsub/ssr/master/sip002",
+    "https://raw.githubusercontent.com/ssrsub/ssr/master/clash",
+    "https://raw.githubusercontent.com/FreeNodeSE/freenode/master/README.md",
+    "https://raw.githubusercontent.com/NodeFree.org/nodefree/master/README.md",
+    "https://raw.githubusercontent.com/Fukki-Z/nodefree/main/nodefree.yaml",
+    "https://raw.githubusercontent.com/roxsross/best-free-vpn/main/README.md",
+    "https://raw.githubusercontent.com/v2ray-links/v2ray-links/main/README.md",
+    "https://raw.githubusercontent.com/FreeV2ray/V2raySocks/main/README.md",
+    "https://raw.githubusercontent.com/ProxyPool-ZH/ProxyPool-ZH/main/README.md",
+    "https://raw.githubusercontent.com/skywolf627/V2rayConfigs/main/README.md"
 ]
 
 USER_AGENTS = [
