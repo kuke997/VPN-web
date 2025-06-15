@@ -3,7 +3,10 @@ async function loadNodes() {
   const loading = document.getElementById('loading');
   if (loading) {
     loading.style.display = 'block';
-    loading.querySelector('p').textContent = translations[currentLang]['nodes.loading'] || '正在加载节点数据，请稍候...';
+    const loadingText = loading.querySelector('p');
+    if (loadingText) {
+      loadingText.textContent = translations[currentLang]['nodes.loading'] || '正在加载节点数据，请稍候...';
+    }
   }
   
   try {
@@ -11,7 +14,7 @@ async function loadNodes() {
     const timestamp = new Date().getTime();
     const res = await fetch(`/nodes.json?t=${timestamp}`, { 
       cache: 'no-store',
-      credentials: 'same-origin'  // 修复：确保携带cookie
+      credentials: 'same-origin'
     });
     
     if (!res.ok) {
@@ -75,7 +78,7 @@ function createServerTable(nodes) {
   const table = document.createElement('table');
   table.className = 'server-table';
   
-  // 创建表头（使用翻译）
+  // 创建表头
   const thead = document.createElement('thead');
   thead.innerHTML = `
     <tr>
