@@ -1638,192 +1638,44 @@
         }
         
         // 加载节点数据
-async function loadNodes() {
-    try {
-        // 显示加载状态
-        const loading = serverList.querySelector('.loader');
-        if (loading) {
-            const p = loading.querySelector('p');
-            if (p) {
-                p.textContent = translations[currentLang]['nodes.loading'] || '正在加载节点数据...';
-            }
-        }
-        
-        // 从nodes.json加载节点数据
-        const response = await fetch('nodes.json');
-        if (!response.ok) {
-            throw new Error('Failed to fetch nodes');
-        }
-        const data = await response.json();
-        
-        // 转换节点数据格式
-        nodes = data.map(node => {
-            // 尝试从节点名称中提取地区
-            let region = "未知地区";
-            const regionMatch = node.name.match(/\[(.*?)\]/);
-            if (regionMatch && regionMatch.length >= 2) {
-                region = regionMatch[1];
-            }
-            
-            return {
-                id: node.id,
-                name: node.name,
-                server: node.server,
-                port: node.port,
-                type: node.type,
-                latency: node.latency || 0,
-                active: node.latency < 500, // 假设延迟小于500ms为活跃
-                region: region // 从名称中提取的地区
-            };
-        });
-        
-        renderNodes(nodes);
-    } catch (error) {
-        console.error('加载节点失败:', error);
-        serverList.innerHTML = `
-            <div class="error-message">
-                <i class="fas fa-exclamation-triangle" style="font-size: 3rem; color: var(--warning); margin-bottom: 20px;"></i>
-                <h3>${translations[currentLang]['nodes.load_failed_title'] || '节点加载失败'}</h3>
-                <p>${error.message || translations[currentLang]['nodes.load_failed_message'] || '请刷新页面重试或稍后再访问'}</p>
-                <button class="btn" onclick="location.reload()" style="margin-top: 20px;">
-                    ${translations[currentLang]['nodes.refresh'] || '刷新页面'}
-                </button>
-            </div>
-        `;
-    }
-}
-
-// 渲染节点
-function renderNodes(nodesToRender) {
-    if (!nodesToRender || nodesToRender.length === 0) {
-        serverList.innerHTML = `
-            <div class="error-message">
-                <i class="fas fa-frown" style="font-size: 3rem; color: var(--gray); margin-bottom: 20px;"></i>
-                <h3>${translations[currentLang]['nodes.no_nodes_title'] || '暂无可用节点'}</h3>
-                <p>${translations[currentLang]['nodes.no_nodes_message'] || '请稍后再尝试或联系管理员'}</p>
-            </div>
-        `;
-        return;
-    }
-    
-    // 创建表格
-    const table = document.createElement('table');
-    table.className = 'server-table';
-    
-    // 创建表头（使用翻译）
-    const thead = document.createElement('thead');
-    thead.innerHTML = `
-        <tr>
-            <th>${translations[currentLang]['nodes.name'] || '名称'}</th>
-            <th>${translations[currentLang]['nodes.type'] || '类型'}</th>
-            <th>${translations[currentLang]['nodes.status'] || '状态'}</th>
-            <th>${translations[currentLang]['nodes.operation'] || '操作'}</th>
-        </tr>
-    `;
-    table.appendChild(thead);
-    
-    // 创建表格主体
-    const tbody = document.createElement('tbody');
-    
-    nodesToRender.forEach(node => {
-        const row = document.createElement('tr');
-        
-        // 名称列 - 使用节点中的region
-        const nameCell = document.createElement('td');
-        nameCell.className = 'node-name';
-        
-        // 翻译地区名称
-        const regionKey = `region.${node.region}`;
-        const translatedRegion = translations[currentLang][regionKey] || node.region;
-        
-        // 查找国旗代码
-        let countryCode = 'globe';
-        if (node.region in countryFlags) {
-            countryCode = countryFlags[node.region];
-        } else {
-            // 尝试简化地区名称
-            const simplifiedName = node.region.replace(/地区|节点|服务商/g, '');
-            if (simplifiedName in countryFlags) {
-                countryCode = countryFlags[simplifiedName];
-            }
-        }
-        
-        nameCell.innerHTML = `
-            <span class="flag-icon fi fi-${countryCode}"></span>
-            <span class="region-name">${translatedRegion} ${node.name.split('#')[1] || ''}</span>
-        `;
-        row.appendChild(nameCell);
-        
-        // 类型列
-        const typeCell = document.createElement('td');
-        const protocolType = getProtocolType(node.type || '');
-        typeCell.textContent = protocolType;
-        row.appendChild(typeCell);
-        
-        // 状态列
-        const statusCell = document.createElement('td');
-        const isActive = node.latency && node.latency < 500;
-        statusCell.innerHTML = `
-            <span class="status-indicator ${isActive ? 'active' : 'inactive'}"></span>
-            <span class="status-text">${isActive ? 
-                (translations[currentLang]['nodes.latency'] || '延迟') + `: ${node.latency}ms` : 
-                (translations[currentLang]['nodes.inactive'] || '已失效')}</span>
-        `;
-        row.appendChild(statusCell);
-        
-        // 操作列
-        const actionCell = document.createElement('td');
-        
-        // 创建下载配置按钮
-        const downloadBtn = document.createElement('button');
-        downloadBtn.className = 'download-link';
-        downloadBtn.textContent = translations[currentLang]['nodes.download'] || '下载配置';
-        downloadBtn.onclick = () => {
+        async function loadNodes() {
             try {
-                // 创建有意义的文件名
-                let fileName = `${node.region}_${node.type}_config.yaml`;
+                // 显示加载状态
+                const loading = serverList.querySelector('.loader');
+                if (loading) {
+                    const p = loading.querySelector('p');
+                    if (p) {
+                        p.textContent = translations[currentLang]['nodes.loading'] || '正在加载节点数据...';
+                    }
+                }
                 
-                // 创建配置内容
-                const configContent = `# CloakAccess VPN配置
-# 节点: ${translatedRegion}
-# 类型: ${protocolType}
-# 服务器: ${node.server}:${node.port}
-# 更新时间: ${new Date().toLocaleString()}
-
-proxies:
-  - name: "${translatedRegion} ${node.name.split('#')[1] || ''}"
-    type: ${node.type}
-    server: ${node.server}
-    port: ${node.port}
-    cipher: auto
-    udp: true
-    `;
+                // 从nodes.json加载节点数据
+                const response = await fetch('nodes.json');
+                if (!response.ok) {
+                    throw new Error('Failed to fetch nodes');
+                }
+                const data = await response.json();
                 
-                const blob = new Blob([configContent], { type: 'text/yaml' });
-                const url = URL.createObjectURL(blob);
-                const a = document.createElement('a');
-                a.href = url;
-                a.download = fileName;
-                document.body.appendChild(a);
-                a.click();
-                document.body.removeChild(a);
-                URL.revokeObjectURL(url);
-            } catch (e) {
-                console.error('下载失败:', e);
-                alert(`${translations[currentLang]['nodes.download_failed'] || '下载失败'}: ${e.message}`);
-            }
-        };
-        actionCell.appendChild(downloadBtn);
-        
-        row.appendChild(actionCell);
-        tbody.appendChild(row);
-    });
-    
-    table.appendChild(tbody);
-    serverList.innerHTML = '';
-    serverList.appendChild(table);
-}
-                ];
+                // 转换节点数据格式
+                nodes = data.map(node => {
+                    // 尝试从节点名称中提取地区
+                    let region = "未知地区";
+                    const regionMatch = node.name.match(/\[(.*?)\]/);
+                    if (regionMatch && regionMatch.length >= 2) {
+                        region = regionMatch[1];
+                    }
+                    
+                    return {
+                        id: node.id,
+                        name: node.name,
+                        server: node.server,
+                        port: node.port,
+                        type: node.type,
+                        latency: node.latency || 0,
+                        active: node.latency < 500, // 假设延迟小于500ms为活跃
+                        region: region // 从名称中提取的地区
+                    };
+                });
                 
                 renderNodes(nodes);
             } catch (error) {
@@ -1840,7 +1692,7 @@ proxies:
                 `;
             }
         }
-        
+
         // 渲染节点
         function renderNodes(nodesToRender) {
             if (!nodesToRender || nodesToRender.length === 0) {
@@ -1876,24 +1728,21 @@ proxies:
             nodesToRender.forEach(node => {
                 const row = document.createElement('tr');
                 
-                // 名称列 - 根据IP确定地区
+                // 名称列 - 使用节点中的region
                 const nameCell = document.createElement('td');
                 nameCell.className = 'node-name';
                 
-                // 根据IP确定地区
-                const regionName = getRegionFromIP(node.server);
-                
                 // 翻译地区名称
-                const regionKey = `region.${regionName}`;
-                const translatedRegion = translations[currentLang][regionKey] || regionName;
+                const regionKey = `region.${node.region}`;
+                const translatedRegion = translations[currentLang][regionKey] || node.region;
                 
                 // 查找国旗代码
                 let countryCode = 'globe';
-                if (regionName in countryFlags) {
-                    countryCode = countryFlags[regionName];
+                if (node.region in countryFlags) {
+                    countryCode = countryFlags[node.region];
                 } else {
                     // 尝试简化地区名称
-                    const simplifiedName = regionName.replace(/地区|节点|服务商/g, '');
+                    const simplifiedName = node.region.replace(/地区|节点|服务商/g, '');
                     if (simplifiedName in countryFlags) {
                         countryCode = countryFlags[simplifiedName];
                     }
@@ -1932,7 +1781,7 @@ proxies:
                 downloadBtn.onclick = () => {
                     try {
                         // 创建有意义的文件名
-                        let fileName = `${regionName}_${node.type}_config.yaml`;
+                        let fileName = `${node.region}_${node.type}_config.yaml`;
                         
                         // 创建配置内容
                         const configContent = `# CloakAccess VPN配置
@@ -2123,10 +1972,13 @@ FINAL,PROXY
                         url.searchParams.set('lang', lang);
                         window.history.replaceState(null, '', url.toString());
                         
-                        // 更新语言并重新加载页面
+                        // 更新语言并重新渲染
                         currentLang = lang;
                         applyTranslations();
-                        loadNodes();
+                        // 使用已有的节点数据重新渲染，而不是重新加载
+                        if (nodes.length > 0) {
+                            renderNodes(nodes);
+                        }
                     }
                 });
             });
