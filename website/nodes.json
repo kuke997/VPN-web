@@ -1,14 +1,14 @@
 [
   {
-    "id": "4e751856-4813-4467-9e8a-57d200e65f5f",
+    "id": "40991ff6-471f-4d7d-b541-17a94938b44b",
     "name": "[美国] CloudFlare - 节点",
     "type": "vmess",
-    "server": "104.21.112.1",
+    "server": "104.21.64.1",
     "port": 2087,
     "clash_config": {
       "name": "[美国] CloudFlare - 节点",
       "type": "vmess",
-      "server": "104.21.112.1",
+      "server": "104.21.64.1",
       "port": 2087,
       "uuid": "1c36906e-1a21-4330-b04f-85baf1a6ff26",
       "alterId": 0,
@@ -24,10 +24,10 @@
     },
     "source": "https://raw.githubusercontent.com/Pawdroid/Free-servers/main/sub",
     "latency": 2,
-    "last_checked": "2025-06-14T18:49:08.825473+00:00"
+    "last_checked": "2025-06-15T01:26:24.785168+00:00"
   },
   {
-    "id": "31aaadee-549a-4802-9a05-ba4b6c7c4cf7",
+    "id": "f5300ffc-548d-43c4-ab37-59d095da8d55",
     "name": "[美国] Fastly - Anycast节点",
     "type": "vmess",
     "server": "gov.uk",
@@ -50,7 +50,29 @@
       }
     },
     "source": "https://raw.githubusercontent.com/freefq/free/master/v2",
-    "latency": 2,
-    "last_checked": "2025-06-14T18:49:08.919648+00:00"
+    "latency": 1,
+    "last_checked": "2025-06-15T01:26:24.941776+00:00"
+  },
+  {
+    "id": "9e23423a-cdcc-4bf8-8c2c-563d9b04b1f9",
+    "name": "[香港] 未知服务商 - 节点",
+    "type": "vmess",
+    "server": "43.247.135.2",
+    "port": 20332,
+    "clash_config": {
+      "name": "[香港] 未知服务商 - 节点",
+      "type": "vmess",
+      "server": "43.247.135.2",
+      "port": 20332,
+      "uuid": "8037ce00-c860-4213-b888-be5c7ed6ea48",
+      "alterId": 0,
+      "cipher": "auto",
+      "udp": true,
+      "tls": false,
+      "skip-cert-verify": true
+    },
+    "source": "https://raw.githubusercontent.com/aiboboxx/v2rayfree/main/v2",
+    "latency": 1653,
+    "last_checked": "2025-06-15T01:26:26.434486+00:00"
   }
 ]
