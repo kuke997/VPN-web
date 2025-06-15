@@ -1,6 +1,6 @@
 [
   {
-    "id": "27c6b23b-62af-4d76-8b58-023fcb4a59af",
+    "id": "fa86c7dd-0078-47f5-b8bc-bc68029b3a25",
     "name": "[美国] Fastly - Anycast节点",
     "type": "vmess",
     "server": "gov.uk",
@@ -23,11 +23,38 @@
       }
     },
     "source": "https://raw.githubusercontent.com/freefq/free/master/v2",
-    "latency": 7,
-    "last_checked": "2025-06-15T02:54:01.246568+00:00"
+    "latency": 1,
+    "last_checked": "2025-06-15T03:06:34.722935+00:00"
   },
   {
-    "id": "ba360606-5020-4134-b7a9-7e2ea2ab5fad",
+    "id": "a406b1b3-4715-49c9-a46d-479b01bfd374",
+    "name": "[美国] CloudFlare - 节点",
+    "type": "vmess",
+    "server": "xxccvfrty.999836.xyz",
+    "port": 80,
+    "clash_config": {
+      "name": "[美国] CloudFlare - 节点",
+      "type": "vmess",
+      "server": "xxccvfrty.999836.xyz",
+      "port": 80,
+      "uuid": "90f357dd-79ac-47c6-b0b8-958e2d19de07",
+      "alterId": 0,
+      "cipher": "auto",
+      "udp": true,
+      "tls": false,
+      "skip-cert-verify": true,
+      "network": "ws",
+      "ws-path": "/10W6SJaK0F0oVXeNU6S2RVRP",
+      "ws-headers": {
+        "Host": "xxccvfrty.999836.xyz"
+      }
+    },
+    "source": "https://raw.githubusercontent.com/Pawdroid/Free-servers/main/sub",
+    "latency": 2,
+    "last_checked": "2025-06-15T03:06:34.723290+00:00"
+  },
+  {
+    "id": "4bf619db-30e6-4ff3-bf69-ba3a7c9afddc",
     "name": "[日本] 未知服务商 - 节点",
     "type": "vmess",
     "server": "140.227.28.92",
@@ -45,11 +72,11 @@
       "skip-cert-verify": true
     },
     "source": "https://raw.githubusercontent.com/aiboboxx/v2rayfree/main/v2",
-    "latency": 108,
-    "last_checked": "2025-06-15T02:54:01.328969+00:00"
+    "latency": 142,
+    "last_checked": "2025-06-15T03:06:34.839863+00:00"
   },
   {
-    "id": "37278f88-d00f-4267-b100-30df1e2af1d5",
+    "id": "5c01a523-7ebb-433e-ac82-c86aca1575f2",
     "name": "[韩国] 未知服务商 - 节点",
     "type": "vmess",
     "server": "203.227.44.74",
@@ -67,34 +94,34 @@
       "skip-cert-verify": true
     },
     "source": "https://raw.githubusercontent.com/aiboboxx/v2rayfree/main/v2",
-    "latency": 130,
-    "last_checked": "2025-06-15T02:54:01.351551+00:00"
+    "latency": 162,
+    "last_checked": "2025-06-15T03:06:34.860099+00:00"
   },
   {
-    "id": "683917c0-e8c9-4d04-9186-7bddb41fabec",
-    "name": "[美国] CloudFlare - 节点",
+    "id": "0a61fef8-79dd-4ec0-958a-608ed79b6008",
+    "name": "[香港] 未知服务商 - 节点",
     "type": "vmess",
-    "server": "de01.sh-cloudflare.sbs",
-    "port": 2096,
+    "server": "4da9741f-swq1s0-sxmlck-1ta58.hgc1.tcpbbr.net",
+    "port": 8080,
     "clash_config": {
-      "name": "[美国] CloudFlare - 节点",
+      "name": "[香港] 未知服务商 - 节点",
       "type": "vmess",
-      "server": "de01.sh-cloudflare.sbs",
-      "port": 2096,
-      "uuid": "dc127c5e-c6f4-4665-a4b9-4ddef9a5403d",
+      "server": "4da9741f-swq1s0-sxmlck-1ta58.hgc1.tcpbbr.net",
+      "port": 8080,
+      "uuid": "e2d8b574-e089-11ef-9cc7-f23c9164ca5d",
       "alterId": 0,
       "cipher": "auto",
       "udp": true,
-      "tls": true,
+      "tls": false,
       "skip-cert-verify": true,
       "network": "ws",
       "ws-path": "/",
       "ws-headers": {
-        "Host": "de01.sh-cloudflare.sbs"
+        "Host": "broadcastlv.chat.bilibili.com"
       }
     },
     "source": "https://raw.githubusercontent.com/Pawdroid/Free-servers/main/sub",
-    "latency": 8,
-    "last_checked": "2025-06-15T02:54:01.355025+00:00"
+    "latency": 206,
+    "last_checked": "2025-06-15T03:06:34.957658+00:00"
   }
 ]
