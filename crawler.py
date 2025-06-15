@@ -9,6 +9,7 @@ import uuid
 import os
 import logging
 import argparse
+import hashlib
 from datetime import datetime, timezone
 from urllib.parse import urlparse
 import concurrent.futures
@@ -72,6 +73,9 @@ def fetch_source(url, retry=3, backoff_factor=0.5):
 def safe_base64_decode(base64_str):
     """安全地解码Base64字符串"""
     try:
+        # 移除所有非Base64字符
+        base64_str = re.sub(r'[^A-Za-z0-9+/=]', '', base64_str)
+        
         # 处理URL安全的Base64
         base64_str = base64_str.replace('-', '+').replace('_', '/')
         
@@ -80,7 +84,7 @@ def safe_base64_decode(base64_str):
         if padding > 0:
             base64_str += '=' * (4 - padding)
         
-        return base64.b64decode(base64_str).decode('utf-8')
+        return base64.b64decode(base64_str).decode('utf-8', errors='ignore')
     except Exception as e:
         logging.warning(f"Base64解码失败: {str(e)}")
         return None
@@ -99,9 +103,6 @@ def clean_node_name(name):
     # 移除多余符号
     name = re.sub(r'[|\\]', ' ', name)
     
-    # 标准化国家/地区名称
-    name = re.sub(r'([a-zA-Z]+)\d+', r'\1', name)  # 移除数字后缀
-    
     # 提取国家/地区信息
     country_match = re.search(r'(美国|日本|韩国|新加坡|台湾|香港|英国|德国|加拿大|俄罗斯|印度|巴西|澳大利亚|法国|荷兰|瑞士|瑞典|意大利|西班牙|土耳其|南非)', name)
     country = country_match.group(1) if country_match else "未知地区"
@@ -114,8 +115,9 @@ def clean_node_name(name):
     type_match = re.search(r'(CDN节点|Anycast节点|中转节点|直连节点|优质线路|普通线路|高速节点)', name)
     node_type = type_match.group(1) if type_match else "节点"
     
-    # 构建标准化名称
-    return f"[{country}] {provider} - {node_type}"
+    # 构建标准化名称 - 添加唯一标识符
+    unique_id = hashlib.md5(name.encode()).hexdigest()[:6]
+    return f"[{country}] {provider} - {node_type} - {unique_id}"
 
 def parse_clash_config(content):
     """解析Clash配置文件"""
@@ -222,8 +224,9 @@ def parse_subscription_content(content, source_url):
     try:
         # 尝试Base64解码
         try:
-            if len(content) > 100 and '://' not in content:
-                decoded = base64.b64decode(content).decode('utf-8')
+            # 检查是否是有效的Base64字符串
+            if re.match(r'^[a-zA-Z0-9+/=]+$', content) and len(content) > 100:
+                decoded = base64.b64decode(content).decode('utf-8', errors='ignore')
                 content = decoded
         except:
             pass
@@ -314,7 +317,12 @@ def parse_subscription_content(content, source_url):
                 elif line.startswith("ss://"):
                     # 解析Shadowsocks
                     base64_str = line[5:].split('#')[0]
-                    decoded = safe_base64_decode(base64_str)
+                    
+                    # 尝试直接解析
+                    if '@' in base64_str:
+                        decoded = base64_str
+                    else:
+                        decoded = safe_base64_decode(base64_str)
                     
                     if not decoded:
                         continue
@@ -324,7 +332,7 @@ def parse_subscription_content(content, source_url):
                     name = clean_node_name(name_match.group(1)) if name_match else f"ss-{line[5:15]}"
                     
                     # 处理不同的SS格式
-                    method, password, server, port = "", "", "", "443"  # 默认端口443
+                    method, password, server, port = "", "", "", ""
                     
                     # 尝试解析标准格式: method:password@server:port
                     if '@' in decoded:
@@ -360,8 +368,13 @@ def parse_subscription_content(content, source_url):
                     try:
                         port = int(port)
                     except (ValueError, TypeError):
-                        logging.warning(f"无效的端口号: {port}, 使用默认端口443")
-                        port = 443
+                        # 如果端口无效，尝试从其他位置提取
+                        port_match = re.search(r':(\d+)(/|$)', line)
+                        if port_match:
+                            port = int(port_match.group(1))
+                        else:
+                            logging.warning(f"无效的端口号: {port}, 跳过节点: {name}")
+                            continue
                     
                     # 跳过无效节点
                     if not server or not port:
@@ -389,6 +402,41 @@ def parse_subscription_content(content, source_url):
                         "source": source_url
                     }
                     nodes.append(node)
+                
+                # Trojan节点
+                elif line.startswith("trojan://"):
+                    # 解析Trojan节点
+                    try:
+                        parsed = urlparse(line)
+                        server = parsed.hostname
+                        port = parsed.port or 443
+                        password = parsed.username
+                        name = clean_node_name(parsed.fragment) if parsed.fragment else f"trojan-{server}"
+                        
+                        # 生成Clash配置
+                        clash_config = {
+                            "name": name,
+                            "type": "trojan",
+                            "server": server,
+                            "port": int(port),
+                            "password": password,
+                            "udp": True,
+                            "skip-cert-verify": True
+                        }
+                        
+                        node = {
+                            "id": str(uuid.uuid4()),
+                            "name": name,
+                            "type": "trojan",
+                            "server": server,
+                            "port": port,
+                            "clash_config": clash_config,
+                            "source": source_url
+                        }
+                        nodes.append(node)
+                    except Exception as e:
+                        logging.error(f"解析Trojan节点失败: {str(e)} - {line[:60]}")
+                
             except Exception as e:
                 logging.error(f"解析节点失败: {str(e)} - {line[:60]}")
         
@@ -510,13 +558,13 @@ def fetch_all_sources(output_file):
         logging.error("⚠️ 未获取到任何节点，退出。")
         return []
     
-    # 去重
+    # 去重（使用节点ID）
     unique_nodes = []
-    seen_names = set()
+    seen_ids = set()
     
     for node in all_nodes:
-        if node["name"] not in seen_names:
-            seen_names.add(node["name"])
+        if node["id"] not in seen_ids:
+            seen_ids.add(node["id"])
             unique_nodes.append(node)
     
     logging.info(f"去重后节点数: {len(unique_nodes)}")
