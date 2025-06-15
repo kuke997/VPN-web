@@ -13,6 +13,7 @@ from datetime import datetime, timezone
 from urllib.parse import urlparse
 import concurrent.futures
 import yaml
+import ssl  # 添加SSL支持
 
 # 配置日志
 logging.basicConfig(
@@ -383,7 +384,7 @@ def parse_subscription_content(content, source_url):
         return [], "unknown"
 
 def test_node_connectivity(node, timeout=3):
-    """测试节点连接性"""
+    """测试节点连接性（支持SSL/TLS）"""
     server = node.get("server", "")
     port = node.get("port", "")
     
@@ -398,12 +399,27 @@ def test_node_connectivity(node, timeout=3):
         except:
             ip = server
             
-        # 测试TCP连接
-        start_time = time.time()
-        sock = socket.create_connection((ip, int(port)), timeout=timeout)
-        sock.close()
+        # 创建socket连接
+        sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+        sock.settimeout(timeout)
         
-        latency = int((time.time() - start_time) * 1000)
+        # 处理SSL/TLS连接
+        if node.get("tls", False) or node.get("security", "") == "tls":
+            context = ssl.create_default_context()
+            context.check_hostname = False
+            context.verify_mode = ssl.CERT_NONE
+            
+            start_time = time.time()
+            with context.wrap_socket(sock, server_hostname=server) as ssock:
+                ssock.connect((ip, int(port)))
+            latency = int((time.time() - start_time) * 1000)
+        else:
+            # 普通TCP连接
+            start_time = time.time()
+            sock.connect((ip, int(port)))
+            latency = int((time.time() - start_time) * 1000)
+        
+        sock.close()
         logging.info(f"节点有效: {node['name']} - 延迟: {latency}ms")
         return latency
     except socket.gaierror:
@@ -544,7 +560,7 @@ def fetch_all_sources(output_file):
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description='爬取免费VPN节点')
-    parser.add_argument('-o', '--output', default='nodes.json', help='输出文件路径')
+    parser.add_argument('-o', '--output', default='website/nodes.json', help='输出文件路径')  # 修复输出路径
     args = parser.parse_args()
     
     logging.info("="*50)
