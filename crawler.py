@@ -26,6 +26,14 @@ logging.basicConfig(
     ]
 )
 
+# 合法的Shadowsocks加密方法
+VALID_SS_CIPHERS = [
+    "aes-128-gcm", "aes-256-gcm", "chacha20-ietf-poly1305", 
+    "xchacha20-ietf-poly1305", "none", "plain", "aes-128-cfb",
+    "aes-192-cfb", "aes-256-cfb", "aes-128-ctr", "aes-192-ctr",
+    "aes-256-ctr", "rc4-md5", "chacha20-ietf", "chacha20", "salsa20"
+]
+
 # 更新为更可靠的免费节点源
 SOURCES = [
     "https://raw.githubusercontent.com/freefq/free/master/v2",
@@ -197,10 +205,15 @@ def parse_clash_config(content):
                         clash_config["ws-path"] = node_dict.get("ws-path", "/")
                         clash_config["ws-headers"] = {"Host": node_dict.get("host", "")}
                 
-                # Shadowsocks节点
+                # Shadowsocks节点 - 验证加密方法
                 elif node_type == "ss":
+                    cipher = node_dict.get("cipher", "aes-256-gcm")
+                    if cipher not in VALID_SS_CIPHERS:
+                        logging.warning(f"无效的加密方法: {cipher}, 使用默认值: aes-256-gcm")
+                        cipher = "aes-256-gcm"
+                    
                     clash_config.update({
-                        "cipher": node_dict.get("cipher", "aes-256-gcm"),
+                        "cipher": cipher,
                         "password": node_dict.get("password", "")
                     })
                 
@@ -381,6 +394,11 @@ def parse_subscription_content(content, source_url):
                         logging.warning(f"跳过无效节点: {line[:60]}...")
                         continue
                     
+                    # 验证加密方法有效性
+                    if method not in VALID_SS_CIPHERS:
+                        logging.warning(f"无效的加密方法: {method}, 使用默认值: aes-256-gcm")
+                        method = "aes-256-gcm"
+                    
                     # 生成Clash配置
                     clash_config = {
                         "name": name,
@@ -467,7 +485,7 @@ def test_node_connectivity(node, timeout=3):
         sock.settimeout(timeout)
         
         # 处理SSL/TLS连接
-        if node.get("tls", False) or node.get("security", "") == "tls":
+        if node.get("clash_config", {}).get("tls", False) or node.get("clash_config", {}).get("security", "") == "tls":
             context = ssl.create_default_context()
             context.check_hostname = False
             context.verify_mode = ssl.CERT_NONE
@@ -509,9 +527,24 @@ def generate_clash_subscription(nodes):
             {
                 "name": "自动选择",
                 "type": "url-test",
-                "proxies": [node["name"] for node in nodes],
+                "proxies": [node["clash_config"]["name"] for node in nodes],
                 "url": "http://www.gstatic.com/generate_204",
                 "interval": 300
+            },
+            {
+                "name": "香港节点",
+                "type": "select",
+                "proxies": [node["clash_config"]["name"] for node in nodes if "香港" in node["clash_config"]["name"]]
+            },
+            {
+                "name": "美国节点",
+                "type": "select",
+                "proxies": [node["clash_config"]["name"] for node in nodes if "美国" in node["clash_config"]["name"]]
+            },
+            {
+                "name": "日本节点",
+                "type": "select",
+                "proxies": [node["clash_config"]["name"] for node in nodes if "日本" in node["clash_config"]["name"]]
             }
         ],
         "rules": [
@@ -525,6 +558,10 @@ def generate_clash_subscription(nodes):
     
     for node in nodes:
         if "clash_config" in node:
+            # 确保所有节点都有udp设置
+            if "udp" not in node["clash_config"]:
+                node["clash_config"]["udp"] = True
+            
             config["proxies"].append(node["clash_config"])
     
     return yaml.dump(config, allow_unicode=True, sort_keys=False)
@@ -557,12 +594,17 @@ def generate_shadowrocket_subscription(nodes):
                 shadowrocket_configs.append(f"vmess://{vmess_str}")
             elif config['type'] == 'ss':
                 # Shadowsocks 格式
-                ss_str = f"{config['cipher']}:{config['password']}@{config['server']}:{config['port']}"
+                # 验证加密方法有效性
+                cipher = config['cipher']
+                if cipher not in VALID_SS_CIPHERS:
+                    cipher = "aes-256-gcm"
+                    
+                ss_str = f"{cipher}:{config['password']}@{config['server']}:{config['port']}"
                 encoded_ss = base64.b64encode(ss_str.encode()).decode()
-                shadowrocket_configs.append(f"ss://{encoded_ss}")
+                shadowrocket_configs.append(f"ss://{encoded_ss}#{config['name']}")
             elif config['type'] == 'trojan':
                 # Trojan 格式
-                trojan_str = f"trojan://{config['password']}@{config['server']}:{config['port']}"
+                trojan_str = f"trojan://{config['password']}@{config['server']}:{config['port']}?sni={config.get('sni', '')}#{config['name']}"
                 shadowrocket_configs.append(trojan_str)
     
     return '\n'.join(shadowrocket_configs)
@@ -620,7 +662,7 @@ def fetch_all_sources(output_file):
             node = futures[future]
             try:
                 latency = future.result()
-                if latency is not None and latency < 5000:  # 放宽延迟限制到5秒
+                if latency is not None and latency < 3000:  # 延迟限制在3秒内
                     node["latency"] = latency
                     node["last_checked"] = datetime.now(timezone.utc).isoformat()
                     valid_nodes.append(node)
