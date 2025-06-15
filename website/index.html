@@ -4,17 +4,43 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>CloakAccess - 免费VPN节点服务</title>
+    <!-- SEO优化开始 -->
     <meta name="description" content="CloakAccess - 免费VPN节点服务，提供最新Clash和Shadowrocket配置，全球服务器覆盖，高速稳定连接，多语言支持">
     <meta name="keywords" content="免费VPN,Clash节点,Shadowrocket节点,翻墙节点,科学上网,免费代理,VPN配置,网络加速">
     <meta name="robots" content="index, follow">
+    <meta name="googlebot" content="index, follow">
     <link rel="alternate" hreflang="en" href="https://cloakaccess.com/?lang=en" />
     <link rel="alternate" hreflang="hi" href="https://cloakaccess.com/?lang=hi" />
     <link rel="alternate" hreflang="pt" href="https://cloakaccess.com/?lang=pt" />
     <link rel="alternate" hreflang="zh" href="https://cloakaccess.com/?lang=zh" />
     <link rel="canonical" href="https://cloakaccess.com/" />
     
+    <!-- Open Graph / Social Media Tags -->
+    <meta property="og:title" content="CloakAccess - 免费VPN节点服务">
+    <meta property="og:description" content="提供免费、安全、快速的VPN节点服务，支持多语言和多种客户端">
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://cloakaccess.com/">
+    <meta property="og:image" content="https://cloakaccess.com/images/og-image.jpg">
+    
+    <!-- 结构化数据 -->
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "WebSite",
+      "name": "CloakAccess",
+      "url": "https://cloakaccess.com/",
+      "potentialAction": {
+        "@type": "SearchAction",
+        "target": "https://cloakaccess.com/?q={search_term}",
+        "query-input": "required name=search_term"
+      }
+    }
+    </script>
+    <!-- SEO优化结束 -->
+    
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <!-- 添加国旗图标库 -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/flag-icons/6.6.6/css/flag-icons.min.css">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/js-yaml/4.1.0/js-yaml.min.js"></script>
     <style>
@@ -51,6 +77,7 @@
             padding: 0 20px;
         }
         
+        /* 头部样式 */
         header {
             padding: 20px 0;
             background: rgba(15, 23, 42, 0.8);
@@ -130,6 +157,7 @@
             background: rgba(99, 102, 241, 0.1);
         }
         
+        /* 语言切换 */
         .language-switcher {
             position: relative;
             margin-left: 15px;
@@ -187,6 +215,7 @@
             display: block;
         }
         
+        /* 英雄区域 */
         .hero {
             padding: 80px 0 60px;
             text-align: center;
@@ -221,6 +250,7 @@
             margin-top: 30px;
         }
         
+        /* SEO内容区域 */
         .content-section {
             padding: 60px 0;
             background: rgba(15, 23, 42, 0.4);
@@ -284,6 +314,7 @@
             background: rgba(99, 102, 241, 0.1);
         }
         
+        /* 订阅区域 */
         .subscription-section {
             padding: 80px 0;
             background: rgba(15, 23, 42, 0.4);
@@ -366,6 +397,7 @@
             align-items: center;
         }
         
+        /* 节点区域 */
         .nodes-section {
             padding: 80px 0;
         }
@@ -537,6 +569,7 @@
             border-top: 1px solid rgba(255, 255, 255, 0.1);
         }
         
+        /* 页脚 */
         footer {
             padding: 60px 0 30px;
             background: rgba(15, 23, 42, 0.8);
@@ -585,6 +618,7 @@
             font-size: 0.9rem;
         }
         
+        /* 复制按钮样式 */
         .copy-btn {
             background: transparent;
             border: none;
@@ -597,188 +631,6 @@
         
         .copy-btn:hover {
             background: rgba(99, 102, 241, 0.1);
-        }
-        
-        .modal {
-            display: none;
-            position: fixed;
-            z-index: 1000;
-            left: 0;
-            top: 0;
-            width: 100%;
-            height: 100%;
-            overflow: auto;
-            background-color: rgba(0,0,0,0.7);
-        }
-        
-        .modal-content {
-            background: #1e293b;
-            margin: 10% auto;
-            padding: 30px;
-            border-radius: 16px;
-            width: 100%;
-            max-width: 400px;
-            position: relative;
-            border: 1px solid rgba(99, 102, 241, 0.3);
-        }
-        
-        .close {
-            color: #aaa;
-            position: absolute;
-            top: 15px;
-            right: 20px;
-            font-size: 28px;
-            font-weight: bold;
-            cursor: pointer;
-        }
-        
-        .close:hover,
-        .close:focus {
-            color: white;
-            text-decoration: none;
-        }
-        
-        .auth-form {
-            padding: 20px;
-        }
-        
-        .auth-form h2 {
-            text-align: center;
-            margin-bottom: 25px;
-            color: white;
-        }
-        
-        .form-group {
-            margin-bottom: 20px;
-        }
-        
-        .form-group label {
-            display: block;
-            margin-bottom: 8px;
-            color: #cbd5e1;
-        }
-        
-        .form-group input {
-            width: 100%;
-            padding: 12px 15px;
-            border-radius: 8px;
-            background: rgba(15, 23, 42, 0.6);
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            color: white;
-            font-size: 1rem;
-        }
-        
-        .auth-form .btn {
-            width: 100%;
-            padding: 12px;
-            margin-top: 10px;
-        }
-        
-        .google-login {
-            margin: 20px 0;
-            position: relative;
-            text-align: center;
-        }
-        
-        .google-login::before,
-        .google-login::after {
-            content: '';
-            position: absolute;
-            top: 50%;
-            width: 30%;
-            height: 1px;
-            background: rgba(255, 255, 255, 0.1);
-        }
-        
-        .google-login::before {
-            left: 0;
-        }
-        
-        .google-login::after {
-            right: 0;
-        }
-        
-        .google-btn {
-            background: #fff !important;
-            color: #4285F4 !important;
-            border: none !important;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 10px;
-        }
-        
-        .google-btn i {
-            color: #4285F4;
-        }
-        
-        .auth-switch {
-            text-align: center;
-            margin-top: 20px;
-            color: #94a3b8;
-        }
-        
-        .auth-switch a {
-            color: var(--primary);
-            text-decoration: none;
-        }
-        
-        .config-success {
-            position: fixed;
-            top: 20px;
-            right: 20px;
-            background: var(--success);
-            color: white;
-            padding: 15px 25px;
-            border-radius: 8px;
-            box-shadow: 0 4px 12px rgba(0,0,0,0.2);
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            z-index: 1000;
-            transform: translateX(120%);
-            transition: transform 0.3s ease-out;
-        }
-        
-        .config-success.show {
-            transform: translateX(0);
-        }
-        
-        .clash-config-guide {
-            background: rgba(30, 41, 59, 0.6);
-            border-radius: 16px;
-            padding: 30px;
-            margin-top: 40px;
-            border: 1px solid var(--primary);
-        }
-        
-        .clash-config-guide h3 {
-            color: var(--primary);
-            margin-bottom: 20px;
-        }
-        
-        .guide-steps {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-            gap: 20px;
-        }
-        
-        .guide-step {
-            background: rgba(15, 23, 42, 0.4);
-            padding: 20px;
-            border-radius: 10px;
-        }
-        
-        .guide-step .number {
-            display: inline-block;
-            width: 30px;
-            height: 30px;
-            background: var(--primary);
-            color: white;
-            border-radius: 50%;
-            text-align: center;
-            line-height: 30px;
-            margin-right: 10px;
         }
     </style>
 </head>
@@ -873,33 +725,6 @@
                                 <i class="fas fa-copy"></i>
                             </button>
                         </p>
-                    </div>
-                </div>
-            </div>
-            
-            <!-- Clash配置指南 -->
-            <div class="clash-config-guide">
-                <h3 data-i18n="guide.title"><i class="fas fa-info-circle"></i> Clash配置导入指南</h3>
-                <div class="guide-steps">
-                    <div class="guide-step">
-                        <span class="number">1</span>
-                        <strong data-i18n="guide.step1_title">下载配置文件</strong>
-                        <p data-i18n="guide.step1_desc">点击上方"下载Clash订阅"按钮获取配置文件</p>
-                    </div>
-                    <div class="guide-step">
-                        <span class="number">2</span>
-                        <strong data-i18n="guide.step2_title">导入Clash</strong>
-                        <p data-i18n="guide.step2_desc">打开Clash客户端，选择"配置" > "导入配置"</p>
-                    </div>
-                    <div class="guide-step">
-                        <span class="number">3</span>
-                        <strong data-i18n="guide.step3_title">选择配置文件</strong>
-                        <p data-i18n="guide.step3_desc">选择下载的cloakaccess_clash_config.yaml文件</p>
-                    </div>
-                    <div class="guide-step">
-                        <span class="number">4</span>
-                        <strong data-i18n="guide.step4_title">启用配置</strong>
-                        <p data-i18n="guide.step4_desc">在配置列表中选择导入的配置，点击"启用"</p>
                     </div>
                 </div>
             </div>
@@ -1041,22 +866,135 @@
         </div>
     </footer>
 
-    <!-- 配置生成成功提示 -->
-    <div id="config-success" class="config-success">
-        <i class="fas fa-check-circle"></i>
-        <span data-i18n="config.success">Clash配置生成成功！请导入Clash客户端使用</span>
-    </div>
+    <!-- 模态框样式 -->
+    <style>
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            overflow: auto;
+            background-color: rgba(0,0,0,0.7);
+        }
+        
+        .modal-content {
+            background: #1e293b;
+            margin: 10% auto;
+            padding: 30px;
+            border-radius: 16px;
+            width: 100%;
+            max-width: 400px;
+            position: relative;
+            border: 1px solid rgba(99, 102, 241, 0.3);
+        }
+        
+        .close {
+            color: #aaa;
+            position: absolute;
+            top: 15px;
+            right: 20px;
+            font-size: 28px;
+            font-weight: bold;
+            cursor: pointer;
+        }
+        
+        .close:hover,
+        .close:focus {
+            color: white;
+            text-decoration: none;
+        }
+        
+        .auth-form {
+            padding: 20px;
+        }
+        
+        .auth-form h2 {
+            text-align: center;
+            margin-bottom: 25px;
+            color: white;
+        }
+        
+        .form-group {
+            margin-bottom: 20px;
+        }
+        
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            color: #cbd5e1;
+        }
+        
+        .form-group input {
+            width: 100%;
+            padding: 12px 15px;
+            border-radius: 8px;
+            background: rgba(15, 23, 42, 0.6);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            color: white;
+            font-size: 1rem;
+        }
+        
+        .auth-form .btn {
+            width: 100%;
+            padding: 12px;
+            margin-top: 10px;
+        }
+        
+        .google-login {
+            margin: 20px 0;
+            position: relative;
+            text-align: center;
+        }
+        
+        .google-login::before,
+        .google-login::after {
+            content: '';
+            position: absolute;
+            top: 50%;
+            width: 30%;
+            height: 1px;
+            background: rgba(255, 255, 255, 0.1);
+        }
+        
+        .google-login::before {
+            left: 0;
+        }
+        
+        .google-login::after {
+            right: 0;
+        }
+        
+        .google-btn {
+            background: #fff !important;
+            color: #4285F4 !important;
+            border: none !important;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+        }
+        
+        .google-btn i {
+            color: #4285F4;
+        }
+        
+        .auth-switch {
+            text-align: center;
+            margin-top: 20px;
+            color: #94a3b8;
+        }
+        
+        .auth-switch a {
+            color: var(--primary);
+            text-decoration: none;
+        }
+    </style>
 
     <script>
-        // 定义合法的Shadowsocks加密方法
-        const validSSciphers = [
-            "aes-128-gcm", "aes-256-gcm", "chacha20-ietf-poly1305", 
-            "xchacha20-ietf-poly1305", "none", "plain", "aes-128-cfb",
-            "aes-192-cfb", "aes-256-cfb", "aes-128-ctr", "aes-192-ctr",
-            "aes-256-ctr", "rc4-md5", "chacha20-ietf", "chacha20", "salsa20"
-        ];
-
-        // 多语言翻译 - 完整版本
+        // 多语言翻译
         const translations = {
             en: {
                 // 导航
@@ -1173,21 +1111,7 @@
                 "region.澳大利亚": "Australia",
                 "region.印度": "India",
                 "region.巴西": "Brazil",
-                "region.未知地区": "Unknown Region",
-                
-                // 指南
-                "guide.title": "Clash Configuration Guide",
-                "guide.step1_title": "Download Configuration",
-                "guide.step1_desc": "Click the 'Download Clash Subscription' button above",
-                "guide.step2_title": "Import to Clash",
-                "guide.step2_desc": "Open Clash client, go to 'Config' > 'Import Config'",
-                "guide.step3_title": "Select Config File",
-                "guide.step3_desc": "Select the downloaded cloakaccess_clash_config.yaml file",
-                "guide.step4_title": "Activate Configuration",
-                "guide.step4_desc": "Select the imported config and click 'Activate'",
-                
-                // 配置成功提示
-                "config.success": "Clash configuration generated successfully! Please import to Clash client."
+                "region.未知地区": "Unknown Region"
             },
             hi: {
                 // 导航
@@ -1299,21 +1223,7 @@
                 "region.澳大利亚": "ऑस्ट्रेलिया",
                 "region.印度": "भारत",
                 "region.巴西": "ब्राज़ील",
-                "region.未知地区": "अज्ञात क्षेत्र",
-                
-                // 指南
-                "guide.title": "क्लैश कॉन्फ़िगरेशन गाइड",
-                "guide.step1_title": "कॉन्फ़िगरेशन डाउनलोड करें",
-                "guide.step1_desc": "ऊपर 'क्लैश सब्सक्रिप्शन डाउनलोड करें' बटन पर क्लिक करें",
-                "guide.step2_title": "क्लैश में आयात करें",
-                "guide.step2_desc": "क्लैश क्लाइंट खोलें, 'कॉन्फ़िग' > 'कॉन्फ़िग आयात करें' पर जाएँ",
-                "guide.step3_title": "कॉन्फ़िग फ़ाइल चुनें",
-                "guide.step3_desc": "डाउनलोड की गई cloakaccess_clash_config.yaml फ़ाइल चुनें",
-                "guide.step4_title": "कॉन्फ़िगरेशन सक्रिय करें",
-                "guide.step4_desc": "आयात की गई कॉन्फ़िग चुनें और 'सक्रिय करें' पर क्लिक करें",
-                
-                // 配置成功提示
-                "config.success": "क्लैश कॉन्फ़िगरेशन सफलतापूर्वक बनाया गया! कृपया क्लैश क्लाइंट में आयात करें।"
+                "region.未知地区": "अज्ञात क्षेत्र"
             },
             pt: {
                 // 导航
@@ -1425,21 +1335,7 @@
                 "region.澳大利亚": "Austrália",
                 "region.印度": "Índia",
                 "region.巴西": "Brasil",
-                "region.未知地区": "Região Desconhecida",
-                
-                // 指南
-                "guide.title": "Guia de Configuração do Clash",
-                "guide.step1_title": "Baixar Configuração",
-                "guide.step1_desc": "Clique no botão 'Baixar Assinatura Clash' acima",
-                "guide.step2_title": "Importar para o Clash",
-                "guide.step2_desc": "Abra o cliente Clash, vá para 'Configuração' > 'Importar Configuração'",
-                "guide.step3_title": "Selecionar Arquivo de Configuração",
-                "guide.step3_desc": "Selecione o arquivo cloakaccess_clash_config.yaml baixado",
-                "guide.step4_title": "Ativar Configuração",
-                "guide.step4_desc": "Selecione a configuração importada e clique em 'Ativar'",
-                
-                // 配置成功提示
-                "config.success": "Configuração do Clash gerada com sucesso! Por favor, importe para o cliente Clash."
+                "region.未知地区": "Região Desconhecida"
             },
             zh: {
                 // 导航
@@ -1556,21 +1452,7 @@
                 "region.澳大利亚": "澳大利亚",
                 "region.印度": "印度",
                 "region.巴西": "巴西",
-                "region.未知地区": "未知地区",
-                
-                // 指南
-                "guide.title": "Clash配置导入指南",
-                "guide.step1_title": "下载配置文件",
-                "guide.step1_desc": "点击上方'下载Clash订阅'按钮获取配置文件",
-                "guide.step2_title": "导入Clash",
-                "guide.step2_desc": "打开Clash客户端，选择'配置' > '导入配置'",
-                "guide.step3_title": "选择配置文件",
-                "guide.step3_desc": "选择下载的cloakaccess_clash_config.yaml文件",
-                "guide.step4_title": "启用配置",
-                "guide.step4_desc": "在配置列表中选择导入的配置，点击'启用'",
-                
-                // 配置成功提示
-                "config.success": "Clash配置生成成功！请导入Clash客户端使用"
+                "region.未知地区": "未知地区"
             }
         };
 
@@ -1593,7 +1475,7 @@
             // 更新所有带data-i18n属性的元素
             document.querySelectorAll('[data-i18n]').forEach(el => {
                 const key = el.getAttribute('data-i18n');
-                if (translations[currentLang] && translations[currentLang][key]) {
+                if (translations[currentLang][key]) {
                     if (el.tagName === 'INPUT' && el.placeholder) {
                         el.placeholder = translations[currentLang][key];
                     } else {
@@ -1604,8 +1486,8 @@
             
             // 更新语言选择器
             const langBtn = document.querySelector('.language-btn span');
-            if (langBtn && translations[currentLang] && translations[currentLang]['lang.' + currentLang]) {
-                langBtn.innerHTML = translations[currentLang]['lang.' + currentLang];
+            if (langBtn) {
+                langBtn.innerHTML = translations[currentLang]['lang.' + currentLang] || currentLang;
             }
             
             // 更新语言下拉菜单激活状态
@@ -1626,16 +1508,134 @@
         // DOM元素
         const filterButtons = document.querySelectorAll('.filter-btn');
         const serverList = document.getElementById('server-list');
-        const configSuccess = document.getElementById('config-success');
         
-        // 显示配置成功提示
-        function showConfigSuccess() {
-            configSuccess.classList.add('show');
-            setTimeout(() => {
-                configSuccess.classList.remove('show');
-            }, 3000);
+        // 模态框相关
+        const authModal = document.getElementById('auth-modal');
+        const loginForm = document.getElementById('login-form');
+        const registerForm = document.getElementById('register-form');
+        
+        // 显示认证模态框
+        function showAuthModal(type = 'login') {
+            authModal.style.display = 'block';
+            showAuthForm(type);
         }
-
+        
+        // 关闭模态框
+        function closeAuthModal() {
+            authModal.style.display = 'none';
+        }
+        
+        // 切换登录/注册表单
+        function showAuthForm(type) {
+            if (type === 'login') {
+                loginForm.style.display = 'block';
+                registerForm.style.display = 'none';
+            } else {
+                loginForm.style.display = 'none';
+                registerForm.style.display = 'block';
+            }
+        }
+        
+        // 登录函数
+        function login() {
+            const email = document.getElementById('login-email').value;
+            const password = document.getElementById('login-password').value;
+            
+            if (!email || !password) {
+                alert(translations[currentLang]['auth.email_password_required'] || '请填写邮箱和密码');
+                return;
+            }
+            
+            // 模拟登录成功
+            closeAuthModal();
+            alert(translations[currentLang]['auth.login_success'] || '登录成功！');
+        }
+        
+        // 注册函数
+        function register() {
+            const email = document.getElementById('register-email').value;
+            const password = document.getElementById('register-password').value;
+            const confirm = document.getElementById('register-confirm').value;
+            
+            if (!email || !password || !confirm) {
+                alert(translations[currentLang]['auth.all_fields_required'] || '请填写所有字段');
+                return;
+            }
+            
+            if (password !== confirm) {
+                alert(translations[currentLang]['auth.password_mismatch'] || '两次输入的密码不一致');
+                return;
+            }
+            
+            if (password.length < 8) {
+                alert(translations[currentLang]['auth.password_length'] || '密码长度至少为8位');
+                return;
+            }
+            
+            // 模拟注册成功
+            closeAuthModal();
+            alert(translations[currentLang]['auth.register_success'] || '注册成功！');
+        }
+        
+        // Google登录/注册
+        function googleLogin() {
+            // 模拟成功
+            closeAuthModal();
+            alert(translations[currentLang]['auth.google_login_success'] || 'Google登录成功！');
+        }
+        
+        // 获取协议类型名称
+        function getProtocolType(type) {
+            const key = `protocol.${type}`;
+            return translations[currentLang][key] || type;
+        }
+        
+        // 国家/地区代码映射
+        const countryFlags = {
+            '美国': 'us',
+            '日本': 'jp',
+            '韩国': 'kr',
+            '新加坡': 'sg',
+            '香港': 'hk',
+            '台湾': 'tw',
+            '英国': 'gb',
+            '德国': 'de',
+            '法国': 'fr',
+            '加拿大': 'ca',
+            '俄罗斯': 'ru',
+            '澳大利亚': 'au',
+            '印度': 'in',
+            '巴西': 'br'
+        };
+        
+        // IP到地区的映射
+        function getRegionFromIP(ip) {
+            const ipMappings = {
+                "104.16": "美国",
+                "45.76": "日本",
+                "172.67": "香港",
+                "108.162": "新加坡",
+                "172.64": "德国",
+                "104.28": "美国",
+                "45.32": "日本",
+                "108.61": "香港",
+                "45.77": "新加坡",
+                "104.238": "德国",
+                "192.81": "美国",
+                "199.188": "日本",
+                "45.76": "香港",
+                "207.246": "新加坡",
+                "45.76": "德国"
+            };
+            
+            for (const prefix in ipMappings) {
+                if (ip.startsWith(prefix)) {
+                    return ipMappings[prefix];
+                }
+            }
+            return "未知地区";
+        }
+        
         // 加载节点数据
         async function loadNodes() {
             try {
@@ -1648,32 +1648,71 @@
                     }
                 }
                 
-                // 添加时间戳防止缓存
-                const timestamp = new Date().getTime();
-                const res = await fetch(`/nodes.json?t=${timestamp}`, { 
-                    cache: 'no-store',
-                    credentials: 'same-origin'
-                });
+                // 模拟从API获取节点数据
+                await new Promise(resolve => setTimeout(resolve, 1000));
                 
-                if (!res.ok) {
-                    throw new Error(translations[currentLang]['nodes.load_failed'] || '加载节点数据失败');
-                }
+                // 模拟节点数据
+                nodes = [
+                    {
+                        id: 1,
+                        name: "美国节点 #1",
+                        server: "104.16.123.45",
+                        port: 443,
+                        type: "vmess",
+                        latency: 128,
+                        active: true
+                    },
+                    {
+                        id: 2,
+                        name: "日本节点 #2",
+                        server: "45.76.89.12",
+                        port: 443,
+                        type: "ss",
+                        latency: 78,
+                        active: true
+                    },
+                    {
+                        id: 3,
+                        name: "香港节点 #3",
+                        server: "172.67.34.56",
+                        port: 443,
+                        type: "vmess",
+                        latency: 52,
+                        active: true
+                    },
+                    {
+                        id: 4,
+                        name: "新加坡节点 #4",
+                        server: "108.162.78.90",
+                        port: 443,
+                        type: "trojan",
+                        latency: 112,
+                        active: true
+                    },
+                    {
+                        id: 5,
+                        name: "德国节点 #5",
+                        server: "172.64.123.45",
+                        port: 443,
+                        type: "ss",
+                        latency: 145,
+                        active: true
+                    }
+                ];
                 
-                const data = await res.json();
-                return data;
+                renderNodes(nodes);
             } catch (error) {
-                console.error('加载 nodes.json 出错：', error);
+                console.error('加载节点失败:', error);
                 serverList.innerHTML = `
                     <div class="error-message">
                         <i class="fas fa-exclamation-triangle" style="font-size: 3rem; color: var(--warning); margin-bottom: 20px;"></i>
-                        <h3>${translations[currentLang]?.['nodes.load_failed_title'] || '节点加载失败'}</h3>
-                        <p>${error.message || translations[currentLang]?.['nodes.load_failed_message'] || '请刷新页面重试或稍后再访问'}</p>
+                        <h3>${translations[currentLang]['nodes.load_failed_title'] || '节点加载失败'}</h3>
+                        <p>${error.message || translations[currentLang]['nodes.load_failed_message'] || '请刷新页面重试或稍后再访问'}</p>
                         <button class="btn" onclick="location.reload()" style="margin-top: 20px;">
-                            ${translations[currentLang]?.['nodes.refresh'] || '刷新页面'}
+                            ${translations[currentLang]['nodes.refresh'] || '刷新页面'}
                         </button>
                     </div>
                 `;
-                return [];
             }
         }
         
@@ -1683,8 +1722,8 @@
                 serverList.innerHTML = `
                     <div class="error-message">
                         <i class="fas fa-frown" style="font-size: 3rem; color: var(--gray); margin-bottom: 20px;"></i>
-                        <h3>${translations[currentLang]?.['nodes.no_nodes_title'] || '暂无可用节点'}</h3>
-                        <p>${translations[currentLang]?.['nodes.no_nodes_message'] || '请稍后再尝试或联系管理员'}</p>
+                        <h3>${translations[currentLang]['nodes.no_nodes_title'] || '暂无可用节点'}</h3>
+                        <p>${translations[currentLang]['nodes.no_nodes_message'] || '请稍后再尝试或联系管理员'}</p>
                     </div>
                 `;
                 return;
@@ -1698,10 +1737,10 @@
             const thead = document.createElement('thead');
             thead.innerHTML = `
                 <tr>
-                    <th>${translations[currentLang]?.['nodes.name'] || '名称'}</th>
-                    <th>${translations[currentLang]?.['nodes.type'] || '类型'}</th>
-                    <th>${translations[currentLang]?.['nodes.status'] || '状态'}</th>
-                    <th>${translations[currentLang]?.['nodes.operation'] || '操作'}</th>
+                    <th>${translations[currentLang]['nodes.name'] || '名称'}</th>
+                    <th>${translations[currentLang]['nodes.type'] || '类型'}</th>
+                    <th>${translations[currentLang]['nodes.status'] || '状态'}</th>
+                    <th>${translations[currentLang]['nodes.operation'] || '操作'}</th>
                 </tr>
             `;
             table.appendChild(thead);
@@ -1712,51 +1751,38 @@
             nodesToRender.forEach(node => {
                 const row = document.createElement('tr');
                 
-                // 名称列
+                // 名称列 - 根据IP确定地区
                 const nameCell = document.createElement('td');
                 nameCell.className = 'node-name';
                 
-                // 地区映射
-                const regionMap = {
-                    "104.16": "美国",
-                    "45.76": "日本",
-                    "172.67": "香港",
-                    "108.162": "新加坡",
-                    "172.64": "德国"
-                };
-                
-                let regionName = "未知地区";
-                for (const prefix in regionMap) {
-                    if (node.server && node.server.startsWith(prefix)) {
-                        regionName = regionMap[prefix];
-                        break;
-                    }
-                }
+                // 根据IP确定地区
+                const regionName = getRegionFromIP(node.server);
                 
                 // 翻译地区名称
                 const regionKey = `region.${regionName}`;
-                const translatedRegion = translations[currentLang]?.[regionKey] || regionName;
+                const translatedRegion = translations[currentLang][regionKey] || regionName;
                 
                 // 查找国旗代码
-                const countryFlags = {
-                    '美国': 'us',
-                    '日本': 'jp',
-                    '香港': 'hk',
-                    '新加坡': 'sg',
-                    '德国': 'de'
-                };
-                
-                const countryCode = countryFlags[regionName] || 'globe';
+                let countryCode = 'globe';
+                if (regionName in countryFlags) {
+                    countryCode = countryFlags[regionName];
+                } else {
+                    // 尝试简化地区名称
+                    const simplifiedName = regionName.replace(/地区|节点|服务商/g, '');
+                    if (simplifiedName in countryFlags) {
+                        countryCode = countryFlags[simplifiedName];
+                    }
+                }
                 
                 nameCell.innerHTML = `
                     <span class="flag-icon fi fi-${countryCode}"></span>
-                    <span class="region-name">${node.name}</span>
+                    <span class="region-name">${translatedRegion} ${node.name.split('#')[1] || ''}</span>
                 `;
                 row.appendChild(nameCell);
                 
                 // 类型列
                 const typeCell = document.createElement('td');
-                const protocolType = node.type.toUpperCase();
+                const protocolType = getProtocolType(node.type || '');
                 typeCell.textContent = protocolType;
                 row.appendChild(typeCell);
                 
@@ -1766,8 +1792,8 @@
                 statusCell.innerHTML = `
                     <span class="status-indicator ${isActive ? 'active' : 'inactive'}"></span>
                     <span class="status-text">${isActive ? 
-                        (translations[currentLang]?.['nodes.latency'] || '延迟') + `: ${node.latency}ms` : 
-                        (translations[currentLang]?.['nodes.inactive'] || '已失效')}</span>
+                        (translations[currentLang]['nodes.latency'] || '延迟') + `: ${node.latency}ms` : 
+                        (translations[currentLang]['nodes.inactive'] || '已失效')}</span>
                 `;
                 row.appendChild(statusCell);
                 
@@ -1777,28 +1803,40 @@
                 // 创建下载配置按钮
                 const downloadBtn = document.createElement('button');
                 downloadBtn.className = 'download-link';
-                downloadBtn.textContent = translations[currentLang]?.['nodes.download'] || '下载配置';
+                downloadBtn.textContent = translations[currentLang]['nodes.download'] || '下载配置';
                 downloadBtn.onclick = () => {
                     try {
                         // 创建有意义的文件名
-                        let fileName = node.name.replace(/[^a-z0-9]/gi, '_') || 'vpn_config';
-                        fileName = fileName.substring(0, 30); // 限制文件名长度
+                        let fileName = `${regionName}_${node.type}_config.yaml`;
                         
                         // 创建配置内容
-                        const configContent = jsyaml.dump(node.clash_config, {lineWidth: -1});
+                        const configContent = `# CloakAccess VPN配置
+# 节点: ${translatedRegion}
+# 类型: ${protocolType}
+# 服务器: ${node.server}:${node.port}
+# 更新时间: ${new Date().toLocaleString()}
+
+proxies:
+  - name: "${translatedRegion} ${node.name.split('#')[1] || ''}"
+    type: ${node.type}
+    server: ${node.server}
+    port: ${node.port}
+    cipher: auto
+    udp: true
+    `;
                         
                         const blob = new Blob([configContent], { type: 'text/yaml' });
                         const url = URL.createObjectURL(blob);
                         const a = document.createElement('a');
                         a.href = url;
-                        a.download = fileName + '.yaml';
+                        a.download = fileName;
                         document.body.appendChild(a);
                         a.click();
                         document.body.removeChild(a);
                         URL.revokeObjectURL(url);
                     } catch (e) {
                         console.error('下载失败:', e);
-                        alert(`${translations[currentLang]?.['nodes.download_failed'] || '下载失败'}: ${e.message}`);
+                        alert(`${translations[currentLang]['nodes.download_failed'] || '下载失败'}: ${e.message}`);
                     }
                 };
                 actionCell.appendChild(downloadBtn);
@@ -1815,14 +1853,22 @@
         // 下载Clash配置
         function downloadClashConfig() {
             try {
-                // 创建有效的Clash配置内容
+                // 创建配置内容
                 const configContent = `# CloakAccess VPN配置
 # 更新时间: ${new Date().toLocaleString()}
 # 节点数量: ${nodes.length}
 
 proxies:
 ${nodes.map(node => {
-  return `  - ${JSON.stringify(node.clash_config)}`;
+  const regionName = getRegionFromIP(node.server);
+  const regionKey = `region.${regionName}`;
+  const translatedRegion = translations[currentLang][regionKey] || regionName;
+  return `  - name: "${translatedRegion} ${node.name.split('#')[1] || ''}"
+    type: ${node.type}
+    server: ${node.server}
+    port: ${node.port}
+    cipher: auto
+    udp: true`;
 }).join('\n')}
 
 proxy-groups:
@@ -1830,7 +1876,10 @@ proxy-groups:
     type: url-test
     proxies:
 ${nodes.map(node => {
-  return `      - "${node.name}"`;
+  const regionName = getRegionFromIP(node.server);
+  const regionKey = `region.${regionName}`;
+  const translatedRegion = translations[currentLang][regionKey] || regionName;
+  return `      - "${translatedRegion} ${node.name.split('#')[1] || ''}"`;
 }).join('\n')}
     url: "http://www.gstatic.com/generate_204"
     interval: 300
@@ -1849,34 +1898,26 @@ rules:
                 a.click();
                 document.body.removeChild(a);
                 URL.revokeObjectURL(url);
-                
-                // 显示配置成功提示
-                showConfigSuccess();
             } catch (e) {
                 console.error('下载失败:', e);
-                alert(`${translations[currentLang]?.['nodes.download_failed'] || '下载失败'}: ${e.message}`);
+                alert(`${translations[currentLang]['nodes.download_failed'] || '下载失败'}: ${e.message}`);
             }
         }
         
         // 下载Shadowrocket配置
         function downloadShadowrocketConfig() {
             try {
-                // 创建配置内容 - 确保使用合法的加密方法
+                // 创建配置内容
                 const configContent = `# Shadowrocket 配置
 # 更新时间: ${new Date().toLocaleString()}
 # 节点数量: ${nodes.length}
 
 [Proxy]
 ${nodes.map(node => {
-  if (node.clash_config.type === 'vmess') {
-    return `${node.name} = vmess, ${node.clash_config.server}, ${node.clash_config.port}, username=${node.clash_config.uuid}, ws=true, tls=true`;
-  } else if (node.clash_config.type === 'ss') {
-    return `${node.name} = ss, ${node.clash_config.server}, ${node.clash_config.port}, encrypt-method=${node.clash_config.cipher}, password=${node.clash_config.password}`;
-  } else if (node.clash_config.type === 'trojan') {
-    return `${node.name} = trojan, ${node.clash_config.server}, ${node.clash_config.port}, password=${node.clash_config.password}, sni=${node.clash_config.sni || 'example.com'}`;
-  } else {
-    return `${node.name} = ${node.clash_config.type}, ${node.clash_config.server}, ${node.clash_config.port}`;
-  }
+  const regionName = getRegionFromIP(node.server);
+  const regionKey = `region.${regionName}`;
+  const translatedRegion = translations[currentLang][regionKey] || regionName;
+  return `${translatedRegion} = ${node.type}, ${node.server}, ${node.port}, cipher=auto, udp-relay=true`;
 }).join('\n')}
 
 [Rule]
@@ -1895,7 +1936,7 @@ FINAL,PROXY
                 URL.revokeObjectURL(url);
             } catch (e) {
                 console.error('下载失败:', e);
-                alert(`${translations[currentLang]?.['nodes.download_failed'] || '下载失败'}: ${e.message}`);
+                alert(`${translations[currentLang]['nodes.download_failed'] || '下载失败'}: ${e.message}`);
             }
         }
         
@@ -1920,13 +1961,12 @@ FINAL,PROXY
         }
         
         // 初始化页面
-        document.addEventListener('DOMContentLoaded', async () => {
+        document.addEventListener('DOMContentLoaded', () => {
             // 应用翻译
             applyTranslations();
             
             // 加载节点
-            nodes = await loadNodes();
-            renderNodes(nodes);
+            loadNodes();
             
             // 筛选按钮事件
             filterButtons.forEach(btn => {
@@ -1936,7 +1976,7 @@ FINAL,PROXY
                     this.classList.add('active');
                     
                     // 重新加载节点
-                    renderNodes(nodes);
+                    loadNodes();
                 });
             });
             
@@ -1961,10 +2001,7 @@ FINAL,PROXY
                         // 更新语言并重新加载页面
                         currentLang = lang;
                         applyTranslations();
-                        loadNodes().then(data => {
-                            nodes = data;
-                            renderNodes(nodes);
-                        });
+                        loadNodes();
                     }
                 });
             });
@@ -1990,72 +2027,15 @@ FINAL,PROXY
                 };
             }
         });
-        
-        // 模态框相关函数
-        const authModal = document.getElementById('auth-modal');
-        const loginForm = document.getElementById('login-form');
-        const registerForm = document.getElementById('register-form');
-        
-        function showAuthModal(type = 'login') {
-            authModal.style.display = 'block';
-            showAuthForm(type);
-        }
-        
-        function closeAuthModal() {
-            authModal.style.display = 'none';
-        }
-        
-        function showAuthForm(type) {
-            if (type === 'login') {
-                loginForm.style.display = 'block';
-                registerForm.style.display = 'none';
-            } else {
-                loginForm.style.display = 'none';
-                registerForm.style.display = 'block';
-            }
-        }
-        
-        function login() {
-            const email = document.getElementById('login-email').value;
-            const password = document.getElementById('login-password').value;
-            
-            if (!email || !password) {
-                alert(translations[currentLang]?.['auth.email_password_required'] || '请填写邮箱和密码');
-                return;
-            }
-            
-            closeAuthModal();
-            alert(translations[currentLang]?.['auth.login_success'] || '登录成功！');
-        }
-        
-        function register() {
-            const email = document.getElementById('register-email').value;
-            const password = document.getElementById('register-password').value;
-            const confirm = document.getElementById('register-confirm').value;
-            
-            if (!email || !password || !confirm) {
-                alert(translations[currentLang]?.['auth.all_fields_required'] || '请填写所有字段');
-                return;
-            }
-            
-            if (password !== confirm) {
-                alert(translations[currentLang]?.['auth.password_mismatch'] || '两次输入的密码不一致');
-                return;
-            }
-            
-            if (password.length < 8) {
-                alert(translations[currentLang]?.['auth.password_length'] || '密码长度至少为8位');
-                return;
-            }
-            
-            closeAuthModal();
-            alert(translations[currentLang]?.['auth.register_success'] || '注册成功！');
-        }
-        
-        function googleLogin() {
-            closeAuthModal();
-            alert(translations[currentLang]?.['auth.google_login_success'] || 'Google登录成功！');
-        }
+    </script>
+    
+    <!-- Google Analytics -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-XXXXXX"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+      gtag('config', 'G-XXXXXX');
     </script>
 </body>
 </html>
