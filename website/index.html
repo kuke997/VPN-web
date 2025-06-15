@@ -1048,6 +1048,14 @@
     </div>
 
     <script>
+        // 定义合法的Shadowsocks加密方法
+        const validSSciphers = [
+            "aes-128-gcm", "aes-256-gcm", "chacha20-ietf-poly1305", 
+            "xchacha20-ietf-poly1305", "none", "plain", "aes-128-cfb",
+            "aes-192-cfb", "aes-256-cfb", "aes-128-ctr", "aes-192-ctr",
+            "aes-256-ctr", "rc4-md5", "chacha20-ietf", "chacha20", "salsa20"
+        ];
+
         // 多语言翻译 - 完整版本
         const translations = {
             en: {
@@ -1643,7 +1651,7 @@
                 // 模拟从API获取节点数据
                 await new Promise(resolve => setTimeout(resolve, 1000));
                 
-                // 模拟节点数据 - 包含有效的加密方法
+                // 模拟节点数据 - 使用有效的加密方法
                 nodes = [
                     {
                         id: 1,
@@ -1842,8 +1850,13 @@ proxies:
                         // 根据协议类型添加特定字段
                         switch(node.type) {
                             case "ss":
+                                // 验证加密方法是否有效
+                                let cipher = node.cipher || 'aes-256-gcm';
+                                if (!validSSciphers.includes(cipher)) {
+                                    cipher = 'aes-256-gcm';
+                                }
                                 configContent += `
-    cipher: ${node.cipher || 'aes-256-gcm'}  # 有效的加密方法
+    cipher: ${cipher}
     password: "${node.password || 'default_password'}"`;
                                 break;
                                 
@@ -1920,15 +1933,20 @@ ${nodes.map(node => {
   // 根据协议类型生成不同的配置
   switch(node.type) {
     case "ss":
-      return `  - name: "${translatedRegion} ${node.name.split('#')[1] || ''}"
+        // 验证加密方法是否有效
+        let ssCipher = node.cipher || 'aes-256-gcm';
+        if (!validSSciphers.includes(ssCipher)) {
+            ssCipher = 'aes-256-gcm';
+        }
+        return `  - name: "${translatedRegion} ${node.name.split('#')[1] || ''}"
     type: ss
     server: ${node.server}
     port: ${node.port}
-    cipher: ${node.cipher || 'aes-256-gcm'}  # 有效的加密方法
+    cipher: ${ssCipher}
     password: "${node.password || 'default_password'}"`;
       
     case "vmess":
-      return `  - name: "${translatedRegion} ${node.name.split('#')[1] || ''}"
+        return `  - name: "${translatedRegion} ${node.name.split('#')[1] || ''}"
     type: vmess
     server: ${node.server}
     port: ${node.port}
@@ -1937,7 +1955,7 @@ ${nodes.map(node => {
     cipher: ${node.cipher || 'auto'}`;
       
     case "trojan":
-      return `  - name: "${translatedRegion} ${node.name.split('#')[1] || ''}"
+        return `  - name: "${translatedRegion} ${node.name.split('#')[1] || ''}"
     type: trojan
     server: ${node.server}
     port: ${node.port}
@@ -1945,7 +1963,7 @@ ${nodes.map(node => {
     sni: ${node.sni || 'example.com'}`;
       
     default:
-      return `  - name: "${translatedRegion} ${node.name.split('#')[1] || ''}"
+        return `  - name: "${translatedRegion} ${node.name.split('#')[1] || ''}"
     type: ${node.type}
     server: ${node.server}
     port: ${node.port}`;
@@ -2008,7 +2026,7 @@ rules:
         // 下载Shadowrocket配置
         function downloadShadowrocketConfig() {
             try {
-                // 创建配置内容
+                // 创建配置内容 - 确保使用合法的加密方法
                 const configContent = `# Shadowrocket 配置
 # 更新时间: ${new Date().toLocaleString()}
 # 节点数量: ${nodes.length}
@@ -2038,16 +2056,21 @@ ${nodes.map(node => {
   
   switch(node.type) {
     case "ss":
-      return `${translatedRegion} = ss, ${node.server}, ${node.port}, encrypt-method=${node.cipher || 'aes-256-gcm'}, password=${node.password || 'default_password'}`;
+        // 验证加密方法是否有效
+        let cipher = node.cipher || 'aes-256-gcm';
+        if (!validSSciphers.includes(cipher)) {
+            cipher = 'aes-256-gcm';
+        }
+        return `${translatedRegion} = ss, ${node.server}, ${node.port}, encrypt-method=${cipher}, password=${node.password || 'default_password'}`;
       
     case "vmess":
-      return `${translatedRegion} = vmess, ${node.server}, ${node.port}, username=${node.uuid || '00000000-0000-0000-0000-000000000000'}, ws=true, tls=true`;
+        return `${translatedRegion} = vmess, ${node.server}, ${node.port}, username=${node.uuid || '00000000-0000-0000-0000-000000000000'}, ws=true, tls=true`;
       
     case "trojan":
-      return `${translatedRegion} = trojan, ${node.server}, ${node.port}, password=${node.password || 'default_password'}, sni=${node.sni || 'example.com'}`;
+        return `${translatedRegion} = trojan, ${node.server}, ${node.port}, password=${node.password || 'default_password'}, sni=${node.sni || 'example.com'}`;
       
     default:
-      return `${translatedRegion} = ${node.type}, ${node.server}, ${node.port}`;
+        return `${translatedRegion} = ${node.type}, ${node.server}, ${node.port}`;
   }
 }).join('\n')}
 
