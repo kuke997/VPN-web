@@ -97,10 +97,10 @@ def safe_base64_decode(base64_str):
         logging.warning(f"Base64解码失败: {str(e)}")
         return None
 
-def clean_node_name(name):
-    """清洗节点名称"""
+def clean_node_name(name, server=None, port=None):
+    """清洗节点名称，确保唯一性"""
     if not name:
-        return "未知节点"
+        name = "未知节点"
     
     # 移除源信息
     name = re.sub(r'github\.com/[^\-]+\-', '', name)
@@ -123,9 +123,25 @@ def clean_node_name(name):
     type_match = re.search(r'(CDN节点|Anycast节点|中转节点|直连节点|优质线路|普通线路|高速节点)', name)
     node_type = type_match.group(1) if type_match else "节点"
     
-    # 构建标准化名称 - 添加唯一标识符
-    unique_id = hashlib.md5(name.encode()).hexdigest()[:6]
-    return f"[{country}] {provider} - {node_type} - {unique_id}"
+    # 构建唯一标识字符串
+    unique_str = f"{name}{server}{port}{time.time()}{random.randint(1000,9999)}"
+    
+    # 生成更可靠的唯一标识符
+    unique_id = hashlib.md5(unique_str.encode()).hexdigest()[:6]
+    
+    # 添加服务器IP后三位作为额外标识
+    ip_suffix = ""
+    if server:
+        try:
+            # 尝试解析IP地址
+            ip = socket.gethostbyname(server)
+            ip_parts = ip.split('.')
+            if len(ip_parts) == 4:
+                ip_suffix = f".{ip_parts[2]}{ip_parts[3][-1]}"
+        except:
+            pass
+    
+    return f"[{country}] {provider} - {node_type} - {unique_id}{ip_suffix}"
 
 def parse_clash_config(content):
     """解析Clash配置文件"""
@@ -174,7 +190,11 @@ def parse_clash_config(content):
             # 确保有必要的字段
             if "name" in node_dict and "server" in node_dict and "port" in node_dict:
                 # 清洗节点名称
-                node_dict["name"] = clean_node_name(node_dict["name"])
+                node_dict["name"] = clean_node_name(
+                    node_dict["name"], 
+                    node_dict.get("server"), 
+                    node_dict.get("port")
+                )
                 
                 # 生成节点配置字符串
                 node_type = node_dict.get("type", "unknown").lower()
@@ -288,7 +308,11 @@ def parse_subscription_content(content, source_url):
                     
                     server = config.get("add", config.get("host", config.get("address", "")))
                     port = config.get("port", "443")
-                    name = clean_node_name(config.get("ps", config.get("name", f"vmess-{server}:{port}")))
+                    name = clean_node_name(
+                        config.get("ps", config.get("name", f"vmess-{server}:{port}")), 
+                        server, 
+                        port
+                    )
                     
                     # 跳过无效节点
                     if not server or not port:
@@ -342,7 +366,11 @@ def parse_subscription_content(content, source_url):
                     
                     # 获取节点名称
                     name_match = re.search(r'#(.+)$', line)
-                    name = clean_node_name(name_match.group(1)) if name_match else f"ss-{line[5:15]}"
+                    name = clean_node_name(
+                        name_match.group(1) if name_match else f"ss-{line[5:15]}", 
+                        server, 
+                        port
+                    )
                     
                     # 处理不同的SS格式
                     method, password, server, port = "", "", "", ""
@@ -429,7 +457,11 @@ def parse_subscription_content(content, source_url):
                         server = parsed.hostname
                         port = parsed.port or 443
                         password = parsed.username
-                        name = clean_node_name(parsed.fragment) if parsed.fragment else f"trojan-{server}"
+                        name = clean_node_name(
+                            parsed.fragment if parsed.fragment else f"trojan-{server}", 
+                            server, 
+                            port
+                        )
                         
                         # 生成Clash配置
                         clash_config = {
@@ -515,6 +547,28 @@ def test_node_connectivity(node, timeout=3):
 
 def generate_clash_subscription(nodes):
     """生成标准的Clash订阅文件"""
+    # 节点名称去重检查
+    seen_names = set()
+    unique_nodes = []
+    
+    for node in nodes:
+        if "clash_config" in node:
+            original_name = node["clash_config"]["name"]
+            new_name = original_name
+            suffix = 1
+            
+            # 如果名称重复，添加后缀
+            while new_name in seen_names:
+                new_name = f"{original_name}-{suffix}"
+                suffix += 1
+            
+            if new_name != original_name:
+                logging.warning(f"检测到重复节点名称: {original_name}, 已重命名为: {new_name}")
+                node["clash_config"]["name"] = new_name
+            
+            seen_names.add(new_name)
+            unique_nodes.append(node)
+    
     config = {
         "port": 7890,
         "socks-port": 7891,
@@ -527,24 +581,24 @@ def generate_clash_subscription(nodes):
             {
                 "name": "自动选择",
                 "type": "url-test",
-                "proxies": [node["clash_config"]["name"] for node in nodes],
+                "proxies": [node["clash_config"]["name"] for node in unique_nodes],
                 "url": "http://www.gstatic.com/generate_204",
                 "interval": 300
             },
             {
                 "name": "香港节点",
                 "type": "select",
-                "proxies": [node["clash_config"]["name"] for node in nodes if "香港" in node["clash_config"]["name"]]
+                "proxies": [node["clash_config"]["name"] for node in unique_nodes if "香港" in node["clash_config"]["name"]]
             },
             {
                 "name": "美国节点",
                 "type": "select",
-                "proxies": [node["clash_config"]["name"] for node in nodes if "美国" in node["clash_config"]["name"]]
+                "proxies": [node["clash_config"]["name"] for node in unique_nodes if "美国" in node["clash_config"]["name"]]
             },
             {
                 "name": "日本节点",
                 "type": "select",
-                "proxies": [node["clash_config"]["name"] for node in nodes if "日本" in node["clash_config"]["name"]]
+                "proxies": [node["clash_config"]["name"] for node in unique_nodes if "日本" in node["clash_config"]["name"]]
             }
         ],
         "rules": [
@@ -556,13 +610,12 @@ def generate_clash_subscription(nodes):
         ]
     }
     
-    for node in nodes:
-        if "clash_config" in node:
-            # 确保所有节点都有udp设置
-            if "udp" not in node["clash_config"]:
-                node["clash_config"]["udp"] = True
-            
-            config["proxies"].append(node["clash_config"])
+    for node in unique_nodes:
+        # 确保所有节点都有udp设置
+        if "udp" not in node["clash_config"]:
+            node["clash_config"]["udp"] = True
+        
+        config["proxies"].append(node["clash_config"])
     
     return yaml.dump(config, allow_unicode=True, sort_keys=False)
 
