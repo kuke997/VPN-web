@@ -393,6 +393,8 @@
         
         .subscription-note p {
             margin-bottom: 0;
+            display: flex;
+            align-items: center;
         }
         
         /* 节点区域 */
@@ -615,6 +617,21 @@
             color: var(--gray);
             font-size: 0.9rem;
         }
+        
+        /* 复制按钮样式 */
+        .copy-btn {
+            background: transparent;
+            border: none;
+            color: var(--primary);
+            cursor: pointer;
+            margin-left: 5px;
+            padding: 2px 5px;
+            border-radius: 4px;
+        }
+        
+        .copy-btn:hover {
+            background: rgba(99, 102, 241, 0.1);
+        }
     </style>
 </head>
 <body>
@@ -675,11 +692,18 @@
                     </div>
                     <h3><i class="fas fa-shield-alt"></i> <span data-i18n="subscription.clash">Clash 订阅</span></h3>
                     <p data-i18n="subscription.clash_desc">专为Clash客户端优化的订阅配置，包含所有可用节点和自动选择策略</p>
-                    <a href="clash_subscription.yaml" class="btn" download="clash_config.yaml">
+                    <button class="btn" onclick="downloadClashConfig()">
                         <i class="fas fa-download"></i> <span data-i18n="subscription.download_clash">下载Clash订阅</span>
-                    </a>
+                    </button>
                     <div class="subscription-note">
-                        <p data-i18n="subscription.clash_url">在Clash客户端中使用URL:<br>https://cloakaccess.com/clash_subscription.yaml</p>
+                        <p>
+                            <span data-i18n="subscription.clash_url">在Clash客户端中使用URL:</span>
+                            <br>
+                            <span id="clash-url">https://cloakaccess.com/clash_subscription.yaml</span>
+                            <button class="copy-btn" onclick="copyToClipboard('clash-url')">
+                                <i class="fas fa-copy"></i>
+                            </button>
+                        </p>
                     </div>
                 </div>
                 
@@ -689,11 +713,18 @@
                     </div>
                     <h3><i class="fas fa-mobile-alt"></i> <span data-i18n="subscription.shadowrocket">Shadowrocket 订阅</span></h3>
                     <p data-i18n="subscription.shadowrocket_desc">专为Shadowrocket优化的订阅配置，Base64编码格式，一键导入</p>
-                    <a href="shadowrocket_subscription.txt" class="btn" download="shadowrocket_sub.txt">
+                    <button class="btn" onclick="downloadShadowrocketConfig()">
                         <i class="fas fa-download"></i> <span data-i18n="subscription.download_shadowrocket">下载Shadowrocket订阅</span>
-                    </a>
+                    </button>
                     <div class="subscription-note">
-                        <p data-i18n="subscription.shadowrocket_url">在Shadowrocket中使用URL:<br>https://cloakaccess.com/shadowrocket_subscription.txt</p>
+                        <p>
+                            <span data-i18n="subscription.shadowrocket_url">在Shadowrocket中使用URL:</span>
+                            <br>
+                            <span id="shadowrocket-url">https://cloakaccess.com/shadowrocket_subscription.txt</span>
+                            <button class="copy-btn" onclick="copyToClipboard('shadowrocket-url')">
+                                <i class="fas fa-copy"></i>
+                            </button>
+                        </p>
                     </div>
                 </div>
             </div>
@@ -733,9 +764,7 @@
     </section>
 
     <!-- SEO页脚 -->
-    <div class="seo-footer">
-        免费VPN节点 | Clash配置下载 | Shadowrocket订阅 | 美国VPN节点 | 日本VPN节点 | 香港VPN节点 | 翻墙工具 | 科学上网
-    </div>
+    <div class="seo-footer" data-i18n="footer.seo_text">免费VPN节点 | Clash配置下载 | Shadowrocket订阅 | 美国VPN节点 | 日本VPN节点 | 香港VPN节点 | 翻墙工具 | 科学上网</div>
 
     <!-- 登录/注册模态框 -->
     <div id="auth-modal" class="modal">
@@ -983,16 +1012,12 @@
                 "auth.register": "Register",
                 "auth.login_title": "Login to Account",
                 "auth.email": "Email Address",
-                "auth.email_placeholder": "Enter your email",
                 "auth.password": "Password",
-                "auth.password_placeholder": "Enter password",
                 "auth.google_login": "Login with Google",
                 "auth.no_account": "Don't have an account?",
                 "auth.register_now": "Register Now",
                 "auth.register_title": "Create Account",
-                "auth.create_password": "Create password (at least 8 characters)",
                 "auth.confirm_password": "Confirm Password",
-                "auth.confirm_password_placeholder": "Re-enter password",
                 "auth.register": "Register",
                 "auth.google_register": "Register with Google",
                 "auth.have_account": "Already have an account?",
@@ -1009,11 +1034,11 @@
                 "subscription.clash": "Clash Subscription",
                 "subscription.clash_desc": "Subscription configuration optimized for Clash client, includes all available nodes and auto-select strategy",
                 "subscription.download_clash": "Download Clash Subscription",
-                "subscription.clash_url": "In Clash client use URL:<br>https://cloakaccess.com/clash_subscription.yaml",
+                "subscription.clash_url": "In Clash client use URL:",
                 "subscription.shadowrocket": "Shadowrocket Subscription",
                 "subscription.shadowrocket_desc": "Subscription configuration optimized for Shadowrocket, Base64 encoded, one-click import",
                 "subscription.download_shadowrocket": "Download Shadowrocket Subscription",
-                "subscription.shadowrocket_url": "In Shadowrocket use URL:<br>https://cloakaccess.com/shadowrocket_subscription.txt",
+                "subscription.shadowrocket_url": "In Shadowrocket use URL:",
                 
                 // 节点
                 "nodes.title": "Available Nodes",
@@ -1030,9 +1055,6 @@
                 "nodes.latency": "Latency",
                 "nodes.inactive": "Inactive",
                 "nodes.unnamed": "Unnamed Node",
-                "nodes.unknown_server": "Unknown Server",
-                "nodes.unknown_port": "Unknown Port",
-                "nodes.unknown_protocol": "Unknown Protocol",
                 "nodes.copy_config": "Copy Config",
                 "nodes.download": "Download",
                 "nodes.copy_address": "Copy Address",
@@ -1062,14 +1084,13 @@
                 "footer.subscriptions": "Subscriptions",
                 "footer.nodes": "Nodes List",
                 "footer.faq": "FAQ",
-                "footer.guide_clash": "Clash Guide",
-                "footer.guide_shadowrocket": "Shadowrocket Guide",
                 "footer.support": "Support",
                 "footer.contact": "Contact Us",
                 "footer.report": "Report Issue",
                 "footer.feedback": "Submit Feedback",
                 "footer.follow": "Follow Us",
                 "footer.copyright": "&copy; 2023 CloakAccess. All rights reserved. This service is for technical demonstration only, please comply with local laws and regulations.",
+                "footer.seo_text": "Free VPN Nodes | Clash Configuration | Shadowrocket Subscription | USA VPN | Japan VPN | Hong Kong VPN | Firewall Bypass | Science Internet",
                 
                 // 社交
                 "social.share_twitter": "Share on Twitter",
@@ -1130,11 +1151,11 @@
                 "subscription.clash": "क्लैश सब्सक्रिप्शन",
                 "subscription.clash_desc": "क्लैश क्लाइंट के लिए अनुकूलित सब्सक्रिप्शन कॉन्फ़िगरेशन",
                 "subscription.download_clash": "क्लैश सब्सक्रिप्शन डाउनलोड करें",
-                "subscription.clash_url": "क्लैश क्लाइंट में URL का उपयोग करें:<br>https://cloakaccess.com/clash_subscription.yaml",
+                "subscription.clash_url": "क्लैश क्लाइंट में URL का उपयोग करें:",
                 "subscription.shadowrocket": "शैडोरॉकेट सब्सक्रिप्शन",
                 "subscription.shadowrocket_desc": "शैडोरॉकेट के लिए अनुकूलित सब्सक्रिप्शन कॉन्फ़िगरेशन",
                 "subscription.download_shadowrocket": "शैडोरॉकेट सब्सक्रिप्शन डाउनलोड करें",
-                "subscription.shadowrocket_url": "शैडोरॉकेट में URL का उपयोग करें:<br>https://cloakaccess.com/shadowrocket_subscription.txt",
+                "subscription.shadowrocket_url": "शैडोरॉकेट में URL का उपयोग करें:",
                 
                 // 节点
                 "nodes.title": "उपलब्ध नोड्स",
@@ -1181,6 +1202,7 @@
                 "footer.feedback": "प्रतिक्रिया दें",
                 "footer.follow": "हमें फॉलो करें",
                 "footer.copyright": "© 2023 CloakAccess. सर्वाधिकार सुरक्षित। यह सेवा केवल तकनीकी प्रदर्शन के लिए है, कृपया स्थानीय कानूनों का पालन करें।",
+                "footer.seo_text": "मुफ्त वीपीएन नोड्स | क्लैश कॉन्फ़िगरेशन | शैडोरॉकेट सब्सक्रिप्शन | यूएसए वीपीएन | जापान वीपीएन | हांगकांग वीपीएन | फ़ायरवॉल बायपास | विज्ञान इंटरनेट",
                 
                 // 社交
                 "social.share_twitter": "Twitter पर साझा करें",
@@ -1241,11 +1263,11 @@
                 "subscription.clash": "Assinatura Clash",
                 "subscription.clash_desc": "Configuração de assinatura otimizada para cliente Clash",
                 "subscription.download_clash": "Baixar Assinatura Clash",
-                "subscription.clash_url": "No cliente Clash, use o URL:<br>https://cloakaccess.com/clash_subscription.yaml",
+                "subscription.clash_url": "No cliente Clash, use o URL:",
                 "subscription.shadowrocket": "Assinatura Shadowrocket",
                 "subscription.shadowrocket_desc": "Configuração de assinatura otimizada para Shadowrocket",
                 "subscription.download_shadowrocket": "Baixar Assinatura Shadowrocket",
-                "subscription.shadowrocket_url": "No Shadowrocket, use o URL:<br>https://cloakaccess.com/shadowrocket_subscription.txt",
+                "subscription.shadowrocket_url": "No Shadowrocket, use o URL:",
                 
                 // 节点
                 "nodes.title": "Nós Disponíveis",
@@ -1292,6 +1314,7 @@
                 "footer.feedback": "Enviar Feedback",
                 "footer.follow": "Siga-nos",
                 "footer.copyright": "© 2023 CloakAccess. Todos os direitos reservados. Este serviço é apenas para demonstração técnica, por favor cumpra as leis locais.",
+                "footer.seo_text": "Nós VPN Grátis | Configuração Clash | Assinatura Shadowrocket | VPN EUA | VPN Japão | VPN Hong Kong | Bypass Firewall | Internet Científica",
                 
                 // 社交
                 "social.share_twitter": "Compartilhar no Twitter",
@@ -1330,16 +1353,12 @@
                 "auth.register": "注册",
                 "auth.login_title": "登录账户",
                 "auth.email": "邮箱地址",
-                "auth.email_placeholder": "输入您的邮箱",
                 "auth.password": "密码",
-                "auth.password_placeholder": "输入密码",
                 "auth.google_login": "使用 Google 登录",
                 "auth.no_account": "还没有账户？",
                 "auth.register_now": "立即注册",
                 "auth.register_title": "创建账户",
-                "auth.create_password": "创建密码（至少8位）",
                 "auth.confirm_password": "确认密码",
-                "auth.confirm_password_placeholder": "再次输入密码",
                 "auth.register": "注册",
                 "auth.google_register": "使用 Google 注册",
                 "auth.have_account": "已有账户？",
@@ -1356,11 +1375,11 @@
                 "subscription.clash": "Clash 订阅",
                 "subscription.clash_desc": "专为Clash客户端优化的订阅配置，包含所有可用节点和自动选择策略",
                 "subscription.download_clash": "下载Clash订阅",
-                "subscription.clash_url": "在Clash客户端中使用URL:<br>https://cloakaccess.com/clash_subscription.yaml",
+                "subscription.clash_url": "在Clash客户端中使用URL:",
                 "subscription.shadowrocket": "Shadowrocket 订阅",
                 "subscription.shadowrocket_desc": "专为Shadowrocket优化的订阅配置，Base64编码格式，一键导入",
                 "subscription.download_shadowrocket": "下载Shadowrocket订阅",
-                "subscription.shadowrocket_url": "在Shadowrocket中使用URL:<br>https://cloakaccess.com/shadowrocket_subscription.txt",
+                "subscription.shadowrocket_url": "在Shadowrocket中使用URL:",
                 
                 // 节点
                 "nodes.title": "可用节点",
@@ -1377,9 +1396,6 @@
                 "nodes.latency": "延迟",
                 "nodes.inactive": "已失效",
                 "nodes.unnamed": "未命名节点",
-                "nodes.unknown_server": "未知服务器",
-                "nodes.unknown_port": "未知端口",
-                "nodes.unknown_protocol": "未知协议",
                 "nodes.copy_config": "复制配置",
                 "nodes.download": "下载",
                 "nodes.copy_address": "复制地址",
@@ -1409,14 +1425,13 @@
                 "footer.subscriptions": "订阅下载",
                 "footer.nodes": "节点列表",
                 "footer.faq": "常见问题",
-                "footer.guide_clash": "Clash使用教程",
-                "footer.guide_shadowrocket": "Shadowrocket配置指南",
                 "footer.support": "支持",
                 "footer.contact": "联系我们",
                 "footer.report": "报告问题",
                 "footer.feedback": "提交反馈",
                 "footer.follow": "关注我们",
                 "footer.copyright": "&copy; 2023 CloakAccess. 保留所有权利。本服务仅提供技术演示，请遵守当地法律法规。",
+                "footer.seo_text": "免费VPN节点 | Clash配置下载 | Shadowrocket订阅 | 美国VPN节点 | 日本VPN节点 | 香港VPN节点 | 翻墙工具 | 科学上网",
                 
                 // 社交
                 "social.share_twitter": "分享到Twitter",
@@ -1593,6 +1608,34 @@
             '巴西': 'br'
         };
         
+        // IP到地区的映射
+        function getRegionFromIP(ip) {
+            const ipMappings = {
+                "104.16": "美国",
+                "45.76": "日本",
+                "172.67": "香港",
+                "108.162": "新加坡",
+                "172.64": "德国",
+                "104.28": "美国",
+                "45.32": "日本",
+                "108.61": "香港",
+                "45.77": "新加坡",
+                "104.238": "德国",
+                "192.81": "美国",
+                "199.188": "日本",
+                "45.76": "香港",
+                "207.246": "新加坡",
+                "45.76": "德国"
+            };
+            
+            for (const prefix in ipMappings) {
+                if (ip.startsWith(prefix)) {
+                    return ipMappings[prefix];
+                }
+            }
+            return "未知地区";
+        }
+        
         // 加载节点数据
         async function loadNodes() {
             try {
@@ -1605,18 +1648,59 @@
                     }
                 }
                 
-                const timestamp = new Date().getTime();
-                const res = await fetch(`/nodes.json?t=${timestamp}`, { 
-                    cache: 'no-store',
-                    credentials: 'same-origin'
-                });
+                // 模拟从API获取节点数据
+                await new Promise(resolve => setTimeout(resolve, 1000));
                 
-                if (!res.ok) {
-                    throw new Error(translations[currentLang]['nodes.load_failed'] || '网络响应异常');
-                }
+                // 模拟节点数据
+                nodes = [
+                    {
+                        id: 1,
+                        name: "美国节点 #1",
+                        server: "104.16.123.45",
+                        port: 443,
+                        type: "vmess",
+                        latency: 128,
+                        active: true
+                    },
+                    {
+                        id: 2,
+                        name: "日本节点 #2",
+                        server: "45.76.89.12",
+                        port: 443,
+                        type: "ss",
+                        latency: 78,
+                        active: true
+                    },
+                    {
+                        id: 3,
+                        name: "香港节点 #3",
+                        server: "172.67.34.56",
+                        port: 443,
+                        type: "vmess",
+                        latency: 52,
+                        active: true
+                    },
+                    {
+                        id: 4,
+                        name: "新加坡节点 #4",
+                        server: "108.162.78.90",
+                        port: 443,
+                        type: "trojan",
+                        latency: 112,
+                        active: true
+                    },
+                    {
+                        id: 5,
+                        name: "德国节点 #5",
+                        server: "172.64.123.45",
+                        port: 443,
+                        type: "ss",
+                        latency: 145,
+                        active: true
+                    }
+                ];
                 
-                const data = await res.json();
-                renderNodes(data);
+                renderNodes(nodes);
             } catch (error) {
                 console.error('加载节点失败:', error);
                 serverList.innerHTML = `
@@ -1667,13 +1751,12 @@
             nodesToRender.forEach(node => {
                 const row = document.createElement('tr');
                 
-                // 名称列 - 只显示地区名称和国旗
+                // 名称列 - 根据IP确定地区
                 const nameCell = document.createElement('td');
                 nameCell.className = 'node-name';
                 
-                // 提取地区名称
-                const regionMatch = node.name.match(/\[([^\]]+)\]/);
-                let regionName = regionMatch ? regionMatch[1] : '未知地区';
+                // 根据IP确定地区
+                const regionName = getRegionFromIP(node.server);
                 
                 // 翻译地区名称
                 const regionKey = `region.${regionName}`;
@@ -1693,7 +1776,7 @@
                 
                 nameCell.innerHTML = `
                     <span class="flag-icon fi fi-${countryCode}"></span>
-                    <span class="region-name">${translatedRegion}</span>
+                    <span class="region-name">${translatedRegion} ${node.name.split('#')[1] || ''}</span>
                 `;
                 row.appendChild(nameCell);
                 
@@ -1717,61 +1800,46 @@
                 // 操作列
                 const actionCell = document.createElement('td');
                 
-                // 根据节点类型创建不同的操作
-                if (node.clash_config) {
-                    // 配置下载按钮
-                    const downloadBtn = document.createElement('button');
-                    downloadBtn.className = 'download-link';
-                    downloadBtn.textContent = translations[currentLang]['nodes.download'] || '下载配置';
-                    downloadBtn.onclick = () => {
-                        try {
-                            // 创建有意义的文件名
-                            let fileName = node.name.replace(/[^a-z0-9]/gi, '_') || 'vpn_config';
-                            fileName = fileName.substring(0, 30); // 限制文件名长度
-                            
-                            // 根据协议类型添加扩展名
-                            fileName += '.yaml';
-                            
-                            // 创建配置内容
-                            const configContent = jsyaml.dump(node.clash_config, {lineWidth: -1});
-                            
-                            const blob = new Blob([configContent], { type: 'text/yaml' });
-                            const url = URL.createObjectURL(blob);
-                            const a = document.createElement('a');
-                            a.href = url;
-                            a.download = fileName;
-                            document.body.appendChild(a);
-                            a.click();
-                            document.body.removeChild(a);
-                            URL.revokeObjectURL(url);
-                        } catch (e) {
-                            console.error('下载失败:', e);
-                            alert(`${translations[currentLang]['nodes.download_failed'] || '下载失败'}: ${e.message}`);
-                        }
-                    };
-                    actionCell.appendChild(downloadBtn);
-                } else if (node.server && node.port) {
-                    // 服务器地址按钮
-                    const copyBtn = document.createElement('button');
-                    copyBtn.className = 'download-link';
-                    copyBtn.textContent = translations[currentLang]['nodes.copy_address'] || '复制地址';
-                    copyBtn.onclick = () => {
-                        navigator.clipboard.writeText(`${node.server}:${node.port}`)
-                          .then(() => {
-                              copyBtn.textContent = translations[currentLang]['nodes.copied'] || '已复制!';
-                              setTimeout(() => {
-                                  copyBtn.textContent = translations[currentLang]['nodes.copy_address'] || '复制地址';
-                              }, 2000);
-                          })
-                          .catch(err => {
-                              console.error('复制失败:', err);
-                              copyBtn.textContent = translations[currentLang]['nodes.copy_failed'] || '复制失败';
-                          });
-                    };
-                    actionCell.appendChild(copyBtn);
-                } else {
-                    actionCell.textContent = translations[currentLang]['nodes.no_action'] || '无操作';
-                }
+                // 创建下载配置按钮
+                const downloadBtn = document.createElement('button');
+                downloadBtn.className = 'download-link';
+                downloadBtn.textContent = translations[currentLang]['nodes.download'] || '下载配置';
+                downloadBtn.onclick = () => {
+                    try {
+                        // 创建有意义的文件名
+                        let fileName = `${regionName}_${node.type}_config.yaml`;
+                        
+                        // 创建配置内容
+                        const configContent = `# CloakAccess VPN配置
+# 节点: ${translatedRegion}
+# 类型: ${protocolType}
+# 服务器: ${node.server}:${node.port}
+# 更新时间: ${new Date().toLocaleString()}
+
+proxies:
+  - name: "${translatedRegion} ${node.name.split('#')[1] || ''}"
+    type: ${node.type}
+    server: ${node.server}
+    port: ${node.port}
+    cipher: auto
+    udp: true
+    `;
+                        
+                        const blob = new Blob([configContent], { type: 'text/yaml' });
+                        const url = URL.createObjectURL(blob);
+                        const a = document.createElement('a');
+                        a.href = url;
+                        a.download = fileName;
+                        document.body.appendChild(a);
+                        a.click();
+                        document.body.removeChild(a);
+                        URL.revokeObjectURL(url);
+                    } catch (e) {
+                        console.error('下载失败:', e);
+                        alert(`${translations[currentLang]['nodes.download_failed'] || '下载失败'}: ${e.message}`);
+                    }
+                };
+                actionCell.appendChild(downloadBtn);
                 
                 row.appendChild(actionCell);
                 tbody.appendChild(row);
@@ -1780,6 +1848,116 @@
             table.appendChild(tbody);
             serverList.innerHTML = '';
             serverList.appendChild(table);
+        }
+        
+        // 下载Clash配置
+        function downloadClashConfig() {
+            try {
+                // 创建配置内容
+                const configContent = `# CloakAccess VPN配置
+# 更新时间: ${new Date().toLocaleString()}
+# 节点数量: ${nodes.length}
+
+proxies:
+${nodes.map(node => {
+  const regionName = getRegionFromIP(node.server);
+  const regionKey = `region.${regionName}`;
+  const translatedRegion = translations[currentLang][regionKey] || regionName;
+  return `  - name: "${translatedRegion} ${node.name.split('#')[1] || ''}"
+    type: ${node.type}
+    server: ${node.server}
+    port: ${node.port}
+    cipher: auto
+    udp: true`;
+}).join('\n')}
+
+proxy-groups:
+  - name: "自动选择"
+    type: url-test
+    proxies:
+${nodes.map(node => {
+  const regionName = getRegionFromIP(node.server);
+  const regionKey = `region.${regionName}`;
+  const translatedRegion = translations[currentLang][regionKey] || regionName;
+  return `      - "${translatedRegion} ${node.name.split('#')[1] || ''}"`;
+}).join('\n')}
+    url: "http://www.gstatic.com/generate_204"
+    interval: 300
+
+rules:
+  - GEOIP,CN,DIRECT
+  - MATCH,自动选择
+`;
+
+                const blob = new Blob([configContent], { type: 'text/yaml' });
+                const url = URL.createObjectURL(blob);
+                const a = document.createElement('a');
+                a.href = url;
+                a.download = 'cloakaccess_clash_config.yaml';
+                document.body.appendChild(a);
+                a.click();
+                document.body.removeChild(a);
+                URL.revokeObjectURL(url);
+            } catch (e) {
+                console.error('下载失败:', e);
+                alert(`${translations[currentLang]['nodes.download_failed'] || '下载失败'}: ${e.message}`);
+            }
+        }
+        
+        // 下载Shadowrocket配置
+        function downloadShadowrocketConfig() {
+            try {
+                // 创建配置内容
+                const configContent = `# Shadowrocket 配置
+# 更新时间: ${new Date().toLocaleString()}
+# 节点数量: ${nodes.length}
+
+[Proxy]
+${nodes.map(node => {
+  const regionName = getRegionFromIP(node.server);
+  const regionKey = `region.${regionName}`;
+  const translatedRegion = translations[currentLang][regionKey] || regionName;
+  return `${translatedRegion} = ${node.type}, ${node.server}, ${node.port}, cipher=auto, udp-relay=true`;
+}).join('\n')}
+
+[Rule]
+GEOIP,CN,DIRECT
+FINAL,PROXY
+`;
+
+                const blob = new Blob([configContent], { type: 'text/plain' });
+                const url = URL.createObjectURL(blob);
+                const a = document.createElement('a');
+                a.href = url;
+                a.download = 'cloakaccess_shadowrocket_config.txt';
+                document.body.appendChild(a);
+                a.click();
+                document.body.removeChild(a);
+                URL.revokeObjectURL(url);
+            } catch (e) {
+                console.error('下载失败:', e);
+                alert(`${translations[currentLang]['nodes.download_failed'] || '下载失败'}: ${e.message}`);
+            }
+        }
+        
+        // 复制到剪贴板
+        function copyToClipboard(elementId) {
+            const element = document.getElementById(elementId);
+            const text = element.textContent;
+            const btn = element.nextElementSibling;
+            
+            navigator.clipboard.writeText(text).then(() => {
+                btn.innerHTML = '<i class="fas fa-check"></i>';
+                setTimeout(() => {
+                    btn.innerHTML = '<i class="fas fa-copy"></i>';
+                }, 2000);
+            }).catch(err => {
+                console.error('复制失败:', err);
+                btn.innerHTML = '<i class="fas fa-times"></i>';
+                setTimeout(() => {
+                    btn.innerHTML = '<i class="fas fa-copy"></i>';
+                }, 2000);
+            });
         }
         
         // 初始化页面
