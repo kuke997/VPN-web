@@ -602,18 +602,48 @@ def fetch_all_sources(output_file):
             json.dump(valid_nodes, f, indent=2, ensure_ascii=False)
         logging.info(f"节点数据已保存到 {output_file}")
         
-        # 生成Clash配置文件
+        # 生成订阅文件（只在有效节点存在时）
         if valid_nodes:
-            clash_config = generate_clash_config(valid_nodes)
-            with open('clash_subscription.yaml', 'w', encoding='utf-8') as f:
-                f.write(clash_config)
-            logging.info("Clash配置文件已生成")
+            # 生成 Clash 订阅文件
+            clash_configs = [node['clash_config'] for node in valid_nodes if 'clash_config' in node]
+            with open('website/clash_subscription.yaml', 'w', encoding='utf-8') as f:
+                yaml.dump({'proxies': clash_configs}, f, allow_unicode=True, sort_keys=False)
+            logging.info("Clash订阅文件已生成")
             
-            # 生成Shadowrocket订阅
-            shadowrocket_config = "\n".join([node.get("config", "") for node in valid_nodes if "config" in node])
-            shadowrocket_base64 = base64.b64encode(shadowrocket_config.encode()).decode()
-            with open('shadowrocket_subscription.txt', 'w', encoding='utf-8') as f:
-                f.write(shadowrocket_base64)
+            # 生成 Shadowrocket 订阅文件
+            shadowrocket_configs = []
+            for node in valid_nodes:
+                if 'clash_config' in node:
+                    config = node['clash_config']
+                    if config['type'] == 'vmess':
+                        # 转换为 V2RayN 格式
+                        vmess_config = {
+                            "v": "2",
+                            "ps": config['name'],
+                            "add": config['server'],
+                            "port": config['port'],
+                            "id": config['uuid'],
+                            "aid": config.get('alterId', 0),
+                            "scy": config.get('cipher', 'auto'),
+                            "net": config.get('network', 'tcp'),
+                            "type": config.get('ws-headers', {}).get('Host', '') if config.get('network') == 'ws' else "none",
+                            "host": config.get('ws-headers', {}).get('Host', ''),
+                            "path": config.get('ws-path', ''),
+                            "tls": "tls" if config.get('tls') else "",
+                            "sni": config.get('servername', '')
+                        }
+                        vmess_str = base64.b64encode(json.dumps(vmess_config).encode()).decode()
+                        shadowrocket_configs.append(f"vmess://{vmess_str}")
+                    elif config['type'] == 'ss':
+                        # Shadowsocks 格式
+                        ss_str = f"{config['cipher']}:{config['password']}@{config['server']}:{config['port']}"
+                        encoded_ss = base64.b64encode(ss_str.encode()).decode()
+                        shadowrocket_configs.append(f"ss://{encoded_ss}")
+                    # 可以添加其他协议类型的支持
+                    
+            # 保存 Shadowrocket 订阅文件
+            with open('website/shadowrocket_subscription.txt', 'w', encoding='utf-8') as f:
+                f.write('\n'.join(shadowrocket_configs))
             logging.info("Shadowrocket订阅文件已生成")
         
     except Exception as e:
