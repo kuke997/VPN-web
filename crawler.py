@@ -13,7 +13,7 @@ from datetime import datetime, timezone
 from urllib.parse import urlparse
 import concurrent.futures
 import yaml
-import ssl  # 添加SSL支持
+import ssl
 
 # 配置日志
 logging.basicConfig(
@@ -30,7 +30,6 @@ SOURCES = [
     "https://raw.githubusercontent.com/freefq/free/master/v2",
     "https://raw.githubusercontent.com/aiboboxx/v2rayfree/main/v2",
     "https://raw.githubusercontent.com/Pawdroid/Free-servers/main/sub",
-    "https://raw.githubusercontent.com/mianfeifq/share/main/data2023045.txt",
     "https://raw.githubusercontent.com/peasoft/NoMoreWalls/master/list.txt"
 ]
 
@@ -325,32 +324,48 @@ def parse_subscription_content(content, source_url):
                     name = clean_node_name(name_match.group(1)) if name_match else f"ss-{line[5:15]}"
                     
                     # 处理不同的SS格式
-                    method, password, server, port = "", "", "", ""
+                    method, password, server, port = "", "", "", "443"  # 默认端口443
+                    
+                    # 尝试解析标准格式: method:password@server:port
                     if '@' in decoded:
-                        method_password, server_port = decoded.split('@', 1)
-                        if ':' in method_password:
-                            method, password = method_password.split(':', 1)
+                        parts = decoded.split('@', 1)
+                        if ':' in parts[0]:
+                            method_password = parts[0].split(':', 1)
+                            method = method_password[0]
+                            password = method_password[1] if len(method_password) > 1 else ""
                         else:
-                            method, password = method_password, ""
+                            method = parts[0]
+                            password = ""
                         
+                        server_port = parts[1]
                         if ':' in server_port:
-                            server, port = server_port.split(':', 1)
+                            server_port_parts = server_port.split(':', 1)
+                            server = server_port_parts[0]
+                            port = server_port_parts[1]
                         else:
-                            server, port = server_port, "443"
-                    elif ':' in decoded:
-                        parts = decoded.split(':')
-                        if len(parts) >= 2:
-                            server = parts[0]
-                            port = parts[1]
-                            method = parts[2] if len(parts) > 2 else ""
-                            password = parts[3] if len(parts) > 3 else ""
-                        else:
-                            server, port = "", ""
+                            server = server_port
                     else:
-                        server, port = "", ""
+                        # 尝试解析非标准格式
+                        if ':' in decoded:
+                            parts = decoded.split(':')
+                            if len(parts) >= 2:
+                                server = parts[0]
+                                port = parts[1]
+                                if len(parts) > 2:
+                                    method = parts[2]
+                                if len(parts) > 3:
+                                    password = parts[3]
+                    
+                    # 验证端口是否为数字
+                    try:
+                        port = int(port)
+                    except (ValueError, TypeError):
+                        logging.warning(f"无效的端口号: {port}, 使用默认端口443")
+                        port = 443
                     
                     # 跳过无效节点
                     if not server or not port:
+                        logging.warning(f"跳过无效节点: {line[:60]}...")
                         continue
                     
                     # 生成Clash配置
@@ -560,7 +575,7 @@ def fetch_all_sources(output_file):
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description='爬取免费VPN节点')
-    parser.add_argument('-o', '--output', default='website/nodes.json', help='输出文件路径')  # 修复输出路径
+    parser.add_argument('-o', '--output', default='website/nodes.json', help='输出文件路径')
     args = parser.parse_args()
     
     logging.info("="*50)
