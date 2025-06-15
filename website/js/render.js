@@ -9,7 +9,10 @@ async function loadNodes() {
   try {
     // 添加时间戳防止缓存
     const timestamp = new Date().getTime();
-    const res = await fetch(`/nodes.json?t=${timestamp}`, { cache: 'no-store' });
+    const res = await fetch(`/nodes.json?t=${timestamp}`, { 
+      cache: 'no-store',
+      credentials: 'same-origin'  // 修复：确保携带cookie
+    });
     
     if (!res.ok) {
       throw new Error(translations[currentLang]['nodes.load_failed'] || '加载节点数据失败');
@@ -72,7 +75,7 @@ function createServerTable(nodes) {
   const table = document.createElement('table');
   table.className = 'server-table';
   
-  // 创建表头
+  // 创建表头（使用翻译）
   const thead = document.createElement('thead');
   thead.innerHTML = `
     <tr>
