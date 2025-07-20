@@ -1,166 +1,39 @@
 [
   {
-    "id": "3a2fd03b-4c0b-4833-9ed4-4859577548d9",
-    "name": "[美国] 未知服务商 - 节点 - 706213.1828",
+    "id": "51b2d052-5656-4fcc-adf7-58e3e0d13e54",
+    "name": "[美国] CloudFlare - 节点 - a4137f.136",
     "type": "vmess",
-    "server": "69.84.182.108",
-    "port": "8880",
+    "server": "awetdfgn_cdn.hfhfb.homes",
+    "port": 2086,
     "clash_config": {
-      "name": "[美国] 未知服务商 - 节点 - 706213.1828",
+      "name": "[美国] CloudFlare - 节点 - a4137f.136",
       "type": "vmess",
-      "server": "69.84.182.108",
-      "port": 8880,
-      "uuid": "922b45c8-1ec8-4a65-9b32-137716a0e55f",
+      "server": "awetdfgn_cdn.hfhfb.homes",
+      "port": 2086,
+      "uuid": "1ae7b2ce-393d-4b22-ab55-a8d3e319f1a9",
       "alterId": 0,
       "cipher": "auto",
       "udp": true,
       "tls": false,
       "skip-cert-verify": true,
       "network": "ws",
-      "ws-path": "/profile/telegram@ssrsub",
+      "ws-path": "/market?ed=1024",
       "ws-headers": {
-        "Host": "cdn-node-oss-99.paofu.de"
-      }
-    },
-    "source": "https://raw.githubusercontent.com/ermaozi/get_subscribe/main/subscribe/v2ray.txt",
-    "latency": 13,
-    "last_checked": "2025-07-20T01:50:26.159361+00:00"
-  },
-  {
-    "id": "2dbde4b3-84f1-4bc6-8a60-1309f8d66641",
-    "name": "[日本] 未知服务商 - 节点 - 2a0324.2155",
-    "type": "trojan",
-    "server": "45.67.215.95",
-    "port": 443,
-    "clash_config": {
-      "name": "[日本] 未知服务商 - 节点 - 2a0324.2155",
-      "type": "trojan",
-      "server": "45.67.215.95",
-      "port": 443,
-      "password": "tg-fq521free",
-      "udp": true,
-      "skip-cert-verify": true
-    },
-    "source": "https://raw.githubusercontent.com/aiboboxx/v2rayfree/main/v2",
-    "latency": 14,
-    "last_checked": "2025-07-20T01:50:26.164425+00:00"
-  },
-  {
-    "id": "98770500-95cd-483e-a799-eeb4ef653f5a",
-    "name": "[美国] CloudFlare - 节点 - a4cbd8.1875",
-    "type": "vmess",
-    "server": "827f07.4c38f09e.shop",
-    "port": 80,
-    "clash_config": {
-      "name": "[美国] CloudFlare - 节点 - a4cbd8.1875",
-      "type": "vmess",
-      "server": "827f07.4c38f09e.shop",
-      "port": 80,
-      "uuid": "952797b6-21a0-4e66-9239-30ef5c0efcdf",
-      "alterId": 0,
-      "cipher": "auto",
-      "udp": true,
-      "tls": false,
-      "skip-cert-verify": true,
-      "network": "ws",
-      "ws-path": "/",
-      "ws-headers": {
-        "Host": "hk04s.4c38f09e.shop"
+        "Host": "mgcdn10.hfhfb.homes"
       }
     },
     "source": "https://raw.githubusercontent.com/Pawdroid/Free-servers/main/sub",
-    "latency": 14,
-    "last_checked": "2025-07-20T01:50:26.164740+00:00"
+    "latency": 2,
+    "last_checked": "2025-07-20T06:27:49.303569+00:00"
   },
   {
-    "id": "502d15d9-c853-445c-8280-487777dc316c",
-    "name": "[美国] 未知服务商 - 节点 - bb6d31.1828",
-    "type": "vmess",
-    "server": "69.84.182.108",
-    "port": 8880,
-    "clash_config": {
-      "name": "[美国] 未知服务商 - 节点 - bb6d31.1828",
-      "type": "vmess",
-      "server": "69.84.182.108",
-      "port": 8880,
-      "uuid": "922b45c8-1ec8-4a65-9b32-137716a0e55f",
-      "alterId": 0,
-      "cipher": "auto",
-      "udp": true,
-      "tls": false,
-      "skip-cert-verify": true,
-      "network": "ws",
-      "ws-path": "/profile/telegram@ssrsub",
-      "ws-headers": {
-        "Host": "cdn-node-oss-99.paofu.de"
-      }
-    },
-    "source": "https://raw.githubusercontent.com/Pawdroid/Free-servers/main/sub",
-    "latency": 16,
-    "last_checked": "2025-07-20T01:50:26.167402+00:00"
-  },
-  {
-    "id": "44c4a518-fbb1-4214-95bc-87e900dbb916",
-    "name": "[香港] 未知服务商 - 节点 - 358487.1137",
-    "type": "vmess",
-    "server": "2112e4.7d79233c.shop",
-    "port": "80",
-    "clash_config": {
-      "name": "[香港] 未知服务商 - 节点 - 358487.1137",
-      "type": "vmess",
-      "server": "2112e4.7d79233c.shop",
-      "port": 80,
-      "uuid": "952797b6-21a0-4e66-9239-30ef5c0efcdf",
-      "alterId": 0,
-      "cipher": "auto",
-      "udp": true,
-      "tls": false,
-      "skip-cert-verify": true,
-      "network": "ws",
-      "ws-path": "/",
-      "ws-headers": {
-        "Host": "hk01s.7d79233c.shop"
-      }
-    },
-    "source": "https://raw.githubusercontent.com/aiboboxx/v2rayfree/main/v2",
-    "latency": 17,
-    "last_checked": "2025-07-20T01:50:26.167504+00:00"
-  },
-  {
-    "id": "0c710ba0-d024-4816-b16d-245d735b2ddf",
-    "name": "[美国] CloudFlare - 节点 - 2d7a9c.1134",
-    "type": "vmess",
-    "server": "527cb2.827a4c39.shop",
-    "port": 80,
-    "clash_config": {
-      "name": "[美国] CloudFlare - 节点 - 2d7a9c.1134",
-      "type": "vmess",
-      "server": "527cb2.827a4c39.shop",
-      "port": 80,
-      "uuid": "952797b6-21a0-4e66-9239-30ef5c0efcdf",
-      "alterId": 0,
-      "cipher": "auto",
-      "udp": true,
-      "tls": false,
-      "skip-cert-verify": true,
-      "network": "ws",
-      "ws-path": "/",
-      "ws-headers": {
-        "Host": "sg02s.827a4c39.shop"
-      }
-    },
-    "source": "https://raw.githubusercontent.com/Pawdroid/Free-servers/main/sub",
-    "latency": 15,
-    "last_checked": "2025-07-20T01:50:26.167574+00:00"
-  },
-  {
-    "id": "c9a632b0-ca60-4e7d-b48c-d66ec4786b2c",
-    "name": "[美国] CloudFlare - CDN节点 - 222113.823",
+    "id": "2afbce34-1e8e-4695-855f-ae162d83212c",
+    "name": "[美国] CloudFlare - CDN节点 - f30418.823",
     "type": "vmess",
     "server": "104.21.82.183",
     "port": 8880,
     "clash_config": {
-      "name": "[美国] CloudFlare - CDN节点 - 222113.823",
+      "name": "[美国] CloudFlare - CDN节点 - f30418.823",
       "type": "vmess",
       "server": "104.21.82.183",
       "port": 8880,
@@ -177,44 +50,125 @@
       }
     },
     "source": "https://raw.githubusercontent.com/freefq/free/master/v2",
-    "latency": 14,
-    "last_checked": "2025-07-20T01:50:26.179670+00:00"
+    "latency": 4,
+    "last_checked": "2025-07-20T06:27:49.303714+00:00"
   },
   {
-    "id": "d5c56a55-cb02-4e08-bdd0-2c6850f84278",
-    "name": "[美国] CloudFlare - 节点 - 310024.16",
+    "id": "78074424-37d6-440e-82d1-6e7a422376c1",
+    "name": "[美国] 未知服务商 - 节点 - 249903.1828",
     "type": "vmess",
-    "server": "v019.emovpn.xyz",
-    "port": 2087,
+    "server": "69.84.182.108",
+    "port": "8880",
     "clash_config": {
-      "name": "[美国] CloudFlare - 节点 - 310024.16",
+      "name": "[美国] 未知服务商 - 节点 - 249903.1828",
       "type": "vmess",
-      "server": "v019.emovpn.xyz",
-      "port": 2087,
-      "uuid": "08b24d8d-10ab-4c5a-990e-4e0e194870af",
+      "server": "69.84.182.108",
+      "port": 8880,
+      "uuid": "922b45c8-1ec8-4a65-9b32-137716a0e55f",
+      "alterId": 0,
+      "cipher": "auto",
+      "udp": true,
+      "tls": false,
+      "skip-cert-verify": true,
+      "network": "ws",
+      "ws-path": "/profile/telegram@ssrsub",
+      "ws-headers": {
+        "Host": "cdn-node-oss-99.paofu.de"
+      }
+    },
+    "source": "https://raw.githubusercontent.com/ermaozi/get_subscribe/main/subscribe/v2ray.txt",
+    "latency": 1,
+    "last_checked": "2025-07-20T06:27:49.303786+00:00"
+  },
+  {
+    "id": "11b7fc4a-4aaf-452d-a2a3-2897436adba4",
+    "name": "[美国] Fastly - Anycast节点 - 5b845b.1924",
+    "type": "vmess",
+    "server": "gov.uk",
+    "port": 443,
+    "clash_config": {
+      "name": "[美国] Fastly - Anycast节点 - 5b845b.1924",
+      "type": "vmess",
+      "server": "gov.uk",
+      "port": 443,
+      "uuid": "77848824-93b7-4b89-ffd0-e91afff406ce",
       "alterId": 0,
       "cipher": "auto",
       "udp": true,
       "tls": true,
       "skip-cert-verify": true,
       "network": "ws",
-      "ws-path": "/",
+      "ws-path": "/77848824",
       "ws-headers": {
-        "Host": "v019.emovpn.xyz"
+        "Host": "zheshiscp.com"
+      }
+    },
+    "source": "https://raw.githubusercontent.com/freefq/free/master/v2",
+    "latency": 10,
+    "last_checked": "2025-07-20T06:27:49.361195+00:00"
+  },
+  {
+    "id": "8315b593-36f2-4d4f-8cca-ae3a4f35ca0e",
+    "name": "[美国] CloudFlare - 节点 - 4b7a34.753",
+    "type": "vmess",
+    "server": "www.vpslook.com",
+    "port": 443,
+    "clash_config": {
+      "name": "[美国] CloudFlare - 节点 - 4b7a34.753",
+      "type": "vmess",
+      "server": "www.vpslook.com",
+      "port": 443,
+      "uuid": "4993f14e-5f9b-4249-dc43-99f4fdea84be",
+      "alterId": 0,
+      "cipher": "auto",
+      "udp": true,
+      "tls": true,
+      "skip-cert-verify": true,
+      "network": "ws",
+      "ws-path": "/4993f14e",
+      "ws-headers": {
+        "Host": "wapkp01.5201314.cfd"
       }
     },
     "source": "https://raw.githubusercontent.com/Pawdroid/Free-servers/main/sub",
-    "latency": 37,
-    "last_checked": "2025-07-20T01:50:26.238550+00:00"
+    "latency": 9,
+    "last_checked": "2025-07-20T06:27:49.372784+00:00"
   },
   {
-    "id": "d8984f15-b864-47d4-b2bf-3f851b9d9c8b",
-    "name": "[日本] 未知服务商 - 节点 - 419910.1121",
+    "id": "1c3b09c3-34b0-4a3e-8bcc-51fef8d06dca",
+    "name": "[香港] 未知服务商 - 节点 - 907221.1890",
+    "type": "vmess",
+    "server": "v10.heduian.link",
+    "port": 30807,
+    "clash_config": {
+      "name": "[香港] 未知服务商 - 节点 - 907221.1890",
+      "type": "vmess",
+      "server": "v10.heduian.link",
+      "port": 30807,
+      "uuid": "cbb3f877-d1fb-344c-87a9-d153bffd5484",
+      "alterId": 2,
+      "cipher": "auto",
+      "udp": true,
+      "tls": false,
+      "skip-cert-verify": true,
+      "network": "ws",
+      "ws-path": "/oooo",
+      "ws-headers": {
+        "Host": "baidu.com"
+      }
+    },
+    "source": "https://raw.githubusercontent.com/Pawdroid/Free-servers/main/sub",
+    "latency": 195,
+    "last_checked": "2025-07-20T06:27:49.487223+00:00"
+  },
+  {
+    "id": "8aceb8fa-d2fd-4945-80ee-0af19d4b67a9",
+    "name": "[日本] 未知服务商 - 节点 - af5d1e.801",
     "type": "vmess",
     "server": "superstar.jp1.srayx.xyz",
     "port": "80",
     "clash_config": {
-      "name": "[日本] 未知服务商 - 节点 - 419910.1121",
+      "name": "[日本] 未知服务商 - 节点 - af5d1e.801",
       "type": "vmess",
       "server": "superstar.jp1.srayx.xyz",
       "port": 80,
@@ -231,152 +185,36 @@
       }
     },
     "source": "https://raw.githubusercontent.com/adiwzx/freenode/main/adispeed.txt",
-    "latency": 13,
-    "last_checked": "2025-07-20T01:50:26.244078+00:00"
+    "latency": 1,
+    "last_checked": "2025-07-20T06:27:49.495616+00:00"
   },
   {
-    "id": "2352d860-fba4-459c-b624-d640fd3642d1",
-    "name": "[美国] CloudFlare - 节点 - 93c6a8.129",
-    "type": "vmess",
-    "server": "www.visa.com.sg",
-    "port": "8443",
+    "id": "0b507d41-6779-43c0-9178-b76cbab977dc",
+    "name": "[美国] 未知服务商 - 节点 - a9db9e.136",
+    "type": "ss",
+    "server": "pr.fastsoonlink.com",
+    "port": 40030,
     "clash_config": {
-      "name": "[美国] CloudFlare - 节点 - 93c6a8.129",
-      "type": "vmess",
-      "server": "www.visa.com.sg",
-      "port": 8443,
-      "uuid": "62a00edc-9867-4c66-82ee-d57c19facad3",
-      "alterId": 0,
-      "cipher": "auto",
-      "udp": true,
-      "tls": true,
-      "skip-cert-verify": true,
-      "network": "ws",
-      "ws-path": "/",
-      "ws-headers": {
-        "Host": "normal-riding-large-struct.trycloudflare.com"
-      }
+      "name": "[美国] 未知服务商 - 节点 - a9db9e.136",
+      "type": "ss",
+      "server": "pr.fastsoonlink.com",
+      "port": 40030,
+      "cipher": "aes-256-gcm",
+      "password": "",
+      "udp": true
     },
     "source": "https://raw.githubusercontent.com/Pawdroid/Free-servers/main/sub",
-    "latency": 33,
-    "last_checked": "2025-07-20T01:50:26.262674+00:00"
+    "latency": 118,
+    "last_checked": "2025-07-20T06:27:49.546462+00:00"
   },
   {
-    "id": "da0a9da5-2d75-49b5-ac57-ea077e2e8879",
-    "name": "[美国] Fastly - Anycast节点 - cd89a1.1924",
-    "type": "vmess",
-    "server": "gov.uk",
-    "port": 443,
-    "clash_config": {
-      "name": "[美国] Fastly - Anycast节点 - cd89a1.1924",
-      "type": "vmess",
-      "server": "gov.uk",
-      "port": 443,
-      "uuid": "77848824-93b7-4b89-ffd0-e91afff406ce",
-      "alterId": 0,
-      "cipher": "auto",
-      "udp": true,
-      "tls": true,
-      "skip-cert-verify": true,
-      "network": "ws",
-      "ws-path": "/77848824",
-      "ws-headers": {
-        "Host": "zheshiscp.com"
-      }
-    },
-    "source": "https://raw.githubusercontent.com/freefq/free/master/v2",
-    "latency": 29,
-    "last_checked": "2025-07-20T01:50:26.273279+00:00"
-  },
-  {
-    "id": "540b70f6-c51b-40d9-b0d8-55942e2ace16",
-    "name": "[美国] 未知服务商 - 节点 - 558325.135",
-    "type": "vmess",
-    "server": "workers.dev",
-    "port": "443",
-    "clash_config": {
-      "name": "[美国] 未知服务商 - 节点 - 558325.135",
-      "type": "vmess",
-      "server": "workers.dev",
-      "port": 443,
-      "uuid": "7a70e0f7-170d-4ab0-82a0-c40554bfb320",
-      "alterId": 0,
-      "cipher": "auto",
-      "udp": true,
-      "tls": true,
-      "skip-cert-verify": true,
-      "network": "ws",
-      "ws-path": "/111111.online",
-      "ws-headers": {
-        "Host": "buyvm.proxypool.ga"
-      }
-    },
-    "source": "https://raw.githubusercontent.com/adiwzx/freenode/main/adispeed.txt",
-    "latency": 35,
-    "last_checked": "2025-07-20T01:50:26.332786+00:00"
-  },
-  {
-    "id": "b6465e13-0b1a-47e2-8a02-6f5e81115645",
-    "name": "[香港] 未知服务商 - 节点 - 929ff5.1269",
-    "type": "vmess",
-    "server": "hkt.gotochinatown.net",
-    "port": 80,
-    "clash_config": {
-      "name": "[香港] 未知服务商 - 节点 - 929ff5.1269",
-      "type": "vmess",
-      "server": "hkt.gotochinatown.net",
-      "port": 80,
-      "uuid": "500dd8cc-a21c-11ec-bd7c-f23c913c8d2b",
-      "alterId": 2,
-      "cipher": "auto",
-      "udp": true,
-      "tls": false,
-      "skip-cert-verify": true,
-      "network": "ws",
-      "ws-path": "/",
-      "ws-headers": {
-        "Host": ""
-      }
-    },
-    "source": "https://raw.githubusercontent.com/Pawdroid/Free-servers/main/sub",
-    "latency": 197,
-    "last_checked": "2025-07-20T01:50:26.345623+00:00"
-  },
-  {
-    "id": "c4f94798-9614-41e1-bd47-fdfce8b93b4c",
-    "name": "[美国] 未知服务商 - 节点 - ebcd26.1748",
-    "type": "vmess",
-    "server": "www.digitalocean.com",
-    "port": "443",
-    "clash_config": {
-      "name": "[美国] 未知服务商 - 节点 - ebcd26.1748",
-      "type": "vmess",
-      "server": "www.digitalocean.com",
-      "port": 443,
-      "uuid": "3a3e263d-223f-49cc-bbdb-f7e07a55e6fe",
-      "alterId": 0,
-      "cipher": "auto",
-      "udp": true,
-      "tls": true,
-      "skip-cert-verify": true,
-      "network": "ws",
-      "ws-path": "/111111.online",
-      "ws-headers": {
-        "Host": "by.6111.online"
-      }
-    },
-    "source": "https://raw.githubusercontent.com/adiwzx/freenode/main/adispeed.txt",
-    "latency": 37,
-    "last_checked": "2025-07-20T01:50:26.358226+00:00"
-  },
-  {
-    "id": "69d416bd-ec36-4685-9e6b-3bd0d3d22a8d",
-    "name": "[澳大利亚] 未知服务商 - 节点 - eabaae.1288",
+    "id": "d4fa70cf-d68c-433d-ba92-dec52a0c49e1",
+    "name": "[澳大利亚] 未知服务商 - 节点 - 4637d2.1288",
     "type": "vmess",
     "server": "fhrcvbgffxd.hjdfghfc.asia",
     "port": 50229,
     "clash_config": {
-      "name": "[澳大利亚] 未知服务商 - 节点 - eabaae.1288",
+      "name": "[澳大利亚] 未知服务商 - 节点 - 4637d2.1288",
       "type": "vmess",
       "server": "fhrcvbgffxd.hjdfghfc.asia",
       "port": 50229,
@@ -393,17 +231,71 @@
       }
     },
     "source": "https://raw.githubusercontent.com/ermaozi/get_subscribe/main/subscribe/v2ray.txt",
-    "latency": 244,
-    "last_checked": "2025-07-20T01:50:26.394434+00:00"
+    "latency": 265,
+    "last_checked": "2025-07-20T06:27:49.569909+00:00"
   },
   {
-    "id": "7c7b7146-de04-4373-a1c3-1d530f00115e",
-    "name": "[美国] 未知服务商 - 节点 - 0696ff.99",
+    "id": "021caf64-894b-4f18-a97d-3256c5bfdb46",
+    "name": "[美国] 未知服务商 - 节点 - 1d4b4d.125",
+    "type": "vmess",
+    "server": "workers.dev",
+    "port": "443",
+    "clash_config": {
+      "name": "[美国] 未知服务商 - 节点 - 1d4b4d.125",
+      "type": "vmess",
+      "server": "workers.dev",
+      "port": 443,
+      "uuid": "7a70e0f7-170d-4ab0-82a0-c40554bfb320",
+      "alterId": 0,
+      "cipher": "auto",
+      "udp": true,
+      "tls": true,
+      "skip-cert-verify": true,
+      "network": "ws",
+      "ws-path": "/111111.online",
+      "ws-headers": {
+        "Host": "buyvm.proxypool.ga"
+      }
+    },
+    "source": "https://raw.githubusercontent.com/adiwzx/freenode/main/adispeed.txt",
+    "latency": 11,
+    "last_checked": "2025-07-20T06:27:49.604667+00:00"
+  },
+  {
+    "id": "c673c55c-7fee-4491-87c8-664b4fc73a65",
+    "name": "[美国] 未知服务商 - 节点 - 902c8c.1738",
+    "type": "vmess",
+    "server": "www.digitalocean.com",
+    "port": "443",
+    "clash_config": {
+      "name": "[美国] 未知服务商 - 节点 - 902c8c.1738",
+      "type": "vmess",
+      "server": "www.digitalocean.com",
+      "port": 443,
+      "uuid": "3a3e263d-223f-49cc-bbdb-f7e07a55e6fe",
+      "alterId": 0,
+      "cipher": "auto",
+      "udp": true,
+      "tls": true,
+      "skip-cert-verify": true,
+      "network": "ws",
+      "ws-path": "/111111.online",
+      "ws-headers": {
+        "Host": "by.6111.online"
+      }
+    },
+    "source": "https://raw.githubusercontent.com/adiwzx/freenode/main/adispeed.txt",
+    "latency": 10,
+    "last_checked": "2025-07-20T06:27:49.643727+00:00"
+  },
+  {
+    "id": "bd673819-e977-47d0-8e8a-6244bfa2bbbf",
+    "name": "[美国] 未知服务商 - 节点 - e9e0a0.89",
     "type": "vmess",
     "server": "ping.pe",
     "port": "443",
     "clash_config": {
-      "name": "[美国] 未知服务商 - 节点 - 0696ff.99",
+      "name": "[美国] 未知服务商 - 节点 - e9e0a0.89",
       "type": "vmess",
       "server": "ping.pe",
       "port": 443,
@@ -420,85 +312,17 @@
       }
     },
     "source": "https://raw.githubusercontent.com/adiwzx/freenode/main/adispeed.txt",
-    "latency": 33,
-    "last_checked": "2025-07-20T01:50:26.505569+00:00"
+    "latency": 10,
+    "last_checked": "2025-07-20T06:27:50.149846+00:00"
   },
   {
-    "id": "827dd8a6-4c79-492d-b40c-0289af51c847",
-    "name": "[香港] 未知服务商 - 节点 - e3a081.1239",
-    "type": "vmess",
-    "server": "2112e4.7d79233c.shop",
-    "port": "80",
-    "clash_config": {
-      "name": "[香港] 未知服务商 - 节点 - e3a081.1239",
-      "type": "vmess",
-      "server": "2112e4.7d79233c.shop",
-      "port": 80,
-      "uuid": "952797b6-21a0-4e66-9239-30ef5c0efcdf",
-      "alterId": 0,
-      "cipher": "auto",
-      "udp": true,
-      "tls": false,
-      "skip-cert-verify": true,
-      "network": "ws",
-      "ws-path": "/",
-      "ws-headers": {
-        "Host": "hk01s.7d79233c.shop"
-      }
-    },
-    "source": "https://raw.githubusercontent.com/aiboboxx/v2rayfree/main/v2",
-    "latency": 14,
-    "last_checked": "2025-07-20T01:50:26.710517+00:00"
-  },
-  {
-    "id": "c5f91cfe-920b-4de2-a7ab-254e998dd52a",
-    "name": "[香港] 未知服务商 - 节点 - 045b5c.1890",
-    "type": "vmess",
-    "server": "38.147.189.50",
-    "port": "13584",
-    "clash_config": {
-      "name": "[香港] 未知服务商 - 节点 - 045b5c.1890",
-      "type": "vmess",
-      "server": "38.147.189.50",
-      "port": 13584,
-      "uuid": "0596d1ea-8de9-4005-b075-d679a27a7b44",
-      "alterId": 0,
-      "cipher": "auto",
-      "udp": true,
-      "tls": false,
-      "skip-cert-verify": true
-    },
-    "source": "https://raw.githubusercontent.com/ripaojiedian/freenode/main/sub",
-    "latency": 217,
-    "last_checked": "2025-07-20T01:50:26.718132+00:00"
-  },
-  {
-    "id": "82d71f86-b031-4ec3-9516-d30db06200c3",
-    "name": "[日本] 未知服务商 - 节点 - a23574.2155",
-    "type": "trojan",
-    "server": "45.67.215.95",
-    "port": 443,
-    "clash_config": {
-      "name": "[日本] 未知服务商 - 节点 - a23574.2155",
-      "type": "trojan",
-      "server": "45.67.215.95",
-      "port": 443,
-      "password": "tg-fq521free",
-      "udp": true,
-      "skip-cert-verify": true
-    },
-    "source": "https://raw.githubusercontent.com/aiboboxx/v2rayfree/main/v2",
-    "latency": 13,
-    "last_checked": "2025-07-20T01:50:26.775727+00:00"
-  },
-  {
-    "id": "255c51ad-68e9-4b29-9e95-aaf3698569af",
-    "name": "[美国] CloudFlare - CDN节点 - 6195b6.823",
+    "id": "9061299b-5c1c-4434-92fe-786db1e09867",
+    "name": "[美国] CloudFlare - CDN节点 - 84774b.823",
     "type": "vmess",
     "server": "104.21.82.183",
     "port": 8880,
     "clash_config": {
-      "name": "[美国] CloudFlare - CDN节点 - 6195b6.823",
+      "name": "[美国] CloudFlare - CDN节点 - 84774b.823",
       "type": "vmess",
       "server": "104.21.82.183",
       "port": 8880,
@@ -515,17 +339,17 @@
       }
     },
     "source": "https://raw.githubusercontent.com/freefq/free/master/v2",
-    "latency": 13,
-    "last_checked": "2025-07-20T01:50:27.041880+00:00"
+    "latency": 2,
+    "last_checked": "2025-07-20T06:27:52.378520+00:00"
   },
   {
-    "id": "d1b7545e-d511-472f-84c6-a998e6ae8b32",
-    "name": "[美国] Fastly - Anycast节点 - 6ebaaa.04",
+    "id": "29f279d3-3609-4a3c-be83-8b04dc47ca1c",
+    "name": "[美国] Fastly - Anycast节点 - e93d8d.1284",
     "type": "vmess",
     "server": "gov.uk",
     "port": 443,
     "clash_config": {
-      "name": "[美国] Fastly - Anycast节点 - 6ebaaa.04",
+      "name": "[美国] Fastly - Anycast节点 - e93d8d.1284",
       "type": "vmess",
       "server": "gov.uk",
       "port": 443,
@@ -542,53 +366,7 @@
       }
     },
     "source": "https://raw.githubusercontent.com/freefq/free/master/v2",
-    "latency": 35,
-    "last_checked": "2025-07-20T01:50:27.139163+00:00"
-  },
-  {
-    "id": "8cbcc2c2-c40d-4ea2-ad37-ac0401ba4613",
-    "name": "[香港] 未知服务商 - 节点 - 046540.01",
-    "type": "vmess",
-    "server": "2112e4.7d79233c.shop",
-    "port": "80",
-    "clash_config": {
-      "name": "[香港] 未知服务商 - 节点 - 046540.01",
-      "type": "vmess",
-      "server": "2112e4.7d79233c.shop",
-      "port": 80,
-      "uuid": "952797b6-21a0-4e66-9239-30ef5c0efcdf",
-      "alterId": 0,
-      "cipher": "auto",
-      "udp": true,
-      "tls": false,
-      "skip-cert-verify": true,
-      "network": "ws",
-      "ws-path": "/",
-      "ws-headers": {
-        "Host": "hk01s.7d79233c.shop"
-      }
-    },
-    "source": "https://raw.githubusercontent.com/peasoft/NoMoreWalls/master/list.txt",
-    "latency": 14,
-    "last_checked": "2025-07-20T01:50:27.245536+00:00"
-  },
-  {
-    "id": "6d9046ce-2bf1-4ca6-9194-a25ef02cc8b5",
-    "name": "[日本] 未知服务商 - 节点 - 481238.2155",
-    "type": "trojan",
-    "server": "45.67.215.95",
-    "port": 443,
-    "clash_config": {
-      "name": "[日本] 未知服务商 - 节点 - 481238.2155",
-      "type": "trojan",
-      "server": "45.67.215.95",
-      "port": 443,
-      "password": "tg-fq521free",
-      "udp": true,
-      "skip-cert-verify": true
-    },
-    "source": "https://raw.githubusercontent.com/peasoft/NoMoreWalls/master/list.txt",
-    "latency": 14,
-    "last_checked": "2025-07-20T01:50:27.581691+00:00"
+    "latency": 10,
+    "last_checked": "2025-07-20T06:27:52.436004+00:00"
   }
 ]
